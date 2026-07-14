@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Modul Ajar - Haris DevLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#4a5b70;
+    --navy-dark:#3b4a5c;
+    --teal:#6aa84f;
+    --teal-dark:#588a41;
+    --teal-light:#eaf3e5;
+    --border:#c9d3d6;
+    --ink:#1f2a30;
+    --muted:#5c6b70;
+    --paper:#ffffff;
+    --bg:#eef1f2;
+  }
+  *{box-sizing:border-box;}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact;}
+  body{
+    margin:0;
+    font-family:'Trebuchet MS', 'Inter', 'Segoe UI', Arial, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+  }
+  .app{
+    display:grid;
+    grid-template-columns:420px 1fr;
+    height:100vh;
+  }
+  /* ---------- EDITOR PANEL ---------- */
+  .editor{
+    overflow-y:auto;
+    background:var(--paper);
+    border-right:1px solid var(--border);
+    padding:18px 20px 60px;
+  }
+  .editor h1{
+    font-size:17px;
+    color:var(--navy);
+    margin:0 0 2px;
+  }
+  .editor .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:16px;
+  }
+  .section{
+    border:1px solid var(--border);
+    border-radius:8px;
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .section > summary{
+    background:var(--navy);
+    color:#fff;
+    padding:9px 12px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    list-style:none;
+  }
+  .section > summary::-webkit-details-marker{display:none;}
+  .section > summary::before{content:"▸ ";}
+  .section[open] > summary::before{content:"▾ ";}
+  .section .body{
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  label{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--navy-dark);
+    display:block;
+    margin-bottom:3px;
+  }
+  .hint{
+    font-size:10.5px;
+    color:var(--muted);
+    margin-top:2px;
+    line-height:1.4;
+  }
+  input[type=text], input[type=number], textarea, select{
+    width:100%;
+    font-family:inherit;
+    font-size:12.5px;
+    padding:7px 8px;
+    border:1px solid var(--border);
+    border-radius:5px;
+    background:#fbfcfc;
+    color:var(--ink);
+  }
+  textarea{resize:vertical; min-height:56px; line-height:1.45;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .field{margin-bottom:2px;}
+  .step-card{
+    border:1px dashed var(--border);
+    border-radius:6px;
+    padding:8px;
+    margin-bottom:8px;
+    background:#f7f9f9;
+  }
+  .step-card .row2{margin-bottom:6px;}
+  .step-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .step-head span{font-size:11px; font-weight:700; color:var(--teal);}
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+    border-radius:5px;
+    font-size:11.5px;
+    padding:6px 10px;
+  }
+  .btn-add{background:var(--teal); color:#fff; font-weight:600;}
+  .btn-remove{background:#e5e9ea; color:#8a3b3b;}
+  .btn-print{
+    background:var(--navy); color:#fff; font-weight:700; font-size:13px;
+    padding:9px 16px; border-radius:6px;
+  }
+  .btn-print:hover{background:var(--navy-dark);}
+  .toolbar{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:10px 20px; background:var(--paper); border-bottom:1px solid var(--border);
+  }
+  .toolbar .grp{display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--navy-dark);}
+  .toolbar select{width:auto; padding:5px 8px;}
+  .toolbar .spacer{flex:1;}
+
+  /* ---------- PREVIEW ---------- */
+  .preview-wrap{display:flex; flex-direction:column; height:100vh;}
+  .canvas{
+    flex:1;
+    overflow:auto;
+    display:flex;
+    justify-content:center;
+    padding:30px 0 60px;
+    background:var(--bg);
+  }
+  .sheet{
+    background:var(--paper);
+    box-shadow:0 0 0 1px #d3dadb, 0 6px 24px rgba(0,0,0,0.12);
+    padding:14mm 13mm;
+    font-size:11.5px;
+    line-height:1.45;
+  }
+  .sheet.a4.portrait{width:210mm; min-height:297mm;}
+  .sheet.a4.landscape{width:297mm; min-height:210mm;}
+  .sheet.f4.portrait{width:215mm; min-height:330mm;}
+  .sheet.f4.landscape{width:330mm; min-height:215mm;}
+
+  .m-banner{
+    width:100%; margin-bottom:10px; display:flex; justify-content:center;
+  }
+  .m-banner img{width:80%; max-height:48px; height:auto; display:block; object-fit:contain;}
+  .m-header{
+    display:flex; align-items:stretch; gap:10px; margin-bottom:14px;
+  }
+  .m-logo{
+    width:56px; height:56px;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;
+  }
+  .m-logo img{width:100%; height:100%; object-fit:contain;}
+  .m-title{
+    flex:1; background:var(--navy); color:#fff; display:flex; align-items:center;
+    justify-content:center; text-align:center; font-weight:700; font-size:14px;
+    padding:10px 14px; border-radius:2px; letter-spacing:.2px;
+  }
+  .m-badge{
+    width:150px; background:var(--teal); color:#fff; font-size:10.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    padding:8px; border-radius:2px; line-height:1.3;
+  }
+
+  table.mtab{width:100%; border-collapse:collapse; margin-bottom:10px;}
+  table.mtab th, table.mtab td{
+    border:1px solid #333; padding:5px 8px; vertical-align:top; font-size:11px;
+  }
+  .sec-title{
+    background:var(--teal); color:#fff; font-weight:700; padding:5px 8px;
+    font-size:11.5px; letter-spacing:.3px;
+  }
+  .sec-flex{display:flex; align-items:stretch; margin:-1px;}
+  .sec-badge{
+    background:var(--teal); color:#fff; font-weight:800; font-size:12px;
+    padding:6px 6px; width:46px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; text-align:center;
+  }
+  .sec-text{
+    background:var(--navy); color:#fff; font-weight:800; font-size:12px;
+    padding:6px 14px; flex:1; letter-spacing:.4px; display:flex; align-items:center;
+  }
+  table.mtab td.key{width:32%; font-weight:700; background:#fff; color:var(--ink);}
+  table.mtab td.sep{width:2%; text-align:center;}
+  .lp-label{width:22%; font-weight:700; background:#fff; vertical-align:top; color:var(--ink);}
+  ol.plain{margin:4px 0 0 16px; padding:0;}
+  ol.plain li{margin-bottom:3px;}
+  ol.plain ol.sub{margin:3px 0 4px 18px; padding:0; font-style:italic; list-style:lower-alpha;}
+  ol.plain ol.sub li{margin-bottom:2px;}
+  .step-title{font-weight:700;}
+  .step-dur{font-weight:400; font-style:italic; color:#333;}
+
+  .rubric-table{width:100%; border-collapse:collapse; margin:8px 0 14px;}
+  .rubric-table th, .rubric-table td{border:1px solid var(--navy); padding:5px 6px; font-size:10.3px; vertical-align:top;}
+  .rubric-table th{background:var(--navy); color:#fff; text-align:center;}
+
+  .catatan-box{
+    border:2px dashed var(--teal); background:#eefaf6; border-radius:4px;
+    padding:14px; min-height:70px; font-size:11px; white-space:pre-wrap;
+  }
+
+  .sign-wrap{display:flex; justify-content:flex-end; margin-top:6px;}
+  .sign-block{width:55%; text-align:center; font-size:11px;}
+  .sign-grid{display:grid; grid-template-columns:1fr 1fr; margin-top:16px; text-align:center; font-size:11px;}
+  .sign-grid .gap{height:50px;}
+  .sign-grid .name{font-weight:700; text-decoration:underline;}
+
+  .kkm-line{font-size:11px; margin:4px 0 10px;}
+
+  /* ---- PM framework ---- */
+  .dim-grid{display:grid; grid-template-columns:1fr 1fr; gap:4px 8px;}
+  .dim-item{display:flex; align-items:center; gap:5px; font-size:11.5px;}
+  .dim-item input{width:auto;}
+  .pm-tags{display:flex; flex-wrap:wrap; gap:5px; margin:4px 0 8px;}
+  .pm-tag{
+    background:var(--navy); color:#fff; font-size:9.5px; font-weight:700;
+    padding:3px 8px; border-radius:10px; letter-spacing:.2px;
+  }
+  .prinsip-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:10px;}
+  .prinsip-card{border:1px solid var(--teal); border-radius:6px; padding:6px 8px; background:#f6faf4;}
+  .prinsip-card b{display:block; color:var(--teal-dark); font-size:10.5px; margin-bottom:3px;}
+  .prinsip-card div{font-size:10px; line-height:1.4;}
+  .step-tag{
+    display:inline-block; background:var(--teal); color:#fff; font-size:8.5px; font-weight:700;
+    padding:1px 6px; border-radius:8px; margin:2px 0 1px;
+  }
+  .quran-box{
+    border:1.5px solid var(--navy); border-radius:6px; padding:10px 12px; margin:8px 0 12px;
+    background:#f8f9fa;
+  }
+  .quran-box .qb-title{font-weight:700; color:var(--navy); font-size:11px; margin-bottom:6px;}
+
+  /* ---- AI PANEL ---- */
+  .ai-panel > summary{background:linear-gradient(90deg, var(--teal-dark), var(--teal));}
+  .ai-hint{font-size:10.5px; color:var(--muted); line-height:1.5; background:#f2f6f6; border:1px solid var(--border); border-radius:6px; padding:8px 10px;}
+  .ai-hint a{color:var(--navy); font-weight:600;}
+  .apikey-row{display:flex; gap:6px; align-items:center;}
+  .apikey-row input{flex:1;}
+  .apikey-row button{background:#e5e9ea; color:var(--navy-dark); font-weight:600; flex-shrink:0;}
+  .save-key-line{display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--muted); font-weight:400;}
+  .save-key-line input{width:auto;}
+  .btn-ai{
+    background:linear-gradient(90deg, var(--teal-dark), var(--teal)); color:#fff; font-weight:700; font-size:13px;
+    padding:11px 14px; border-radius:6px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-ai:disabled{opacity:0.65; cursor:wait;}
+  .spinner{
+    width:13px; height:13px; border-radius:50%; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff;
+    animation:spin .7s linear infinite; display:none;
+  }
+  .btn-ai.loading .spinner{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .ai-status{font-size:11px; border-radius:5px; padding:7px 9px; display:none; line-height:1.5;}
+  .ai-status.show{display:block;}
+  .ai-status.info{background:#eaf1fa; color:#2b5580; border:1px solid #bcd4ec;}
+  .ai-status.error{background:#fbeaea; color:#8a2b2b; border:1px solid #eec6c6;}
+  .ai-status.success{background:var(--teal-light); color:var(--teal-dark); border:1px solid #cfe6c2;}
+  .quran-arabic{
+    font-family:'Amiri', 'Traditional Arabic', 'Segoe UI', serif;
+    font-size:18px; text-align:right; direction:rtl; line-height:2.1; margin-bottom:4px; color:var(--ink);
+  }
+  .quran-ref{font-size:10px; font-style:italic; color:var(--muted); text-align:right; margin-bottom:6px;}
+  .quran-terjemah{font-size:10.5px; margin-bottom:2px;}
+  .quran-kait{font-size:10px; color:var(--muted); margin-top:4px; border-top:1px dashed var(--border); padding-top:4px;}
+
+  @media print{
+    .no-print{display:none !important;}
+    body{background:#fff;}
+    .canvas{padding:0; overflow:visible;}
+    .app{display:block; height:auto;}
+    .sheet{box-shadow:none; margin:0; width:auto !important; min-height:0 !important; transform:none !important;}
+    .m-title, .m-badge, .sec-title, .rubric-table th, table.mtab td.key, table.mtab td[colspan]{
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+      color-adjust:exact !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- =============== EDITOR =============== -->
+  <div class="editor no-print">
+    <h1>📋 Generator Modul Ajar</h1>
+    <div class="sub">Isi form di bawah — preview otomatis update di kanan. Haris DevLab.</div>
+
+    <details class="section ai-panel" open>
+      <summary>🤖 Generate Otomatis dengan AI (Gemini)</summary>
+      <div class="body">
+        <div class="ai-hint">
+          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, lalu klik tombol di bawah — AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. Butuh API key Gemini gratis dari <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Key hanya dipakai langsung dari browser Anda ke Google, tidak melewati server manapun.
+        </div>
+        <div class="field">
+          <label>API Key Gemini</label>
+          <div class="apikey-row">
+            <input type="password" id="geminiApiKey" placeholder="AIzaSy...">
+            <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">👁️</button>
+          </div>
+          <label class="save-key-line" style="margin-top:5px;">
+            <input type="checkbox" id="saveKeyChk"> Simpan key ini di browser saya
+          </label>
+        </div>
+        <div class="field">
+          <label>Model</label>
+          <select id="geminiModel">
+            <option value="gemini-flash-latest">Gemini Flash (cepat &amp; hemat — direkomendasikan)</option>
+            <option value="gemini-pro-latest">Gemini Pro (lebih detail, lebih lambat)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Capaian Pembelajaran (CP)</label>
+          <textarea id="aiCP" rows="5" placeholder="Tempel/ketik CP dari buku panduan kurikulum di sini...">Elemen: Berpikir Komputasional
+
+Pada akhir Fase C, murid memahami permasalahan sederhana dalam kehidupan sehari-hari, menerapkan pemecahan masalah secara sistematis, serta menuliskan instruksi logis dan terstruktur menggunakan sekumpulan kosakata atau simbol.</textarea>
+        </div>
+        <div class="field">
+          <label>Tujuan Pembelajaran (TP)</label>
+          <textarea id="aiTP" rows="4" placeholder="Tempel/ketik TP di sini...">Murid mampu memahami permasalahan sederhana dalam suatu aktivitas sehari-hari, menerapkan pemecahan masalah tersebut secara sistematis, serta menuliskan/menyusun instruksi (algoritma) yang logis dan terstruktur menggunakan simbol Mulai - Proses - Keputusan - Selesai.</textarea>
+        </div>
+        <div class="field">
+          <label>Kelas</label>
+          <input type="text" id="aiKelas" placeholder="Contoh: Kelas 5" value="Kelas 5">
+        </div>
+        <button type="button" class="btn-ai" id="btnGenerateAI" onclick="generateWithAI()">
+          <span class="spinner"></span><span id="btnAILabel">✨ Generate Otomatis dengan AI</span>
+        </button>
+        <div class="ai-status" id="aiStatus"></div>
+      </div>
+    </details>
+
+    <details class="section" open>
+      <summary>A. Identitas Modul</summary>
+      <div class="body">
+        <div class="field">
+          <label>Logo Sekolah (opsional — default sudah pakai img/logo.png)</label>
+          <input type="file" id="logoFile" accept="image/*">
+          <div class="hint">Unggah file di sini hanya jika ingin mengganti logo default.</div>
+        </div>
+        <div class="field">
+          <label>Judul / Topik Modul</label>
+          <input type="text" id="judul" value="Algoritma dalam Aktivitas Sehari-hari">
+        </div>
+        <div class="field">
+          <label>Badge Kanan Atas (mapel + kelas)</label>
+          <textarea id="badge" rows="3">KODING DAN KECERDASAN ARTIFISIAL KELAS 5</textarea>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Penyusun</label><input type="text" id="penyusun" value="Haris Ratno Pambudi, S.T"></div>
+          <div class="field"><label>Instansi</label><input type="text" id="instansi" value="SDS PLUS 2 ALMUHAJIRIN"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Tahun Pelajaran</label><input type="text" id="tahun" value="2026/2027"></div>
+          <div class="field"><label>Jenjang Sekolah</label><input type="text" id="jenjang" value="Sekolah Dasar (SD)"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Mata Pelajaran</label><input type="text" id="mapel" value="Koding dan Kecerdasan Artifisial (KKA)"></div>
+          <div class="field"><label>Fase, Kelas / Semester</label><input type="text" id="fase" value="Fase C, V (Lima), I (Ganjil)"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Elemen</label><input type="text" id="elemenSingkat" value="Berpikir Komputasional"></div>
+          <div class="field"><label>Alokasi Waktu</label><input type="text" id="alokasi" value="2 x 35 menit"></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>B. Identifikasi</summary>
+      <div class="body">
+        <div class="field">
+          <label>Elemen &amp; Capaian Pembelajaran (CP)</label>
+          <textarea id="cp" rows="5">Elemen: Berpikir Komputasional
+
+Pada akhir Fase C, murid memahami permasalahan sederhana dalam kehidupan sehari-hari, menerapkan pemecahan masalah secara sistematis, serta menuliskan instruksi logis dan terstruktur menggunakan sekumpulan kosakata atau simbol.</textarea>
+        </div>
+        <div class="field">
+          <label>Dimensi Profil Lulusan (DPL) — 1 baris = 1 poin</label>
+          <textarea id="dpl" rows="4">Bernalar Kritis: Menganalisis urutan langkah suatu aktivitas sehari-hari secara logis dan sistematis.
+Kreatif: Menyusun algoritma (urutan langkah) untuk menyelesaikan persoalan sederhana sehari-hari.</textarea>
+        </div>
+        <div class="field">
+          <label>Tujuan Pembelajaran</label>
+          <textarea id="tp" rows="5">Murid mampu memahami permasalahan sederhana dalam suatu aktivitas sehari-hari, menerapkan pemecahan masalah tersebut secara sistematis, serta menuliskan/menyusun instruksi (algoritma) yang logis dan terstruktur menggunakan simbol Mulai - Proses - Keputusan - Selesai.</textarea>
+        </div>
+      </div>
+    </details>
+
+    <details class="section" open>
+      <summary>🌱 Kerangka Pembelajaran Mendalam (Naskah Akademik)</summary>
+      <div class="body">
+        <div class="hint">Sesuai Naskah Akademik PM Kemendikdasmen Feb 2025. Centang Dimensi Profil Lulusan (akan otomatis muncul sebagai tag di baris DPL bagian B), dan isi bagaimana 3 prinsip PM diwujudkan di pertemuan ini.</div>
+        <div class="field">
+          <label>Dimensi Profil Lulusan (8 Dimensi PM)</label>
+          <div class="dim-grid" id="dimGrid"></div>
+        </div>
+        <div class="field">
+          <label>Berkesadaran (Mindful)</label>
+          <textarea id="prinsipMindful" rows="2">Peserta didik menyadari tujuan belajarnya sejak awal melalui apersepsi, dan secara aktif mengatur strategi belajarnya sendiri saat menyusun algoritma.</textarea>
+        </div>
+        <div class="field">
+          <label>Bermakna (Meaningful)</label>
+          <textarea id="prinsipMeaningful" rows="2">Materi algoritma dikaitkan langsung dengan aktivitas nyata sehari-hari murid (bekal sekolah, tempat tidur, menyeberang jalan) sehingga pengetahuan mudah diterapkan dalam konteks kehidupan.</textarea>
+        </div>
+        <div class="field">
+          <label>Menggembirakan (Joyful)</label>
+          <textarea id="prinsipJoyful" rows="2">Pembelajaran dikemas melalui permainan peran "menjadi robot" dan kerja kelompok yang menyenangkan sehingga murid antusias dan bebas dari tekanan.</textarea>
+        </div>
+        <div class="field">
+          <label>Pemanfaatan Teknologi Digital</label>
+          <textarea id="teknologiDigital" rows="2">Penggunaan proyektor/LCD untuk menayangkan contoh algoritma, serta gambar/video pendukung sebagai model konkret sebelum praktik unplugged.</textarea>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>☪️ Landasan Nilai Qur'ani &amp; Hadits</summary>
+      <div class="body">
+        <div class="hint">Sesuaikan ayat/hadits dengan tema materi (mis. tentang berpikir sistematis, ketelitian, atau adab belajar).</div>
+        <div class="field"><label>Ayat Al-Qur'an (teks Arab)</label>
+          <textarea id="quranArab" rows="2">وَقُل رَّبِّ زِدْنِي عِلْمًا</textarea>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Terjemahan</label><input type="text" id="quranTerjemah" value="\"Dan katakanlah: Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan.\""></div>
+          <div class="field"><label>Referensi</label><input type="text" id="quranRef" value="QS. Thaha: 114"></div>
+        </div>
+        <div class="field"><label>Hadits (teks Arab, opsional)</label>
+          <textarea id="haditsArab" rows="2">مَنْ سَلَكَ طَرِيقًا يَطْلُبُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ</textarea>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Terjemahan Hadits</label><input type="text" id="haditsTerjemah" value="\"Barangsiapa menempuh jalan untuk menuntut ilmu, Allah akan mudahkan baginya jalan menuju surga.\""></div>
+          <div class="field"><label>Perawi</label><input type="text" id="haditsRef" value="HR. Muslim"></div>
+        </div>
+        <div class="field"><label>Keterkaitan dengan Materi</label>
+          <textarea id="quranKait" rows="2">Menyusun algoritma melatih murid berpikir runtut dan bersungguh-sungguh dalam mencari pemahaman (ilmu) sebagaimana dianjurkan dalam Islam untuk senantiasa menambah ilmu dan menempuhnya dengan sabar dan tertib.</textarea>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>C. Desain Pembelajaran</summary>
+      <div class="body">
+        <div class="field">
+          <label>Praktik Pedagogis</label>
+          <textarea id="praktik" rows="2">Metode: Diskusi Kelompok, Permainan Peran (Unplugged), Praktik Menyusun Diagram Alur, Presentasi, Refleksi</textarea>
+        </div>
+        <div class="field">
+          <label>Kemitraan Belajar</label>
+          <textarea id="kemitraan" rows="2">Guru, teman sekelompok, dan orang tua/anggota keluarga di rumah (sebagai sumber inspirasi aktivitas sehari-hari).</textarea>
+        </div>
+        <div class="field">
+          <label>Lingkungan Pembelajaran — 1 baris = 1 poin</label>
+          <textarea id="lingkungan" rows="3">Ruang kelas yang ditata untuk diskusi kelompok kecil.
+Kartu bergambar simbol algoritma (Mulai - Proses - Keputusan - Selesai).
+Lembar Kerja (LK) penyusunan algoritma.</textarea>
+        </div>
+      </div>
+    </details>
+
+    <details class="section" open>
+      <summary>D. Langkah Pembelajaran</summary>
+      <div class="body">
+        <div class="hint">Setiap tahap: judul, durasi, lalu isi langkah (1 baris = 1 poin bernomor otomatis).</div>
+        <div id="stepsEditor"></div>
+        <button class="btn-add" onclick="addStep()">+ Tambah Tahap</button>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>E. Asesmen Pembelajaran</summary>
+      <div class="body">
+        <div class="field"><label>Asesmen Awal</label><textarea id="asAwal" rows="2">Guru menayangkan dua rangkaian gambar aktivitas (satu tersusun logis, satu tersusun acak). Murid diminta menentukan urutan yang benar dan menjelaskan alasannya.</textarea></div>
+        <div class="field"><label>Asesmen Formatif</label><textarea id="asFormatif" rows="2">Observasi guru selama kegiatan diskusi dan penyusunan algoritma (Bernalar Kritis, Kreatif).
+Catatan anekdot untuk mencatat kemajuan individu.</textarea></div>
+        <div class="field"><label>Asesmen Sumatif</label><textarea id="asSumatif" rows="1">Rubrik Penilaian Diagram Algoritma Aktivitas Sehari-hari</textarea></div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>Rubrik Penilaian (opsional)</summary>
+      <div class="body">
+        <div class="hint">Format 1 baris per aspek: <code>Aspek | Indikator | Level 4 | Level 3 | Level 2 | Level 1</code>. Kosongkan textarea untuk menyembunyikan tabel.</div>
+        <div class="field">
+          <label>Judul Tabel Rubrik 1</label>
+          <input type="text" id="rubrik1Judul" value="RUBRIK PENILAIAN SIKAP (OBSERVASI)">
+        </div>
+        <div class="field">
+          <textarea id="rubrik1" rows="4">Bernalar Kritis | Menganalisis urutan langkah aktivitas secara logis dan sistematis. | Menyusun seluruh urutan langkah secara logis, lengkap, dan sistematis tanpa bimbingan. | Menyusun sebagian besar langkah secara logis, masih terdapat sedikit kekurangan namun tidak memengaruhi hasil. | Menyusun sebagian langkah, namun urutan masih kurang tepat sehingga memerlukan arahan guru. | Kesulitan menyusun urutan langkah, hasil tidak logis dan sangat bergantung pada bimbingan guru.
+Kreatif | Menyusun algoritma untuk menyelesaikan persoalan sederhana sehari-hari. | Menyusun algoritma secara mandiri, runtut, menggunakan ide sendiri, serta menambahkan variasi dengan baik. | Menyusun algoritma berdasarkan ide sendiri dengan cukup runtut, meskipun pengembangan ide masih terbatas. | Menyusun algoritma dengan bantuan guru atau teman, pengembangan ide masih kurang sesuai aktivitas. | Belum mampu menyusun algoritma berdasarkan aktivitas yang dipilih dan memerlukan bimbingan intensif.</textarea>
+        </div>
+        <div class="field">
+          <label>Judul Tabel Rubrik 2</label>
+          <input type="text" id="rubrik2Judul" value="RUBRIK PENILAIAN DIAGRAM ALGORITMA AKTIVITAS SEHARI-HARI">
+        </div>
+        <div class="field">
+          <textarea id="rubrik2" rows="3">Ketepatan Urutan Langkah |  | Seluruh langkah tersusun logis dan berurutan tanpa kesalahan. | Hampir seluruh langkah berurutan, ada 1-2 langkah kurang tepat. | Sebagian langkah berurutan, masih ada beberapa kesalahan. | Urutan langkah belum logis/acak.
+Kesesuaian dengan Aktivitas Nyata |  | Sangat sesuai dan detail berdasarkan aktivitas nyata sehari-hari. | Sesuai, tetapi kurang detail. | Kurang sesuai dengan aktivitas yang dipilih. | Tidak sesuai dengan aktivitas yang dipilih.</textarea>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Skor Maksimal</label><input type="text" id="skorMaks" value="16"></div>
+          <div class="field"><label>KKM</label><input type="text" id="kkm" value="11 (Baik)"></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>Sarana / Media &amp; Tindak Lanjut</summary>
+      <div class="body">
+        <div class="field">
+          <label>Sarana / Media — format: <code>Nama | Fungsi</code></label>
+          <textarea id="sarana" rows="4">Kartu simbol algoritma (Mulai-Proses-Keputusan-Selesai) | Alat bantu menyusun diagram alur secara unplugged.
+Lembar Kerja (LK) identifikasi aktivitas | Panduan mencatat langkah-langkah aktivitas sehari-hari.
+Laptop dan proyektor LCD | Menayangkan contoh dan hasil kerja kelompok.
+Lembar refleksi murid | Menuliskan kesulitan dan kesenangan selama belajar.</textarea>
+        </div>
+        <div class="field"><label>Peserta didik yang sudah mencapai KKM</label><textarea id="sudahKKM" rows="2">Diberi tantangan menyusun algoritma untuk aktivitas yang lebih kompleks dan mengandung percabangan.</textarea></div>
+        <div class="field"><label>Peserta didik yang belum mencapai KKM</label><textarea id="belumKKM" rows="2">Diberi pendampingan tambahan dengan aktivitas yang lebih sederhana dan kartu simbol bergambar sebagai bantuan visual.</textarea></div>
+        <div class="field"><label>Catatan (opsional)</label><textarea id="catatan" rows="3"></textarea></div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>Tanda Tangan</summary>
+      <div class="body">
+        <div class="field"><label>Tempat, Tanggal</label><input type="text" id="tempatTgl" value="Purwakarta, 10 Juli 2026"></div>
+        <div class="row2">
+          <div class="field"><label>Nama Kepala Sekolah</label><input type="text" id="kepsekNama" value="Hj. Lia Yulindaria, S.P.,S.Pd.,M.Pd."></div>
+          <div class="field"><label>NIY Kepala Sekolah</label><input type="text" id="kepsekNIY" value="07699114"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Nama Guru Bidang Studi</label><input type="text" id="guruNama" value="Haris Ratno Pambudi, S.T."></div>
+          <div class="field"><label>NIY Guru</label><input type="text" id="guruNIY" value="236991324"></div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- =============== PREVIEW =============== -->
+  <div class="preview-wrap">
+    <div class="toolbar no-print">
+      <div class="grp">Ukuran Kertas:
+        <select id="paperSize" onchange="updatePageStyle()">
+          <option value="a4">A4</option>
+          <option value="f4">F4 / Folio</option>
+        </select>
+      </div>
+      <div class="grp">Orientasi:
+        <select id="orientation" onchange="updatePageStyle()">
+          <option value="portrait">Portrait</option>
+          <option value="landscape">Landscape</option>
+        </select>
+      </div>
+      <div class="grp">Zoom:
+        <select id="zoom" onchange="applyZoom()">
+          <option value="0.55">55%</option>
+          <option value="0.7" selected>70%</option>
+          <option value="0.85">85%</option>
+          <option value="1">100%</option>
+        </select>
+      </div>
+      <div class="spacer"></div>
+      <span style="font-size:10.5px; color:#8a6d00; max-width:260px;">⚠️ Saat print, pastikan opsi <b>"Background graphics"</b> / "Grafik latar belakang" dicentang agar warna ikut tercetak.</span>
+      <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+    </div>
+    <div class="canvas">
+      <div id="page" class="sheet a4 portrait"></div>
+    </div>
+  </div>
+
+</div>
+
+<style id="pageSizeStyle"></style>
+
+<script>
+let steps = [
+  {title:"Pendahuluan : Orientasi", durasi:"10 menit", tahapPM:"Memahami", content:
+`Guru menyapa murid, menanyakan kabar, dan mengecek kesiapan belajar.
+Guru mengajak salah satu murid untuk memimpin doa sebelum memulai pembelajaran.
+Guru menyampaikan tujuan dan manfaat pembelajaran hari ini.
+Apersepsi: "Apa yang kalian lakukan pertama kali setelah bangun tidur di pagi hari? Coba sebutkan urutannya!"
+Guru melaksanakan asesmen awal.`},
+  {title:"Inti 1 : Mengenal Algoritma", durasi:"15 menit", tahapPM:"Memahami", content:
+`Guru menjelaskan bahwa algoritma adalah cara memahami suatu permasalahan sederhana lalu menyelesaikannya secara sistematis melalui instruksi yang logis dan terstruktur.
+Guru menunjukkan contoh algoritma dalam aktivitas sehari-hari (contoh: langkah membuat mi instan, langkah menggosok gigi).
+Murid diberi kesempatan bertanya tentang hal-hal yang belum dipahami terkait algoritma.
+Murid dibagi menjadi kelompok kecil (4-5 orang).`},
+  {title:"Inti 2 : Identifikasi Aktivitas", durasi:"10 menit", tahapPM:"Memahami", content:
+`Setiap kelompok memilih satu aktivitas sehari-hari (contoh: menyiapkan bekal sekolah, merapikan tempat tidur, menyeberang jalan).
+Murid mencatat langkah-langkah aktivitas tersebut secara berurutan pada Lembar Kerja.`},
+  {title:"Inti 3 : Menyusun Algoritma", durasi:"20 menit", tahapPM:"Mengaplikasi", content:
+`Murid menyusun langkah-langkah yang telah dicatat menjadi diagram alur sederhana menggunakan kartu simbol (Mulai - Proses - Keputusan - Selesai).
+Guru berkeliling memberi bimbingan individual (diferensiasi: kartu bergambar untuk murid yang membutuhkan dukungan visual; tantangan menambahkan langkah keputusan/percabangan untuk murid yang sudah lancar).`},
+  {title:"Inti 4 : Uji Coba & Peer Review", durasi:"10 menit", tahapPM:"Merefleksi", content:
+`Kelompok saling menukar diagram algoritma dan mencoba menjalankan instruksi kelompok lain persis seperti tertulis ("berperan sebagai robot") untuk menguji apakah urutannya sudah logis.
+Murid memberi dan menerima masukan bila ditemukan langkah yang kurang tepat, kurang lengkap, atau tidak berurutan.
+Murid memperbaiki algoritmanya berdasarkan masukan tersebut.`},
+  {title:"Penutup : Refleksi", durasi:"5 menit", tahapPM:"Merefleksi", content:
+`Murid menuliskan bagian tersulit dan paling menyenangkan saat menyusun algoritma.
+Guru menyimpulkan dan memberikan penguatan tentang pentingnya berpikir runtut (algoritma) dalam kehidupan sehari-hari.
+Guru menutup pembelajaran dengan doa.`}
+];
+let logoDataUrl = "";
+const DEFAULT_LOGO_SRC = "img/logo.png";
+const BANNER_SRC = "img/banner.png";
+
+const dimensiPM = [
+  "Keimanan dan Ketakwaan terhadap Tuhan YME",
+  "Kewargaan",
+  "Penalaran Kritis",
+  "Kreativitas",
+  "Kolaborasi",
+  "Kemandirian",
+  "Kesehatan",
+  "Komunikasi"
+];
+const dimensiColors = {
+  "Keimanan dan Ketakwaan terhadap Tuhan YME": "#8e5b2d",
+  "Kewargaan": "#2b6cb0",
+  "Penalaran Kritis": "#4a5b70",
+  "Kreativitas": "#b7791f",
+  "Kolaborasi": "#2f855a",
+  "Kemandirian": "#6b46c1",
+  "Kesehatan": "#c53030",
+  "Komunikasi": "#319795"
+};
+const dimensiDefaultChecked = ["Penalaran Kritis", "Kreativitas", "Kemandirian"];
+function renderDimGrid(){
+  const el = document.getElementById('dimGrid');
+  el.innerHTML = dimensiPM.map((d,i)=>`
+    <label class="dim-item">
+      <input type="checkbox" value="${esc(d)}" ${dimensiDefaultChecked.includes(d)?'checked':''} onchange="renderPreview()">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dimensiColors[d]};flex-shrink:0;"></span>
+      ${esc(d)}
+    </label>
+  `).join("");
+}
+function getSelectedDimensi(){
+  return Array.from(document.querySelectorAll('#dimGrid input:checked')).map(el=>el.value);
+}
+
+function esc(s){
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function linesToOl(text){
+  const rawLines = (text||"").split("\n").map(s=>s.trim()).filter(Boolean);
+  if(!rawLines.length) return "";
+  const items = [];
+  rawLines.forEach(line=>{
+    if(line.startsWith(">>") && items.length){
+      items[items.length-1].subs.push(line.slice(2).trim());
+    }else{
+      items.push({text: line, subs: []});
+    }
+  });
+  return "<ol class='plain'>" + items.map(it=>{
+    const sub = it.subs.length ? `<ol class="sub">${it.subs.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>` : "";
+    return `<li>${esc(it.text)}${sub}</li>`;
+  }).join("") + "</ol>";
+}
+function nlToBr(text){
+  return esc(text||"").split("\n").map(s=>s.trim()).filter(Boolean).join("<br>");
+}
+function pipeRows(text){
+  return (text||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>l.split("|").map(c=>c.trim()));
+}
+function secRow(label, text){
+  return `<tr><td colspan="2" style="padding:0;"><div class="sec-flex"><span class="sec-badge">${esc(label)}</span><span class="sec-text">${esc(text)}</span></div></td></tr>`;
+}
+
+/* ---------- STEPS EDITOR ---------- */
+function renderStepsEditor(){
+  const el = document.getElementById('stepsEditor');
+  el.innerHTML = steps.map((s,i)=>`
+    <div class="step-card">
+      <div class="step-head"><span>Tahap ${i+1}</span>
+        <button class="btn-remove" onclick="removeStep(${i})">Hapus</button>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Judul Tahap</label>
+          <input type="text" value="${esc(s.title)}" oninput="steps[${i}].title=this.value; renderPreview();"></div>
+        <div class="field"><label>Durasi</label>
+          <input type="text" value="${esc(s.durasi)}" oninput="steps[${i}].durasi=this.value; renderPreview();"></div>
+      </div>
+      <div class="field"><label>Pengalaman Belajar (PM)</label>
+        <select onchange="steps[${i}].tahapPM=this.value; renderPreview();">
+          <option value="Memahami" ${s.tahapPM==='Memahami'?'selected':''}>Memahami</option>
+          <option value="Mengaplikasi" ${s.tahapPM==='Mengaplikasi'?'selected':''}>Mengaplikasi</option>
+          <option value="Merefleksi" ${s.tahapPM==='Merefleksi'?'selected':''}>Merefleksi</option>
+        </select>
+      </div>
+      <div class="field"><label>Isi Langkah (1 baris = 1 poin)</label>
+        <textarea rows="4" oninput="steps[${i}].content=this.value; renderPreview();">${esc(s.content)}</textarea></div>
+    </div>
+  `).join("");
+}
+function addStep(){
+  steps.push({title:"Tahap Baru", durasi:"10 menit", tahapPM:"Memahami", content:""});
+  renderStepsEditor();
+  renderPreview();
+}
+function removeStep(i){
+  steps.splice(i,1);
+  renderStepsEditor();
+  renderPreview();
+}
+
+/* ---------- LOGO ---------- */
+document.getElementById('logoFile').addEventListener('change', function(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){ logoDataUrl = ev.target.result; renderPreview(); };
+  reader.readAsDataURL(f);
+});
+
+/* ---------- MAIN RENDER ---------- */
+function v(id){ return document.getElementById(id).value; }
+
+function renderPreview(){
+  const rubrik1Rows = pipeRows(v('rubrik1'));
+  const rubrik2Rows = pipeRows(v('rubrik2'));
+  const saranaRows = pipeRows(v('sarana'));
+  const selectedDims = getSelectedDimensi();
+
+  const rubrik1HTML = rubrik1Rows.length ? `
+    <div class="sec-title">${esc(v('rubrik1Judul'))}</div>
+    <table class="rubric-table">
+      <tr><th style="width:14%">Aspek Sikap</th><th style="width:24%">Indikator</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+      ${rubrik1Rows.map(r=>`<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[1]||"")}</td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`).join("")}
+    </table>` : "";
+
+  const rubrik2HTML = rubrik2Rows.length ? `
+    <div class="sec-title">${esc(v('rubrik2Judul'))}</div>
+    <table class="rubric-table">
+      <tr><th style="width:18%">Kriteria</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>
+      ${rubrik2Rows.map(r=>`<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`).join("")}
+    </table>
+    <div class="kkm-line"><b>Skor Maksimal =</b> ${esc(v('skorMaks'))} &nbsp;&nbsp; <b>Kriteria Ketuntasan Minimal (KKM) =</b> ${esc(v('kkm'))}</div>
+    ` : "";
+
+  const saranaHTML = saranaRows.length ? `
+    <table class="mtab">
+      <tr><th style="width:6%">No</th><th style="width:44%">Sarana / Media</th><th>Fungsi</th></tr>
+      ${saranaRows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r[0]||"")}</td><td>${esc(r[1]||"")}</td></tr>`).join("")}
+    </table>` : "";
+
+  const logoSrc = logoDataUrl || DEFAULT_LOGO_SRC;
+  const logoHTML = `<img src="${logoSrc}" onerror="this.replaceWith(document.createTextNode('🏫'));">`;
+
+  const quranHTML = (v('quranArab').trim() || v('haditsArab').trim()) ? `
+    <div class="quran-box">
+      <div class="qb-title">☪️ Landasan Nilai Qur'ani &amp; Hadits</div>
+      ${v('quranArab').trim() ? `
+        <div class="quran-arabic">${esc(v('quranArab'))}</div>
+        <div class="quran-ref">${esc(v('quranRef'))}</div>
+        <div class="quran-terjemah">${esc(v('quranTerjemah'))}</div>
+      ` : ""}
+      ${v('haditsArab').trim() ? `
+        <div class="quran-arabic">${esc(v('haditsArab'))}</div>
+        <div class="quran-ref">${esc(v('haditsRef'))}</div>
+        <div class="quran-terjemah">${esc(v('haditsTerjemah'))}</div>
+      ` : ""}
+      ${v('quranKait').trim() ? `<div class="quran-kait"><b>Keterkaitan dengan materi:</b> ${esc(v('quranKait'))}</div>` : ""}
+    </div>` : "";
+
+  const html = `
+    <div class="m-banner"><img src="${BANNER_SRC}" alt="Akreditasi &amp; Kurikulum Merdeka" onerror="this.parentElement.style.display='none';"></div>
+    <div class="m-header">
+      <div class="m-logo">${logoHTML}</div>
+      <div class="m-title">${esc(v('judul')).toUpperCase()}</div>
+      <div class="m-badge">${nlToBr(v('badge'))}</div>
+    </div>
+
+    <table class="mtab">
+      ${secRow("A.", "INFORMASI UMUM")}
+      ${secRow("A.1", "IDENTITAS MODUL")}
+      <tr><td class="key">Penyusun</td><td>${esc(v('penyusun'))}</td></tr>
+      <tr><td class="key">Instansi</td><td>${esc(v('instansi'))}</td></tr>
+      <tr><td class="key">Tahun Pelajaran</td><td>${esc(v('tahun'))}</td></tr>
+      <tr><td class="key">Jenjang Sekolah</td><td>${esc(v('jenjang'))}</td></tr>
+      <tr><td class="key">Mata Pelajaran</td><td>${esc(v('mapel'))}</td></tr>
+      <tr><td class="key">Fase, Kelas / Semester</td><td>${esc(v('fase'))}</td></tr>
+      <tr><td class="key">Elemen</td><td>${esc(v('elemenSingkat'))}</td></tr>
+      <tr><td class="key">Alokasi Waktu</td><td>${esc(v('alokasi'))}</td></tr>
+    </table>
+
+    ${quranHTML}
+
+    <table class="mtab">
+      ${secRow("B.", "IDENTIFIKASI")}
+      <tr><td class="lp-label">Elemen &amp; Capaian Pembelajaran (CP)</td><td>${nlToBr(v('cp'))}</td></tr>
+      <tr><td class="lp-label">Dimensi Profil Lulusan (DPL)</td><td>
+        ${selectedDims.length ? `<div class="pm-tags">${selectedDims.map(d=>`<span class="pm-tag" style="background:${dimensiColors[d]||'var(--navy)'}">${esc(d)}</span>`).join("")}</div>` : ""}
+        ${linesToOl(v('dpl'))}
+      </td></tr>
+      <tr><td class="lp-label">Tujuan Pembelajaran</td><td>${nlToBr(v('tp'))}</td></tr>
+    </table>
+
+    <div class="sec-title">🌱 KERANGKA PEMBELAJARAN MENDALAM (Naskah Akademik Kemendikdasmen, 2025)</div>
+    <table class="mtab">
+      <tr><td class="lp-label">Prinsip Pembelajaran</td><td>
+        <div class="prinsip-grid">
+          <div class="prinsip-card"><b>Berkesadaran</b><div>${esc(v('prinsipMindful'))}</div></div>
+          <div class="prinsip-card"><b>Bermakna</b><div>${esc(v('prinsipMeaningful'))}</div></div>
+          <div class="prinsip-card"><b>Menggembirakan</b><div>${esc(v('prinsipJoyful'))}</div></div>
+        </div>
+      </td></tr>
+      <tr><td class="lp-label">Pengalaman Belajar</td><td>Memahami &rarr; Mengaplikasi &rarr; Merefleksi (lihat penandaan tahap pada Langkah Pembelajaran di bagian D)</td></tr>
+    </table>
+
+    <table class="mtab">
+      ${secRow("C.", "DESAIN PEMBELAJARAN")}
+      <tr><td class="lp-label">Praktik Pedagogis</td><td>${nlToBr(v('praktik'))}</td></tr>
+      <tr><td class="lp-label">Kemitraan Belajar</td><td>${nlToBr(v('kemitraan'))}</td></tr>
+      <tr><td class="lp-label">Lingkungan Pembelajaran</td><td>${linesToOl(v('lingkungan'))}</td></tr>
+      <tr><td class="lp-label">Pemanfaatan Teknologi Digital</td><td>${nlToBr(v('teknologiDigital'))}</td></tr>
+    </table>
+
+    <table class="mtab">
+      ${secRow("D.", "LANGKAH PEMBELAJARAN")}
+      ${steps.map(s=>`
+        <tr>
+          <td class="lp-label"><span class="step-title">${esc(s.title)}</span><br><span class="step-tag">${esc(s.tahapPM||'Memahami')}</span><br><span class="step-dur">(${esc(s.durasi)})</span></td>
+          <td>${linesToOl(s.content)}</td>
+        </tr>`).join("")}
+    </table>
+
+    <table class="mtab">
+      ${secRow("E.", "ASESMEN PEMBELAJARAN")}
+      <tr><td class="lp-label">Asesmen Awal</td><td>${nlToBr(v('asAwal'))}</td></tr>
+      <tr><td class="lp-label">Asesmen Formatif</td><td>${nlToBr(v('asFormatif'))}</td></tr>
+      <tr><td class="lp-label">Asesmen Sumatif</td><td>${nlToBr(v('asSumatif'))}</td></tr>
+    </table>
+
+    ${rubrik1HTML}
+    ${rubrik2HTML}
+
+    ${saranaHTML ? `<div class="sec-title">SARANA / MEDIA</div>${saranaHTML}` : ""}
+
+    <table class="mtab">
+      ${secRow("F.", "RENCANA TINDAK LANJUT")}
+      <tr><td class="lp-label">Peserta didik yang sudah mencapai KKM</td><td>${nlToBr(v('sudahKKM'))}</td></tr>
+      <tr><td class="lp-label">Peserta didik yang belum mencapai KKM</td><td>${nlToBr(v('belumKKM'))}</td></tr>
+    </table>
+
+    ${v('catatan').trim() ? `<div class="sec-title">CATATAN</div><div class="catatan-box">${esc(v('catatan'))}</div>` : ""}
+
+    <div class="sign-grid">
+      <div>
+        Mengetahui<br>Kepala Sekolah
+        <div class="gap"></div>
+        <div class="name">${esc(v('kepsekNama'))}</div>
+        NIY. ${esc(v('kepsekNIY'))}
+      </div>
+      <div>
+        ${esc(v('tempatTgl'))}<br>Guru Bidang Studi
+        <div class="gap"></div>
+        <div class="name">${esc(v('guruNama'))}</div>
+        NIY. ${esc(v('guruNIY'))}
+      </div>
+    </div>
+  `;
+  document.getElementById('page').innerHTML = html;
+}
+
+/* ---------- PAGE SIZE / PRINT ---------- */
+const sizes = {
+  a4: {portrait:[210,297], landscape:[297,210]},
+  f4: {portrait:[215,330], landscape:[330,215]}
+};
+function updatePageStyle(){
+  const size = document.getElementById('paperSize').value;
+  const orient = document.getElementById('orientation').value;
+  const page = document.getElementById('page');
+  page.className = "sheet " + size + " " + orient;
+  const [w,h] = sizes[size][orient];
+  document.getElementById('pageSizeStyle').innerHTML = `@page { size: ${w}mm ${h}mm; margin: 12mm; }`;
+  applyZoom();
+}
+function applyZoom(){
+  const z = document.getElementById('zoom').value;
+  document.getElementById('page').style.transform = `scale(${z})`;
+  document.getElementById('page').style.transformOrigin = "top center";
+}
+
+/* ---------- AI GENERATOR (GEMINI) ---------- */
+(function initApiKey(){
+  try{
+    const saved = localStorage.getItem('hdl_gemini_key');
+    const savedModel = localStorage.getItem('hdl_gemini_model');
+    if(saved){ document.getElementById('geminiApiKey').value = saved; document.getElementById('saveKeyChk').checked = true; }
+    if(savedModel){ document.getElementById('geminiModel').value = savedModel; }
+  }catch(e){ /* localStorage tidak tersedia di lingkungan ini, key hanya berlaku selama sesi ini */ }
+})();
+
+function toggleKeyVisibility(){
+  const el = document.getElementById('geminiApiKey');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+const DIMENSI_PM_LIST = [
+  "Keimanan dan Ketakwaan terhadap Tuhan YME","Kewargaan","Penalaran Kritis","Kreativitas",
+  "Kolaborasi","Kemandirian","Kesehatan","Komunikasi"
+];
+
+function aiStatus(msg, type){
+  const el = document.getElementById('aiStatus');
+  el.className = 'ai-status show ' + (type||'info');
+  el.innerHTML = msg;
+}
+function aiStatusClear(){
+  const el = document.getElementById('aiStatus');
+  el.className = 'ai-status';
+  el.innerHTML = '';
+}
+
+function geminiSchema(){
+  const STR = {type:"STRING"};
+  return {
+    type:"OBJECT",
+    properties:{
+      judul:STR, badge:STR, mapel:STR, jenjang:STR, fase:STR, elemenSingkat:STR, alokasi:STR,
+      cp:STR, tp:STR, dpl:STR,
+      dimensiProfilLulusan:{type:"ARRAY", items:{type:"STRING", enum:DIMENSI_PM_LIST}},
+      prinsipMindful:STR, prinsipMeaningful:STR, prinsipJoyful:STR, teknologiDigital:STR,
+      praktik:STR, kemitraan:STR, lingkungan:STR,
+      langkahPembelajaran:{
+        type:"ARRAY",
+        items:{
+          type:"OBJECT",
+          properties:{
+            title:STR, durasi:STR,
+            tahapPM:{type:"STRING", enum:["Memahami","Mengaplikasi","Merefleksi"]},
+            content:STR
+          },
+          required:["title","durasi","tahapPM","content"]
+        }
+      },
+      asAwal:STR, asFormatif:STR, asSumatif:STR,
+      rubrik1Judul:STR, rubrik1:STR, rubrik2Judul:STR, rubrik2:STR, skorMaks:STR, kkm:STR,
+      sarana:STR, sudahKKM:STR, belumKKM:STR, catatan:STR,
+      sumberNilai:{type:"STRING", enum:["Quran","Hadits"]},
+      quranArab:STR, quranTerjemah:STR, quranRef:STR,
+      haditsArab:STR, haditsTerjemah:STR, haditsRef:STR, quranKait:STR
+    },
+    required:["judul","badge","mapel","jenjang","fase","elemenSingkat","alokasi","cp","tp","dpl",
+      "dimensiProfilLulusan","prinsipMindful","prinsipMeaningful","prinsipJoyful","teknologiDigital",
+      "praktik","kemitraan","lingkungan","langkahPembelajaran","asAwal","asFormatif","asSumatif",
+      "rubrik1Judul","rubrik1","rubrik2Judul","rubrik2","skorMaks","kkm","sarana","sudahKKM","belumKKM",
+      "sumberNilai","quranKait"]
+  };
+}
+
+function buildAIPrompt(cp, tp, kelas){
+  return `Susun seluruh komponen Modul Ajar berikut berdasarkan data dari guru:
+
+KELAS: ${kelas}
+CAPAIAN PEMBELAJARAN (CP):
+${cp}
+
+TUJUAN PEMBELAJARAN (TP):
+${tp}
+
+Ikuti seluruh aturan pada instruksi sistem. Kembalikan hanya JSON sesuai schema yang diberikan.`;
+}
+
+const AI_SYSTEM_INSTRUCTION = `Anda adalah asisten ahli penyusun Modul Ajar untuk guru sekolah di Indonesia, menguasai Kurikulum Merdeka serta Kerangka Pembelajaran Mendalam (Naskah Akademik Kemendikdasmen 2025) dengan 3 prinsip (Berkesadaran/Mindful, Bermakna/Meaningful, Menggembirakan/Joyful) dan 3 tahap pengalaman belajar (Memahami, Mengaplikasi, Merefleksi).
+
+Tugas: berdasarkan CP, TP, dan kelas yang diberikan guru, susun SELURUH komponen modul ajar secara lengkap, kontekstual, operasional, dan siap pakai di kelas, dalam Bahasa Indonesia baku bergaya dokumen resmi.
+
+Aturan wajib:
+- Pemetaan Fase Kurikulum Merdeka: Kelas 1-2 = Fase A, Kelas 3-4 = Fase B, Kelas 5-6 = Fase C, Kelas 7-9 = Fase D, Kelas 10 = Fase E, Kelas 11-12 = Fase F.
+- Field "fase" berformat seperti: "Fase C, V (Lima), I (Ganjil)" — sesuaikan angka romawi kelas dan semester dari konteks (jika semester tidak disebutkan, asumsikan Ganjil).
+- "badge" adalah teks pendek berisi nama mata pelajaran + kelas, huruf besar, cocok untuk badge di pojok kanan atas dokumen.
+- "langkahPembelajaran": 5-7 tahap runtut (Pendahuluan, beberapa tahap Inti, Penutup), total durasi harus konsisten dengan field "alokasi", dan tahapPM dibagi rata antara Memahami, Mengaplikasi, dan Merefleksi. Field "content" setiap tahap berisi beberapa poin instruksi konkret, satu baris satu poin, dipisah karakter newline. Aplikasi akan otomatis menomori setiap baris tersebut sebagai daftar bernomor, jadi JANGAN PERNAH menambahkan angka atau simbol penomoran/bullet manual sendiri (mis. "1.", "2)", "-", "•") di awal baris manapun — tulis kalimatnya langsung tanpa prefix apa pun.
+- Pada tahap Pendahuluan, WAJIB selalu menyertakan satu poin di awal yang berbunyi kurang lebih: "Guru mengajak salah satu murid untuk memimpin doa sebelum memulai pembelajaran." (bukan guru sendiri yang memimpin doa, melainkan salah satu murid, mencerminkan pembiasaan kemandirian dan kepemimpinan siswa).
+- Tahap Pendahuluan pada "langkahPembelajaran" WAJIB memuat "Pertanyaan Pemantik" berupa MINIMAL 3 pertanyaan terbuka yang relevan dengan materi/TP untuk memantik rasa ingin tahu dan mengaitkan dengan pengalaman murid sehari-hari. Tulis satu baris berisi kalimat pengantar (mis. "Guru mengajukan Pertanyaan Pemantik:"), lalu setiap pertanyaan pemantik pada baris-baris SETELAHNYA WAJIB diawali penanda ">>" (dua tanda lebih-besar tanpa spasi, mis. ">>Pernahkah kalian melihat robot yang bisa berbicara seperti manusia?") — ini akan otomatis dirender sebagai sub-nomor bercetak miring oleh aplikasi. Penanda ">>" HANYA dipakai untuk pertanyaan pemantik, jangan dipakai di baris lain manapun.
+- Mode pengerjaan tugas/aktivitas murid (individu, berpasangan, atau kelompok) TIDAK boleh selalu default kelompok — pilih yang paling sesuai dengan karakter TP dan aktivitasnya. Jika materi/tugasnya memang lebih cocok dikerjakan sendiri (mis. melatih pemahaman/keterampilan personal, asesmen individu, refleksi diri), gunakan mode individu; gunakan kelompok/berpasangan hanya jika aktivitasnya memang menuntut kolaborasi/diskusi. Terapkan pilihan ini secara konsisten pada "langkahPembelajaran" (field "content"), "praktik", "kemitraan", dan "lingkungan" agar tidak kontradiktif satu sama lain.
+- "dpl": narasi 1 baris per Dimensi Profil Lulusan terpilih, format "Nama Dimensi: penjelasan singkat keterkaitannya dengan materi.", dipisah newline. Pilih 2-4 dimensi paling relevan dari 8 pilihan pada schema.
+- "rubrik1" dan "rubrik2": setiap baris = "Aspek | Indikator | Level4 | Level3 | Level2 | Level1", antar baris dipisah newline. rubrik1 tentang sikap, rubrik2 tentang produk/kinerja hasil belajar.
+- "sarana": setiap baris = "Nama Sarana/Media | Fungsinya", dipisah newline.
+- "cp" dan "tp" pada output adalah versi rapi dari CP/TP yang diberikan guru, tanpa mengubah makna aslinya.
+- Landasan Nilai Qur'ani/Hadits: pilih HANYA SATU sumber yang paling relevan dan paling kuat kaitannya dengan tema/materi TP — JANGAN mengisi keduanya sekaligus. Tentukan lewat field "sumberNilai" ("Quran" atau "Hadits").
+- Jika "sumberNilai" = "Quran": isi "quranArab" (teks Arab lengkap dengan harakat, satu ayat yang relevan) dan "quranTerjemah" WAJIB diisi dengan terjemahan Bahasa Indonesia yang akurat dan dikenal luas (gunakan terjemahan Kemenag atau setara), diapit tanda kutip — jangan pernah mengutip ayat tanpa artinya. Isi "quranRef" format "QS. [Nama Surah]: [nomor ayat]". Kosongkan "haditsArab", "haditsTerjemah", "haditsRef" (string kosong).
+- Jika "sumberNilai" = "Hadits": isi "haditsArab" (teks Arab satu hadits pendek yang relevan dan masyhur/shahih) dan "haditsTerjemah" WAJIB diisi dengan terjemahan Indonesianya — jangan pernah mengutip teks hadits tanpa artinya. Isi "haditsRef" (perawi, mis. "HR. Bukhari"). Kosongkan "quranArab", "quranTerjemah", "quranRef" (string kosong).
+- "quranKait": 1-2 kalimat yang menjelaskan keterkaitan makna ayat/hadits terpilih tersebut dengan materi pembelajaran yang diajarkan.
+- Jangan menyertakan markdown atau teks di luar JSON.`;
+
+async function callGemini(apiKey, model, cp, tp, kelas){
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const body = {
+    systemInstruction: { parts:[{ text: AI_SYSTEM_INSTRUCTION }] },
+    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas) }] }],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: geminiSchema(),
+      temperature: 0.6
+    }
+  };
+  const res = await fetch(url, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    let detail = "";
+    try{ const errJson = await res.json(); detail = errJson?.error?.message || ""; }catch(e){}
+    if(res.status === 400) throw new Error("API key tidak valid atau format permintaan salah. " + detail);
+    if(res.status === 403) throw new Error("API key ditolak (403). Periksa kembali key Anda di Google AI Studio. " + detail);
+    if(res.status === 404) throw new Error("Model tidak ditemukan. Coba ganti pilihan Model. " + detail);
+    if(res.status === 429) throw new Error("Kuota/rate limit Gemini API tercapai. Coba lagi beberapa saat lagi. " + detail);
+    throw new Error(`Gagal memanggil Gemini API (HTTP ${res.status}). ${detail}`);
+  }
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("") || "";
+  if(!text) throw new Error("Respons AI kosong. Coba klik generate lagi.");
+  return JSON.parse(text);
+}
+
+function applyAIResult(r){
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el && val!==undefined && val!==null) el.value = val; };
+
+  setVal('judul', r.judul); setVal('badge', r.badge); setVal('mapel', r.mapel);
+  setVal('jenjang', r.jenjang); setVal('fase', r.fase); setVal('elemenSingkat', r.elemenSingkat);
+  setVal('alokasi', r.alokasi); setVal('cp', r.cp); setVal('tp', r.tp); setVal('dpl', r.dpl);
+  setVal('prinsipMindful', r.prinsipMindful); setVal('prinsipMeaningful', r.prinsipMeaningful);
+  setVal('prinsipJoyful', r.prinsipJoyful); setVal('teknologiDigital', r.teknologiDigital);
+  setVal('praktik', r.praktik); setVal('kemitraan', r.kemitraan); setVal('lingkungan', r.lingkungan);
+  setVal('asAwal', r.asAwal); setVal('asFormatif', r.asFormatif); setVal('asSumatif', r.asSumatif);
+  setVal('rubrik1Judul', r.rubrik1Judul); setVal('rubrik1', r.rubrik1);
+  setVal('rubrik2Judul', r.rubrik2Judul); setVal('rubrik2', r.rubrik2);
+  setVal('skorMaks', r.skorMaks); setVal('kkm', r.kkm); setVal('sarana', r.sarana);
+  setVal('sudahKKM', r.sudahKKM); setVal('belumKKM', r.belumKKM);
+  if(r.catatan) setVal('catatan', r.catatan);
+  setVal('quranArab', r.quranArab || ''); setVal('quranTerjemah', r.quranTerjemah || ''); setVal('quranRef', r.quranRef || '');
+  setVal('haditsArab', r.haditsArab || ''); setVal('haditsTerjemah', r.haditsTerjemah || ''); setVal('haditsRef', r.haditsRef || '');
+  setVal('quranKait', r.quranKait);
+
+  if(Array.isArray(r.dimensiProfilLulusan)){
+    document.querySelectorAll('#dimGrid input[type=checkbox]').forEach(chk=>{
+      chk.checked = r.dimensiProfilLulusan.includes(chk.value);
+    });
+  }
+
+  if(Array.isArray(r.langkahPembelajaran) && r.langkahPembelajaran.length){
+    steps = r.langkahPembelajaran.map(s=>({
+      title: s.title||"Tahap", durasi: s.durasi||"", tahapPM: s.tahapPM||"Memahami", content: s.content||""
+    }));
+    renderStepsEditor();
+  }
+
+  renderPreview();
+}
+
+async function generateWithAI(){
+  const apiKey = document.getElementById('geminiApiKey').value.trim();
+  const model = document.getElementById('geminiModel').value;
+  const cp = document.getElementById('aiCP').value.trim();
+  const tp = document.getElementById('aiTP').value.trim();
+  const kelas = document.getElementById('aiKelas').value.trim();
+  const btn = document.getElementById('btnGenerateAI');
+  const label = document.getElementById('btnAILabel');
+
+  if(!apiKey){ aiStatus("⚠️ Masukkan API Key Gemini terlebih dahulu.", "error"); return; }
+  if(!cp || !tp || !kelas){ aiStatus("⚠️ CP, TP, dan Kelas wajib diisi.", "error"); return; }
+
+  try{
+    if(document.getElementById('saveKeyChk').checked){
+      localStorage.setItem('hdl_gemini_key', apiKey);
+      localStorage.setItem('hdl_gemini_model', model);
+    }else{
+      localStorage.removeItem('hdl_gemini_key');
+    }
+  }catch(e){ /* penyimpanan tidak tersedia di lingkungan ini — key tetap dipakai untuk sesi sekarang */ }
+
+  btn.disabled = true; btn.classList.add('loading');
+  label.textContent = "Sedang menyusun modul ajar...";
+  aiStatus("⏳ AI sedang menyusun seluruh komponen modul ajar, mohon tunggu (biasanya 10–30 detik)...", "info");
+
+  try{
+    const result = await callGemini(apiKey, model, cp, tp, kelas);
+    applyAIResult(result);
+    aiStatus("✅ Modul ajar berhasil disusun otomatis! AI turut memilihkan ayat/hadits beserta terjemahannya — mohon tetap diperiksa ulang keakuratannya sebelum dicetak.", "success");
+  }catch(err){
+    console.error(err);
+    aiStatus("❌ " + (err.message || "Terjadi kesalahan saat memanggil AI."), "error");
+  }finally{
+    btn.disabled = false; btn.classList.remove('loading');
+    label.textContent = "✨ Generate Otomatis dengan AI";
+  }
+}
+
+/* ---------- BIND ALL INPUTS ---------- */
+document.querySelectorAll('.editor input[type=text], .editor textarea').forEach(el=>{
+  el.addEventListener('input', renderPreview);
+});
+
+renderStepsEditor();
+renderDimGrid();
+updatePageStyle();
+renderPreview();
+</script>
+</body>
+</html>
