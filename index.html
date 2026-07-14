@@ -98,6 +98,11 @@
     color:var(--ink);
   }
   textarea{resize:vertical; min-height:56px; line-height:1.45;}
+  .field-error{
+    border-color:#c0392b !important;
+    background:#fdf1f0 !important;
+    box-shadow:0 0 0 2px rgba(192,57,43,0.15);
+  }
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .field{margin-bottom:2px;}
   .step-card{
@@ -451,13 +456,21 @@
     <div class="sub">Isi form di bawah — pratinjau otomatis diperbarui di kanan. Haris DevLab.</div>
 
     <details class="section ai-panel" open>
-      <summary>Generate Otomatis dengan AI (Gemini)</summary>
+      <summary>Generate Otomatis dengan AI</summary>
       <div class="body">
         <div class="ai-hint">
-          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, lalu klik tombol di bawah — AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. Butuh API key Gemini gratis dari <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. Key hanya dipakai langsung dari browser Anda ke Google, tidak melewati server manapun.
+          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, pilih provider AI, lalu masukkan API key Anda. AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. API key dikirim langsung dari browser Anda ke provider terkait tanpa melalui server perantara.
         </div>
         <div class="field">
-          <label>API Key Gemini</label>
+          <label>Provider AI</label>
+          <select id="aiProvider" onchange="onProviderChange()">
+            <option value="gemini">Google Gemini</option>
+            <option value="openai">OpenAI (ChatGPT)</option>
+            <option value="groq">Groq (Llama 3)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="apiKeyLabel">API Key Gemini</label>
           <div class="apikey-row">
             <input type="password" id="geminiApiKey" placeholder="AIzaSy...">
             <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
@@ -468,24 +481,23 @@
         </div>
         <div class="field">
           <label>Model</label>
-          <select id="geminiModel">
-            <option value="gemini-flash-latest">Gemini Flash (cepat &amp; hemat — direkomendasikan)</option>
-            <option value="gemini-pro-latest">Gemini Pro (lebih detail, lebih lambat)</option>
+          <select id="aiModel">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (cepat &amp; hemat — direkomendasikan)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (lebih detail, lebih lambat)</option>
+            <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (paling ringan/cepat)</option>
           </select>
         </div>
         <div class="field">
           <label>Capaian Pembelajaran (CP)</label>
-          <textarea id="aiCP" rows="5" placeholder="Tempel/ketik CP dari buku panduan kurikulum di sini...">Elemen: Berpikir Komputasional
- 
-Pada akhir Fase C, murid memahami permasalahan sederhana dalam kehidupan sehari-hari, menerapkan pemecahan masalah secara sistematis, serta menuliskan instruksi logis dan terstruktur menggunakan sekumpulan kosakata atau simbol.</textarea>
+          <textarea id="aiCP" rows="5" placeholder="Tempel/ketik CP dari buku panduan kurikulum di sini..."></textarea>
         </div>
         <div class="field">
           <label>Tujuan Pembelajaran (TP)</label>
-          <textarea id="aiTP" rows="4" placeholder="Tempel/ketik TP di sini...">Murid mampu memahami permasalahan sederhana dalam suatu aktivitas sehari-hari, menerapkan pemecahan masalah tersebut secara sistematis, serta menuliskan/menyusun instruksi (algoritma) yang logis dan terstruktur menggunakan simbol Mulai - Proses - Keputusan - Selesai.</textarea>
+          <textarea id="aiTP" rows="4" placeholder="Tempel/ketik TP di sini..."></textarea>
         </div>
         <div class="field">
           <label>Kelas</label>
-          <input type="text" id="aiKelas" placeholder="Contoh: Kelas 5" value="Kelas 5">
+          <input type="text" id="aiKelas" placeholder="Contoh: Kelas 5" value="">
         </div>
         <button type="button" class="btn-ai" id="btnGenerateAI" onclick="generateWithAI()">
           <span class="spinner"></span><span id="btnAILabel">Generate Otomatis dengan AI</span>
@@ -493,7 +505,7 @@ Pada akhir Fase C, murid memahami permasalahan sederhana dalam kehidupan sehari-
         <div class="ai-status" id="aiStatus"></div>
       </div>
     </details>
-
+ 
     <details class="section" open>
       <summary>A. Identitas Modul</summary>
       <div class="body">
@@ -528,24 +540,21 @@ Pada akhir Fase C, murid memahami permasalahan sederhana dalam kehidupan sehari-
         </div>
       </div>
     </details>
-
+ 
     <details class="section">
       <summary>B. Identifikasi</summary>
       <div class="body">
         <div class="field">
           <label>Elemen &amp; Capaian Pembelajaran (CP)</label>
-          <textarea id="cp" rows="5">Elemen: Berpikir Komputasional
-
-Pada akhir Fase C, murid memahami permasalahan sederhana dalam kehidupan sehari-hari, menerapkan pemecahan masalah secara sistematis, serta menuliskan instruksi logis dan terstruktur menggunakan sekumpulan kosakata atau simbol.</textarea>
+          <textarea id="cp" rows="5" placeholder="Contoh: Elemen: Berpikir Komputasional. Pada akhir Fase C, murid memahami..."></textarea>
         </div>
         <div class="field">
           <label>Dimensi Profil Lulusan (DPL) — 1 baris = 1 poin</label>
-          <textarea id="dpl" rows="4">Bernalar Kritis: Menganalisis urutan langkah suatu aktivitas sehari-hari secara logis dan sistematis.
-Kreatif: Menyusun algoritma (urutan langkah) untuk menyelesaikan persoalan sederhana sehari-hari.</textarea>
+          <textarea id="dpl" rows="4" placeholder="Contoh: Bernalar Kritis: Menganalisis urutan langkah..."></textarea>
         </div>
         <div class="field">
           <label>Tujuan Pembelajaran</label>
-          <textarea id="tp" rows="5">Murid mampu memahami permasalahan sederhana dalam suatu aktivitas sehari-hari, menerapkan pemecahan masalah tersebut secara sistematis, serta menuliskan/menyusun instruksi (algoritma) yang logis dan terstruktur menggunakan simbol Mulai - Proses - Keputusan - Selesai.</textarea>
+          <textarea id="tp" rows="5" placeholder="Contoh: Murid mampu memahami permasalahan..."></textarea>
         </div>
       </div>
     </details>
@@ -560,43 +569,43 @@ Kreatif: Menyusun algoritma (urutan langkah) untuk menyelesaikan persoalan seder
         </div>
         <div class="field">
           <label>Berkesadaran (Mindful)</label>
-          <textarea id="prinsipMindful" rows="2">Peserta didik menyadari tujuan belajarnya sejak awal melalui apersepsi, dan secara aktif mengatur strategi belajarnya sendiri saat menyusun algoritma.</textarea>
+          <textarea id="prinsipMindful" rows="2" placeholder="Contoh: Peserta didik menyadari tujuan belajarnya sejak awal..."></textarea>
         </div>
         <div class="field">
           <label>Bermakna (Meaningful)</label>
-          <textarea id="prinsipMeaningful" rows="2">Materi algoritma dikaitkan langsung dengan aktivitas nyata sehari-hari murid (bekal sekolah, tempat tidur, menyeberang jalan) sehingga pengetahuan mudah diterapkan dalam konteks kehidupan.</textarea>
+          <textarea id="prinsipMeaningful" rows="2" placeholder="Contoh: Materi dikaitkan dengan aktivitas nyata sehari-hari..."></textarea>
         </div>
         <div class="field">
           <label>Menggembirakan (Joyful)</label>
-          <textarea id="prinsipJoyful" rows="2">Pembelajaran dikemas melalui permainan peran "menjadi robot" dan kerja kelompok yang menyenangkan sehingga murid antusias dan bebas dari tekanan.</textarea>
+          <textarea id="prinsipJoyful" rows="2" placeholder="Contoh: Pembelajaran dikemas melalui permainan peran kelompok..."></textarea>
         </div>
         <div class="field">
           <label>Pemanfaatan Teknologi Digital</label>
-          <textarea id="teknologiDigital" rows="2">Penggunaan proyektor/LCD untuk menayangkan contoh algoritma, serta gambar/video pendukung sebagai model konkret sebelum praktik unplugged.</textarea>
+          <textarea id="teknologiDigital" rows="2" placeholder="Contoh: Penggunaan proyektor/LCD untuk menayangkan contoh..."></textarea>
         </div>
       </div>
     </details>
-
+ 
     <details class="section">
       <summary>Landasan Nilai Qur'ani &amp; Hadits</summary>
       <div class="body">
         <div class="hint">Sesuaikan ayat/hadits dengan tema materi (mis. tentang berpikir sistematis, ketelitian, atau adab belajar).</div>
         <div class="field"><label>Ayat Al-Qur'an (teks Arab)</label>
-          <textarea id="quranArab" rows="2">وَقُل رَّبِّ زِدْنِي عِلْمًا</textarea>
+          <textarea id="quranArab" rows="2" placeholder="Teks Arab ayat Al-Qur'an..."></textarea>
         </div>
         <div class="row2">
-          <div class="field"><label>Terjemahan</label><input type="text" id="quranTerjemah" value="\"Dan katakanlah: Ya Tuhanku, tambahkanlah kepadaku ilmu pengetahuan.\""></div>
-          <div class="field"><label>Referensi</label><input type="text" id="quranRef" value="QS. Thaha: 114"></div>
+          <div class="field"><label>Terjemahan</label><input type="text" id="quranTerjemah" value="" placeholder="Terjemahan ayat..."></div>
+          <div class="field"><label>Referensi</label><input type="text" id="quranRef" value="" placeholder="QS. [Nama Surah]: [Nomor Ayat]"></div>
         </div>
         <div class="field"><label>Hadits (teks Arab, opsional)</label>
-          <textarea id="haditsArab" rows="2">مَنْ سَلَكَ طَرِيقًا يَطْلُبُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ</textarea>
+          <textarea id="haditsArab" rows="2" placeholder="Teks Arab hadits..."></textarea>
         </div>
         <div class="row2">
-          <div class="field"><label>Terjemahan Hadits</label><input type="text" id="haditsTerjemah" value="\"Barangsiapa menempuh jalan untuk menuntut ilmu, Allah akan mudahkan baginya jalan menuju surga.\""></div>
-          <div class="field"><label>Perawi</label><input type="text" id="haditsRef" value="HR. Muslim"></div>
+          <div class="field"><label>Terjemahan Hadits</label><input type="text" id="haditsTerjemah" value="" placeholder="Terjemahan hadits..."></div>
+          <div class="field"><label>Perawi</label><input type="text" id="haditsRef" value="" placeholder="HR. [Perawi]"></div>
         </div>
         <div class="field"><label>Keterkaitan dengan Materi</label>
-          <textarea id="quranKait" rows="2">Menyusun algoritma melatih murid berpikir runtut dan bersungguh-sungguh dalam mencari pemahaman (ilmu) sebagaimana dianjurkan dalam Islam untuk senantiasa menambah ilmu dan menempuhnya dengan sabar dan tertib.</textarea>
+          <textarea id="quranKait" rows="2" placeholder="Jelaskan keterkaitan makna ayat/hadits dengan materi pembelajaran..."></textarea>
         </div>
       </div>
     </details>
@@ -606,21 +615,19 @@ Kreatif: Menyusun algoritma (urutan langkah) untuk menyelesaikan persoalan seder
       <div class="body">
         <div class="field">
           <label>Praktik Pedagogis</label>
-          <textarea id="praktik" rows="2">Metode: Diskusi Kelompok, Permainan Peran (Unplugged), Praktik Menyusun Diagram Alur, Presentasi, Refleksi</textarea>
+          <textarea id="praktik" rows="2" placeholder="Contoh: Metode: Diskusi Kelompok, Permainan Peran (Unplugged), dll."></textarea>
         </div>
         <div class="field">
           <label>Kemitraan Belajar</label>
-          <textarea id="kemitraan" rows="2">Guru, teman sekelompok, dan orang tua/anggota keluarga di rumah (sebagai sumber inspirasi aktivitas sehari-hari).</textarea>
+          <textarea id="kemitraan" rows="2" placeholder="Contoh: Guru, teman sekelompok, dan orang tua..."></textarea>
         </div>
         <div class="field">
           <label>Lingkungan Pembelajaran — 1 baris = 1 poin</label>
-          <textarea id="lingkungan" rows="3">Ruang kelas yang ditata untuk diskusi kelompok kecil.
-Kartu bergambar simbol algoritma (Mulai - Proses - Keputusan - Selesai).
-Lembar Kerja (LK) penyusunan algoritma.</textarea>
+          <textarea id="lingkungan" rows="3" placeholder="Contoh: Ruang kelas yang ditata untuk diskusi kelompok kecil..."></textarea>
         </div>
       </div>
     </details>
-
+ 
     <details class="section" open>
       <summary>D. Langkah Pembelajaran</summary>
       <div class="body">
@@ -629,14 +636,13 @@ Lembar Kerja (LK) penyusunan algoritma.</textarea>
         <button class="btn-add" onclick="addStep()">+ Tambah Tahap</button>
       </div>
     </details>
-
+ 
     <details class="section">
       <summary>E. Asesmen Pembelajaran</summary>
       <div class="body">
-        <div class="field"><label>Asesmen Awal</label><textarea id="asAwal" rows="2">Guru menayangkan dua rangkaian gambar aktivitas (satu tersusun logis, satu tersusun acak). Murid diminta menentukan urutan yang benar dan menjelaskan alasannya.</textarea></div>
-        <div class="field"><label>Asesmen Formatif</label><textarea id="asFormatif" rows="2">Observasi guru selama kegiatan diskusi dan penyusunan algoritma (Bernalar Kritis, Kreatif).
-Catatan anekdot untuk mencatat kemajuan individu.</textarea></div>
-        <div class="field"><label>Asesmen Sumatif</label><textarea id="asSumatif" rows="1">Rubrik Penilaian Diagram Algoritma Aktivitas Sehari-hari</textarea></div>
+        <div class="field"><label>Asesmen Awal</label><textarea id="asAwal" rows="2" placeholder="Contoh: Pertanyaan pemantik dan tes diagnostik kognitif singkat..."></textarea></div>
+        <div class="field"><label>Asesmen Formatif</label><textarea id="asFormatif" rows="2" placeholder="Contoh: Observasi guru selama diskusi kelompok dan penyusunan diagram..."></textarea></div>
+        <div class="field"><label>Asesmen Sumatif</label><textarea id="asSumatif" rows="1" placeholder="Contoh: Penilaian rubrik diagram alur..."></textarea></div>
       </div>
     </details>
 
@@ -646,19 +652,17 @@ Catatan anekdot untuk mencatat kemajuan individu.</textarea></div>
         <div class="hint">Format 1 baris per aspek: <code>Aspek | Indikator | Level 4 | Level 3 | Level 2 | Level 1</code>. Kosongkan textarea untuk menyembunyikan tabel.</div>
         <div class="field">
           <label>Judul Tabel Rubrik 1</label>
-          <input type="text" id="rubrik1Judul" value="RUBRIK PENILAIAN SIKAP (OBSERVASI)">
+          <input type="text" id="rubrik1Judul" value="" placeholder="Contoh: RUBRIK PENILAIAN SIKAP">
         </div>
         <div class="field">
-          <textarea id="rubrik1" rows="4">Bernalar Kritis | Menganalisis urutan langkah aktivitas secara logis dan sistematis. | Menyusun seluruh urutan langkah secara logis, lengkap, dan sistematis tanpa bimbingan. | Menyusun sebagian besar langkah secara logis, masih terdapat sedikit kekurangan namun tidak memengaruhi hasil. | Menyusun sebagian langkah, namun urutan masih kurang tepat sehingga memerlukan arahan guru. | Kesulitan menyusun urutan langkah, hasil tidak logis dan sangat bergantung pada bimbingan guru.
-Kreatif | Menyusun algoritma untuk menyelesaikan persoalan sederhana sehari-hari. | Menyusun algoritma secara mandiri, runtut, menggunakan ide sendiri, serta menambahkan variasi dengan baik. | Menyusun algoritma berdasarkan ide sendiri dengan cukup runtut, meskipun pengembangan ide masih terbatas. | Menyusun algoritma dengan bantuan guru atau teman, pengembangan ide masih kurang sesuai aktivitas. | Belum mampu menyusun algoritma berdasarkan aktivitas yang dipilih dan memerlukan bimbingan intensif.</textarea>
+          <textarea id="rubrik1" rows="4" placeholder="Aspek | Indikator | Level 4 | Level 3 | Level 2 | Level 1"></textarea>
         </div>
         <div class="field">
           <label>Judul Tabel Rubrik 2</label>
-          <input type="text" id="rubrik2Judul" value="RUBRIK PENILAIAN DIAGRAM ALGORITMA AKTIVITAS SEHARI-HARI">
+          <input type="text" id="rubrik2Judul" value="" placeholder="Contoh: RUBRIK PENILAIAN DIAGRAM ALGORITMA">
         </div>
         <div class="field">
-          <textarea id="rubrik2" rows="3">Ketepatan Urutan Langkah |  | Seluruh langkah tersusun logis dan berurutan tanpa kesalahan. | Hampir seluruh langkah berurutan, ada 1-2 langkah kurang tepat. | Sebagian langkah berurutan, masih ada beberapa kesalahan. | Urutan langkah belum logis/acak.
-Kesesuaian dengan Aktivitas Nyata |  | Sangat sesuai dan detail berdasarkan aktivitas nyata sehari-hari. | Sesuai, tetapi kurang detail. | Kurang sesuai dengan aktivitas yang dipilih. | Tidak sesuai dengan aktivitas yang dipilih.</textarea>
+          <textarea id="rubrik2" rows="3" placeholder="Kriteria | Sangat Baik (4) | Baik (3) | Cukup (2) | Perlu Bimbingan (1)"></textarea>
         </div>
         <div class="row2">
           <div class="field"><label>Skor Maksimal</label><input type="text" id="skorMaks" value="16"></div>
@@ -674,23 +678,20 @@ Kesesuaian dengan Aktivitas Nyata |  | Sangat sesuai dan detail berdasarkan akti
         </div>
       </div>
     </details>
-
+ 
     <details class="section">
       <summary>Sarana / Media &amp; Tindak Lanjut</summary>
       <div class="body">
         <div class="field">
           <label>Sarana / Media — format: <code>Nama | Fungsi</code></label>
-          <textarea id="sarana" rows="4">Kartu simbol algoritma (Mulai-Proses-Keputusan-Selesai) | Alat bantu menyusun diagram alur secara unplugged.
-Lembar Kerja (LK) identifikasi aktivitas | Panduan mencatat langkah-langkah aktivitas sehari-hari.
-Laptop dan proyektor LCD | Menayangkan contoh dan hasil kerja kelompok.
-Lembar refleksi murid | Menuliskan kesulitan dan kesenangan selama belajar.</textarea>
+          <textarea id="sarana" rows="4" placeholder="Nama Sarana/Media | Fungsinya"></textarea>
         </div>
-        <div class="field"><label>Peserta didik yang sudah mencapai KKTP</label><textarea id="sudahKKM" rows="2">Diberi tantangan menyusun algoritma untuk aktivitas yang lebih kompleks dan mengandung percabangan.</textarea></div>
-        <div class="field"><label>Peserta didik yang belum mencapai KKTP</label><textarea id="belumKKM" rows="2">Diberi pendampingan tambahan dengan aktivitas yang lebih sederhana dan kartu simbol bergambar sebagai bantuan visual.</textarea></div>
-        <div class="field"><label>Catatan (opsional)</label><textarea id="catatan" rows="3"></textarea></div>
+        <div class="field"><label>Peserta didik yang sudah mencapai KKTP</label><textarea id="sudahKKM" rows="2" placeholder="Tindak lanjut jika siswa sudah mencapai KKTP..."></textarea></div>
+        <div class="field"><label>Peserta didik yang belum mencapai KKTP</label><textarea id="belumKKM" rows="2" placeholder="Tindak lanjut jika siswa belum mencapai KKTP..."></textarea></div>
+        <div class="field"><label>Catatan (opsional)</label><textarea id="catatan" rows="3" placeholder="Tulis catatan atau catatan reflektif guru di sini..."></textarea></div>
       </div>
     </details>
-
+ 
     <details class="section">
       <summary>Tanda Tangan</summary>
       <div class="body">
@@ -750,33 +751,7 @@ Lembar refleksi murid | Menuliskan kesulitan dan kesenangan selama belajar.</tex
 <style id="pageSizeStyle"></style>
 
 <script>
-let steps = [
-  {title:"Pendahuluan : Orientasi", durasi:"10 menit", tahapPM:"Memahami", content:
-`Guru menyapa murid, menanyakan kabar, dan mengecek kesiapan belajar.
-Guru mengajak salah satu murid untuk memimpin doa sebelum memulai pembelajaran.
-Guru menyampaikan tujuan dan manfaat pembelajaran hari ini.
-Apersepsi: "Apa yang kalian lakukan pertama kali setelah bangun tidur di pagi hari? Coba sebutkan urutannya!"
-Guru melaksanakan asesmen awal.`},
-  {title:"Inti 1 : Mengenal Algoritma", durasi:"15 menit", tahapPM:"Memahami", content:
-`Guru menjelaskan bahwa algoritma adalah cara memahami suatu permasalahan sederhana lalu menyelesaikannya secara sistematis melalui instruksi yang logis dan terstruktur.
-Guru menunjukkan contoh algoritma dalam aktivitas sehari-hari (contoh: langkah membuat mi instan, langkah menggosok gigi).
-Murid diberi kesempatan bertanya tentang hal-hal yang belum dipahami terkait algoritma.
-Murid dibagi menjadi kelompok kecil (4-5 orang).`},
-  {title:"Inti 2 : Identifikasi Aktivitas", durasi:"10 menit", tahapPM:"Memahami", content:
-`Setiap kelompok memilih satu aktivitas sehari-hari (contoh: menyiapkan bekal sekolah, merapikan tempat tidur, menyeberang jalan).
-Murid mencatat langkah-langkah aktivitas tersebut secara berurutan pada Lembar Kerja.`},
-  {title:"Inti 3 : Menyusun Algoritma", durasi:"20 menit", tahapPM:"Mengaplikasi", content:
-`Murid menyusun langkah-langkah yang telah dicatat menjadi diagram alur sederhana menggunakan kartu simbol (Mulai - Proses - Keputusan - Selesai).
-Guru berkeliling memberi bimbingan individual (diferensiasi: kartu bergambar untuk murid yang membutuhkan dukungan visual; tantangan menambahkan langkah keputusan/percabangan untuk murid yang sudah lancar).`},
-  {title:"Inti 4 : Uji Coba & Peer Review", durasi:"10 menit", tahapPM:"Merefleksi", content:
-`Kelompok saling menukar diagram algoritma dan mencoba menjalankan instruksi kelompok lain persis seperti tertulis ("berperan sebagai robot") untuk menguji apakah urutannya sudah logis.
-Murid memberi dan menerima masukan bila ditemukan langkah yang kurang tepat, kurang lengkap, atau tidak berurutan.
-Murid memperbaiki algoritmanya berdasarkan masukan tersebut.`},
-  {title:"Penutup : Refleksi", durasi:"5 menit", tahapPM:"Merefleksi", content:
-`Murid menuliskan bagian tersulit dan paling menyenangkan saat menyusun algoritma.
-Guru menyimpulkan dan memberikan penguatan tentang pentingnya berpikir runtut (algoritma) dalam kehidupan sehari-hari.
-Guru menutup pembelajaran dengan doa.`}
-];
+let steps = [];
 let logoDataUrl = "";
 const DEFAULT_LOGO_SRC = "img/logo.png";
 const BANNER_SRC = "img/banner.png";
@@ -801,7 +776,7 @@ const dimensiColors = {
   "Kesehatan": "#c53030",
   "Komunikasi": "#319795"
 };
-const dimensiDefaultChecked = ["Penalaran Kritis", "Kreativitas", "Kemandirian"];
+const dimensiDefaultChecked = [];
 function renderDimGrid(){
   const el = document.getElementById('dimGrid');
   el.innerHTML = dimensiPM.map((d,i)=>`
@@ -839,7 +814,15 @@ function nlToBr(text){
   return esc(text||"").split("\n").map(s=>s.trim()).filter(Boolean).join("<br>");
 }
 function pipeRows(text){
-  return (text||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>l.split("|").map(c=>c.trim()));
+  const rawRows = (text||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>l.split("|").map(c=>c.trim()));
+  return rawRows.filter(r => {
+    if (!r[0]) return true;
+    const low = r[0].toLowerCase();
+    if (low === 'aspek' || low === 'kriteria' || low === 'aspek sikap' || low === 'no' || low === 'kriteria penilaian') {
+      return false;
+    }
+    return true;
+  });
 }
 function secRow(label, text){
   return `<tr><td colspan="2" style="padding:0;"><div class="sec-flex"><span class="sec-badge">${esc(label)}</span><span class="sec-text">${esc(text)}</span></div></td></tr>`;
@@ -903,8 +886,10 @@ function renderPreview(){
   const predikatRows = pipeRows(v('predikatSkala'));
   const skorMaksNum = parseFloat(v('skorMaks'));
   const kkmNum = parseFloat(v('kkm'));
-  const kkmNilai100 = (isFinite(skorMaksNum) && skorMaksNum > 0 && isFinite(kkmNum))
-    ? Math.round((kkmNum / skorMaksNum) * 100) : null;
+  const isDirectPercentage = isFinite(kkmNum) && isFinite(skorMaksNum) && kkmNum > skorMaksNum;
+  const kkmNilai100 = isDirectPercentage 
+    ? kkmNum 
+    : ((isFinite(skorMaksNum) && skorMaksNum > 0 && isFinite(kkmNum)) ? Math.round((kkmNum / skorMaksNum) * 100) : null);
   const kkmPredikat = (kkmNilai100 !== null)
     ? (predikatRows.find(r => kkmNilai100 >= parseFloat(r[0]) && kkmNilai100 <= parseFloat(r[1]))?.[2] || "")
     : "";
@@ -912,7 +897,7 @@ function renderPreview(){
     <div class="sec-title">${esc(v('rubrik1Judul'))}</div>
     <div class="rubric-student-line"><span>Nama Siswa: <span class="fill"></span></span><span>Kelas: <span class="fill short"></span></span></div>
     <table class="rubric-table">
-      <tr><th style="width:14%">Aspek Sikap</th><th style="width:24%">Indikator</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+      <tr><th style="width:14%">Aspek Sikap</th><th style="width:24%">Indikator</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>
       ${rubrik1Rows.map(r=>`<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[1]||"")}</td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`).join("")}
     </table>` : "";
 
@@ -922,8 +907,9 @@ function renderPreview(){
     <table class="rubric-table">
       <tr><th style="width:18%">Kriteria</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>
       ${rubrik2Rows.map(r=>`<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`).join("")}
-    </table>
-    
+    </table>` : "";
+
+  const kkmContainerHTML = `
     <div class="kkm-container">
       <div class="kkm-header">
         <span>KONVERSI NILAI &amp; KRITERIA KETERCAPAIAN TUJUAN PEMBELAJARAN (KKTP)</span>
@@ -966,23 +952,31 @@ function renderPreview(){
           </div>
           
           <div>
-            <div class="formula-box formula-teal">
-              <span class="formula-label">Nilai KKTP =</span>
-              <div class="formula-fraction">
-                <span class="formula-numerator" style="border-bottom-color:var(--teal-dark);">KKTP Skor (${esc(v('kkm'))})</span>
-                <span class="formula-denominator" style="color:var(--teal-dark); opacity:0.8;">Skor Maksimal (${esc(v('skorMaks'))})</span>
+            ${isDirectPercentage ? `
+              <div class="formula-box formula-teal">
+                <span class="formula-label">Nilai KKTP =</span>
+                <span style="font-weight:600; font-size:9px; padding:0 3px;">Target Nilai langsung =</span>
+                <span style="font-weight:800; font-size:11px; padding:0 2px;">${kkmNilai100 !== null ? kkmNilai100 : "-"}</span>
+                <span style="font-size:8.5px; font-style:italic;">(${kkmPredikat ? esc(kkmPredikat) : ""})</span>
               </div>
-              <span style="font-weight:600;">&times; 100 =</span>
-              <span style="font-weight:800; font-size:11px; padding:0 2px;">${kkmNilai100 !== null ? kkmNilai100 : "-"}</span>
-              <span style="font-size:8.5px; font-style:italic;">(${kkmPredikat ? esc(kkmPredikat) : ""})</span>
-            </div>
+            ` : `
+              <div class="formula-box formula-teal">
+                <span class="formula-label">Nilai KKTP =</span>
+                <div class="formula-fraction">
+                  <span class="formula-numerator" style="border-bottom-color:var(--teal-dark);">KKTP Skor (${esc(v('kkm'))})</span>
+                  <span class="formula-denominator" style="color:var(--teal-dark); opacity:0.8;">Skor Maksimal (${esc(v('skorMaks'))})</span>
+                </div>
+                <span style="font-weight:600;">&times; 100 =</span>
+                <span style="font-weight:800; font-size:11px; padding:0 2px;">${kkmNilai100 !== null ? kkmNilai100 : "-"}</span>
+                <span style="font-size:8.5px; font-style:italic;">(${kkmPredikat ? esc(kkmPredikat) : ""})</span>
+              </div>
+            `}
           </div>
           
         </div>
         
       </div>
-    </div>
-    ` : "";
+    </div>`;
 
   const saranaHTML = saranaRows.length ? `
     <table class="mtab">
@@ -1081,6 +1075,7 @@ function renderPreview(){
 
     ${rubrik1HTML}
     ${rubrik2HTML}
+    ${kkmContainerHTML}
 
     <table class="mtab">
       ${secRow("F.", "RENCANA TINDAK LANJUT")}
@@ -1202,13 +1197,72 @@ window.addEventListener('resize', () => {
 });
 
 /* ---------- AI GENERATOR (GEMINI) ---------- */
+const modelsByProvider = {
+  gemini: [
+    { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (cepat & hemat — direkomendasikan)" },
+    { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (lebih detail, lebih lambat)" },
+    { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite (paling ringan/cepat)" }
+  ],
+  openai: [
+    { value: "gpt-4o-mini", label: "GPT-4o Mini (sangat cepat & akurat — direkomendasikan)" },
+    { value: "gpt-4o", label: "GPT-4o (sangat cerdas & detail)" }
+  ],
+  groq: [
+    { value: "llama-3.3-70b-specdec", label: "Llama 3.3 70B (super cepat & cerdas — direkomendasikan)" },
+    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (cepat & efisien)" }
+  ]
+};
+
+function onProviderChange() {
+  const provider = document.getElementById('aiProvider').value;
+  const labelEl = document.getElementById('apiKeyLabel');
+  const inputEl = document.getElementById('geminiApiKey');
+  const modelEl = document.getElementById('aiModel');
+  if(!labelEl || !inputEl || !modelEl) return;
+
+  if (provider === 'gemini') {
+    labelEl.textContent = 'API Key Gemini';
+    inputEl.placeholder = 'AIzaSy...';
+  } else if (provider === 'openai') {
+    labelEl.textContent = 'API Key OpenAI';
+    inputEl.placeholder = 'sk-...';
+  } else if (provider === 'groq') {
+    labelEl.textContent = 'API Key Groq';
+    inputEl.placeholder = 'gsk_...';
+  }
+
+  try {
+    const savedKey = localStorage.getItem(`hdl_${provider}_key`);
+    inputEl.value = savedKey || '';
+  } catch(e) {
+    inputEl.value = '';
+  }
+
+  modelEl.innerHTML = modelsByProvider[provider].map(m => `
+    <option value="${m.value}">${m.label}</option>
+  `).join('');
+
+  try {
+    const savedModel = localStorage.getItem(`hdl_${provider}_model`);
+    if (savedModel && modelsByProvider[provider].some(m => m.value === savedModel)) {
+      modelEl.value = savedModel;
+    }
+  } catch(e) {}
+}
+
 (function initApiKey(){
   try{
-    const saved = localStorage.getItem('hdl_gemini_key');
-    const savedModel = localStorage.getItem('hdl_gemini_model');
-    if(saved){ document.getElementById('geminiApiKey').value = saved; document.getElementById('saveKeyChk').checked = true; }
-    if(savedModel){ document.getElementById('geminiModel').value = savedModel; }
-  }catch(e){ /* localStorage tidak tersedia di lingkungan ini, key hanya berlaku selama sesi ini */ }
+    const savedProvider = localStorage.getItem('hdl_ai_provider') || 'gemini';
+    const providerEl = document.getElementById('aiProvider');
+    if(providerEl) { providerEl.value = savedProvider; }
+    
+    onProviderChange();
+    
+    const savedChk = localStorage.getItem('hdl_save_key_checked');
+    if(savedChk === 'true') {
+      document.getElementById('saveKeyChk').checked = true;
+    }
+  }catch(e){ /* localStorage tidak tersedia */ }
 })();
 
 function toggleKeyVisibility(){
@@ -1264,20 +1318,26 @@ function geminiSchema(){
     required:["judul","badge","mapel","jenjang","fase","elemenSingkat","alokasi","cp","tp","dpl",
       "dimensiProfilLulusan","prinsipMindful","prinsipMeaningful","prinsipJoyful","teknologiDigital",
       "praktik","kemitraan","lingkungan","langkahPembelajaran","asAwal","asFormatif","asSumatif",
-      "rubrik1Judul","rubrik1","rubrik2Judul","rubrik2","skorMaks","kkm","sarana","sudahKKM","belumKKM",
+      "rubrik1Judul","rubrik1","rubrik2Judul","rubrik2","skorMaks","kkm","sarana","sudahKKM","belumKKM","catatan",
       "sumberNilai","quranKait"]
   };
 }
 
 function buildAIPrompt(cp, tp, kelas){
+  const mapelTetap = document.getElementById('mapel') ? document.getElementById('mapel').value.trim() : "";
+  const jenjangTetap = document.getElementById('jenjang') ? document.getElementById('jenjang').value.trim() : "";
   return `Susun seluruh komponen Modul Ajar berikut berdasarkan data dari guru:
 
+MATA PELAJARAN (tetap, jangan diubah, gunakan persis ini): ${mapelTetap}
+JENJANG SEKOLAH (tetap, jangan diubah, gunakan persis ini): ${jenjangTetap}
 KELAS: ${kelas}
 CAPAIAN PEMBELAJARAN (CP):
 ${cp}
 
 TUJUAN PEMBELAJARAN (TP):
 ${tp}
+
+Field "mapel" dan "jenjang" pada JSON output WAJIB diisi persis sama dengan nilai tetap di atas (tidak boleh diubah/ditebak sendiri).
 
 Ikuti seluruh aturan pada instruksi sistem. Kembalikan hanya JSON sesuai schema yang diberikan.`;
 }
@@ -1298,6 +1358,7 @@ Aturan wajib:
 - "rubrik1" dan "rubrik2": setiap baris = "Aspek | Indikator | Level4 | Level3 | Level2 | Level1", antar baris dipisah newline. rubrik1 tentang sikap, rubrik2 tentang produk/kinerja hasil belajar.
 - "sarana": setiap baris = "Nama Sarana/Media | Fungsinya", dipisah newline.
 - "cp" dan "tp" pada output adalah versi rapi dari CP/TP yang diberikan guru, tanpa mengubah makna aslinya.
+- "catatan": WAJIB selalu diisi (jangan kosong), berupa 1-2 kalimat catatan reflektif guru yang merangkum esensi/penekanan pedagogis modul ini (mis. penekanan konseptual, urutan belajar, atau pesan penting bagi murid), gaya bahasa naratif profesional.
 - Landasan Nilai Qur'ani/Hadits: pilih HANYA SATU sumber yang paling relevan dan paling kuat kaitannya dengan tema/materi TP — JANGAN mengisi keduanya sekaligus. Tentukan lewat field "sumberNilai" ("Quran" atau "Hadits").
 - Jika "sumberNilai" = "Quran": isi "quranArab" (teks Arab lengkap dengan harakat, satu ayat yang relevan) dan "quranTerjemah" WAJIB diisi dengan terjemahan Bahasa Indonesia yang akurat dan dikenal luas (gunakan terjemahan Kemenag atau setara), diapit tanda kutip — jangan pernah mengutip ayat tanpa artinya. Isi "quranRef" format "QS. [Nama Surah]: [nomor ayat]". Kosongkan "haditsArab", "haditsTerjemah", "haditsRef" (string kosong).
 - Jika "sumberNilai" = "Hadits": isi "haditsArab" (teks Arab satu hadits pendek yang relevan dan masyhur/shahih) dan "haditsTerjemah" WAJIB diisi dengan terjemahan Indonesianya — jangan pernah mengutip teks hadits tanpa artinya. Isi "haditsRef" (perawi, mis. "HR. Bukhari"). Kosongkan "quranArab", "quranTerjemah", "quranRef" (string kosong).
@@ -1305,7 +1366,44 @@ Aturan wajib:
 - JANGAN PERNAH menggunakan emoji atau simbol dekoratif sejenis di bagian mana pun dalam modul ajar.
 - Jangan menyertakan markdown atau teks di luar JSON.`;
 
-async function callGemini(apiKey, model, cp, tp, kelas){
+async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas) {
+  const body = {
+    model: model,
+    messages: [
+      { role: "system", content: systemInstruction },
+      { role: "user", content: buildAIPrompt(cp, tp, kelas) }
+    ],
+    response_format: { type: "json_object" },
+    temperature: 0.3
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    let detail = "";
+    try {
+      const errJson = await res.json();
+      detail = errJson?.error?.message || "";
+    } catch(e) {}
+    throw new Error(`API Error (HTTP ${res.status}): ${detail}`);
+  }
+
+  const data = await res.json();
+  const text = data?.choices?.[0]?.message?.content || "";
+  if (!text) throw new Error("Respons AI kosong. Coba klik generate lagi.");
+  return JSON.parse(text);
+}
+
+function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+
+async function callGemini(apiKey, model, cp, tp, kelas, onRetry){
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const body = {
     systemInstruction: { parts:[{ text: AI_SYSTEM_INSTRUCTION }] },
@@ -1316,31 +1414,60 @@ async function callGemini(apiKey, model, cp, tp, kelas){
       temperature: 0.6
     }
   };
-  const res = await fetch(url, {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify(body)
-  });
-  if(!res.ok){
+
+  const maxAttempts = 4;
+  const delays = [2000, 4000, 8000]; // jeda antar percobaan (ms)
+
+  for(let attempt = 1; attempt <= maxAttempts; attempt++){
+    let res;
+    try{
+      res = await fetch(url, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(body)
+      });
+    }catch(networkErr){
+      // Kegagalan jaringan (mis. koneksi terputus) juga layak di-retry
+      if(attempt < maxAttempts){
+        if(onRetry) onRetry(attempt, maxAttempts, "Koneksi bermasalah");
+        await sleep(delays[attempt-1]);
+        continue;
+      }
+      throw new Error("Gagal terhubung ke server Gemini. Periksa koneksi internet Anda.");
+    }
+
+    if(res.ok){
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("") || "";
+      if(!text) throw new Error("Respons AI kosong. Coba klik generate lagi.");
+      return JSON.parse(text);
+    }
+
     let detail = "";
     try{ const errJson = await res.json(); detail = errJson?.error?.message || ""; }catch(e){}
+
+    const isRetryable = (res.status === 503 || res.status === 429 || res.status >= 500);
+    if(isRetryable && attempt < maxAttempts){
+      const label = res.status === 503 ? "Model sedang padat (503)" : res.status === 429 ? "Rate limit (429)" : `Error server (${res.status})`;
+      if(onRetry) onRetry(attempt, maxAttempts, label);
+      await sleep(delays[attempt-1]);
+      continue;
+    }
+
     if(res.status === 400) throw new Error("API key tidak valid atau format permintaan salah. " + detail);
     if(res.status === 403) throw new Error("API key ditolak (403). Periksa kembali key Anda di Google AI Studio. " + detail);
     if(res.status === 404) throw new Error("Model tidak ditemukan. Coba ganti pilihan Model. " + detail);
-    if(res.status === 429) throw new Error("Kuota/rate limit Gemini API tercapai. Coba lagi beberapa saat lagi. " + detail);
+    if(res.status === 429) throw new Error("Kuota/rate limit Gemini API tercapai setelah beberapa kali percobaan. Coba lagi beberapa saat lagi. " + detail);
+    if(res.status === 503) throw new Error("Model Gemini sedang mengalami lonjakan permintaan tinggi, sudah dicoba ulang beberapa kali namun tetap gagal. Coba lagi dalam beberapa menit, atau ganti ke model lain (mis. Flash). " + detail);
     throw new Error(`Gagal memanggil Gemini API (HTTP ${res.status}). ${detail}`);
   }
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("") || "";
-  if(!text) throw new Error("Respons AI kosong. Coba klik generate lagi.");
-  return JSON.parse(text);
 }
 
 function applyAIResult(r){
   const setVal = (id, val) => { const el = document.getElementById(id); if(el && val!==undefined && val!==null) el.value = val; };
 
-  setVal('judul', r.judul); setVal('badge', r.badge); setVal('mapel', r.mapel);
-  setVal('jenjang', r.jenjang); setVal('fase', r.fase); setVal('elemenSingkat', r.elemenSingkat);
+  setVal('judul', r.judul); setVal('badge', r.badge);
+  setVal('fase', r.fase); setVal('elemenSingkat', r.elemenSingkat);
   setVal('alokasi', r.alokasi); setVal('cp', r.cp); setVal('tp', r.tp); setVal('dpl', r.dpl);
   setVal('prinsipMindful', r.prinsipMindful); setVal('prinsipMeaningful', r.prinsipMeaningful);
   setVal('prinsipJoyful', r.prinsipJoyful); setVal('teknologiDigital', r.teknologiDigital);
@@ -1372,32 +1499,71 @@ function applyAIResult(r){
 }
 
 async function generateWithAI(){
+  const provider = document.getElementById('aiProvider').value;
   const apiKey = document.getElementById('geminiApiKey').value.trim();
-  const model = document.getElementById('geminiModel').value;
+  const model = document.getElementById('aiModel').value;
   const cp = document.getElementById('aiCP').value.trim();
   const tp = document.getElementById('aiTP').value.trim();
   const kelas = document.getElementById('aiKelas').value.trim();
   const btn = document.getElementById('btnGenerateAI');
   const label = document.getElementById('btnAILabel');
 
-  if(!apiKey){ aiStatus("Peringatan: Masukkan API Key Gemini terlebih dahulu.", "error"); return; }
-  if(!cp || !tp || !kelas){ aiStatus("Peringatan: CP, TP, dan Kelas wajib diisi.", "error"); return; }
+  const providerLabel = provider === 'gemini' ? 'Gemini' : provider === 'openai' ? 'OpenAI' : 'Groq';
+
+  // Reset highlight merah dari validasi sebelumnya
+  ['geminiApiKey','aiCP','aiTP','aiKelas'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('field-error');
+  });
+
+  const kosong = [];
+  if(!apiKey) kosong.push({ id:'geminiApiKey', label:`API Key ${providerLabel}` });
+  if(!cp) kosong.push({ id:'aiCP', label:'CP' });
+  if(!tp) kosong.push({ id:'aiTP', label:'TP' });
+  if(!kelas) kosong.push({ id:'aiKelas', label:'Kelas' });
+
+  if(kosong.length){
+    kosong.forEach(f=>{
+      const el = document.getElementById(f.id);
+      if(el) el.classList.add('field-error');
+    });
+    aiStatus(`Peringatan: Field berikut wajib diisi dulu: ${kosong.map(f=>f.label).join(', ')}.`, "error");
+    const firstEl = document.getElementById(kosong[0].id);
+    if(firstEl) firstEl.focus();
+    return;
+  }
  
   try{
     if(document.getElementById('saveKeyChk').checked){
-      localStorage.setItem('hdl_gemini_key', apiKey);
-      localStorage.setItem('hdl_gemini_model', model);
+      localStorage.setItem('hdl_ai_provider', provider);
+      localStorage.setItem(`hdl_${provider}_key`, apiKey);
+      localStorage.setItem(`hdl_${provider}_model`, model);
+      localStorage.setItem('hdl_save_key_checked', 'true');
     }else{
-      localStorage.removeItem('hdl_gemini_key');
+      localStorage.removeItem('hdl_ai_provider');
+      localStorage.removeItem(`hdl_${provider}_key`);
+      localStorage.removeItem(`hdl_${provider}_model`);
+      localStorage.setItem('hdl_save_key_checked', 'false');
     }
-  }catch(e){ /* penyimpanan tidak tersedia di lingkungan ini — key tetap dipakai untuk sesi sekarang */ }
+  }catch(e){ /* penyimpanan tidak tersedia */ }
  
   btn.disabled = true; btn.classList.add('loading');
   label.textContent = "Sedang menyusun modul ajar...";
   aiStatus("Proses: AI sedang menyusun seluruh komponen modul ajar, mohon tunggu (biasanya 10–30 detik)...", "info");
  
   try{
-    const result = await callGemini(apiKey, model, cp, tp, kelas);
+    let result;
+    if (provider === "gemini") {
+      const onRetry = (attempt, maxAttempts, reason) => {
+        aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
+      };
+      result = await callGemini(apiKey, model, cp, tp, kelas, onRetry);
+    } else if (provider === "openai") {
+      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas);
+    } else if (provider === "groq") {
+      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas);
+    }
+    
     applyAIResult(result);
     aiStatus("Sukses: Modul ajar berhasil disusun otomatis! AI turut memilihkan ayat/hadits beserta terjemahannya — mohon tetap diperiksa ulang keakuratannya sebelum dicetak.", "success");
   }catch(err){
@@ -1418,6 +1584,11 @@ renderStepsEditor();
 renderDimGrid();
 updatePageStyle();
 renderPreview();
+
+['geminiApiKey','aiCP','aiTP','aiKelas'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', () => el.classList.remove('field-error'));
+});
 </script>
 </body>
 </html>
