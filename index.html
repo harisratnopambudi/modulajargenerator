@@ -813,6 +813,33 @@ function linesToOl(text){
 function nlToBr(text){
   return esc(text||"").split("\n").map(s=>s.trim()).filter(Boolean).join("<br>");
 }
+function formatCP(text) {
+  if (!text) return "";
+  let raw = text.trim();
+  const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+  if (lines.length === 0) return "";
+  let elemName = "";
+  let bodyText = "";
+  const firstLine = lines[0];
+  const firstLineClean = firstLine.replace(/^elemen\s*:\s*/i, "").trim();
+  if (firstLineClean.length < 80) {
+    elemName = firstLineClean;
+    bodyText = lines.slice(1).join("\n");
+  } else {
+    const match = raw.match(/^elemen\s*:\s*([^.\n]+)(?:\.|\n)?\s*([\s\S]*)/i);
+    if (match) {
+      elemName = match[1].trim();
+      bodyText = match[2].trim();
+    } else {
+      bodyText = raw;
+    }
+  }
+  if (elemName) {
+    return `<div style="font-weight:700; color:#2d3748; margin-bottom:6px;">Elemen: ${esc(elemName)}</div><div style="text-align:justify; line-height:1.5;">${nlToBr(bodyText)}</div>`;
+  } else {
+    return `<div style="text-align:justify; line-height:1.5;">${nlToBr(raw)}</div>`;
+  }
+}
 function pipeRows(text){
   const rawRows = (text||"").split("\n").map(l=>l.trim()).filter(Boolean).map(l=>l.split("|").map(c=>c.trim()));
   return rawRows.filter(r => {
@@ -1027,7 +1054,7 @@ function renderPreview(){
 
     <table class="mtab">
       ${secRow("B.", "IDENTIFIKASI")}
-      <tr><td class="lp-label">Elemen &amp; Capaian Pembelajaran (CP)</td><td>${nlToBr(v('cp'))}</td></tr>
+      <tr><td class="lp-label">Elemen &amp; Capaian Pembelajaran (CP)</td><td>${formatCP(v('cp'))}</td></tr>
       <tr><td class="lp-label">Dimensi Profil Lulusan (DPL)</td><td>
         ${selectedDims.length ? `<div class="pm-tags">${selectedDims.map(d=>`<span class="pm-tag" style="background:${dimensiColors[d]||'var(--navy)'}">${esc(d)}</span>`).join("")}</div>` : ""}
         ${linesToOl(v('dpl'))}
