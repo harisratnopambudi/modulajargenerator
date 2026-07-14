@@ -816,28 +816,59 @@ function nlToBr(text){
 function formatCP(text) {
   if (!text) return "";
   let raw = text.trim();
-  const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
-  if (lines.length === 0) return "";
+  // Gabungkan semua baris jadi satu string bersih (copas dari PDF sering terpotong per baris)
+  const joined = raw.split("\n").map(l => l.trim()).filter(Boolean).join(" ");
   let elemName = "";
   let bodyText = "";
-  const firstLine = lines[0];
-  const firstLineClean = firstLine.replace(/^elemen\s*:\s*/i, "").trim();
-  if (firstLineClean.length < 80) {
-    elemName = firstLineClean;
-    bodyText = lines.slice(1).join("\n");
-  } else {
-    const match = raw.match(/^elemen\s*:\s*([^.\n]+)(?:\.|\n)?\s*([\s\S]*)/i);
-    if (match) {
-      elemName = match[1].trim();
-      bodyText = match[2].trim();
+
+  // Strategi 1: Teks dimulai dengan "Elemen:" atau "Elemen :"
+  const elMatch = joined.match(/^elemen\s*:\s*(.+)/i);
+  if (elMatch) {
+    const rest = elMatch[1].trim();
+    // Cari pemisah: kalimat pertama pendek = nama elemen
+    const dotIdx = rest.search(/[.]\s/);
+    if (dotIdx > 0 && dotIdx < 80) {
+      elemName = rest.substring(0, dotIdx).trim();
+      bodyText = rest.substring(dotIdx + 1).trim();
     } else {
-      bodyText = raw;
+      // Ambil dari field elemenSingkat jika cocok
+      const elField = v('elemenSingkat').trim();
+      if (elField && rest.toLowerCase().startsWith(elField.toLowerCase())) {
+        elemName = elField;
+        bodyText = rest.substring(elField.length).trim();
+      } else {
+        // Baris pertama asli pendek = nama elemen
+        const firstLine = raw.split("\n")[0].trim().replace(/^elemen\s*:\s*/i, "");
+        if (firstLine.length < 80) {
+          elemName = firstLine;
+          bodyText = raw.split("\n").slice(1).map(l=>l.trim()).filter(Boolean).join(" ");
+        } else {
+          bodyText = rest;
+        }
+      }
+    }
+  } else {
+    // Strategi 2: Tidak ada prefix "Elemen:" — cek apakah teks dimulai dengan nilai field Elemen di Bagian A
+    const elField = v('elemenSingkat').trim();
+    if (elField && joined.toLowerCase().startsWith(elField.toLowerCase())) {
+      elemName = elField;
+      bodyText = joined.substring(elField.length).trim();
+    } else {
+      // Strategi 3: Baris pertama pendek = dianggap nama elemen
+      const firstLine = raw.split("\n")[0].trim();
+      if (firstLine.length < 60 && raw.split("\n").filter(l=>l.trim()).length > 1) {
+        elemName = firstLine;
+        bodyText = raw.split("\n").slice(1).map(l=>l.trim()).filter(Boolean).join(" ");
+      } else {
+        bodyText = joined;
+      }
     }
   }
+
   if (elemName) {
-    return `<div style="font-weight:700; color:#2d3748; margin-bottom:6px;">Elemen: ${esc(elemName)}</div><div style="text-align:justify; line-height:1.5;">${nlToBr(bodyText)}</div>`;
+    return `<div style="font-weight:700; color:#2d3748; margin-bottom:6px;">Elemen: ${esc(elemName)}</div><div style="text-align:justify; line-height:1.5;">${esc(bodyText)}</div>`;
   } else {
-    return `<div style="text-align:justify; line-height:1.5;">${nlToBr(raw)}</div>`;
+    return `<div style="text-align:justify; line-height:1.5;">${esc(joined)}</div>`;
   }
 }
 function pipeRows(text){
@@ -920,12 +951,23 @@ function renderPreview(){
   const kkmPredikat = (kkmNilai100 !== null)
     ? (predikatRows.find(r => kkmNilai100 >= parseFloat(r[0]) && kkmNilai100 <= parseFloat(r[1]))?.[2] || "")
     : "";
+  // Deteksi apakah data rubrik1 punya kolom Indikator (6 kolom) atau tidak (5 kolom)
+  const r1HasIndikator = rubrik1Rows.some(r => r.length >= 6);
   const rubrik1HTML = rubrik1Rows.length ? `
     <div class="sec-title">${esc(v('rubrik1Judul'))}</div>
     <div class="rubric-student-line"><span>Nama Siswa: <span class="fill"></span></span><span>Kelas: <span class="fill short"></span></span></div>
     <table class="rubric-table">
-      <tr><th style="width:14%">Aspek Sikap</th><th style="width:24%">Indikator</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>
-      ${rubrik1Rows.map(r=>`<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[1]||"")}</td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`).join("")}
+      ${r1HasIndikator
+        ? `<tr><th style="width:14%">Aspek Sikap</th><th style="width:20%">Indikator</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>`
+        : `<tr><th style="width:16%">Aspek Sikap</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>`
+      }
+      ${rubrik1Rows.map(r=>{
+        if (r1HasIndikator) {
+          return `<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[1]||"")}</td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`;
+        } else {
+          return `<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[1]||"")}</td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td></tr>`;
+        }
+      }).join("")}
     </table>` : "";
 
   const rubrik2HTML = rubrik2Rows.length ? `
