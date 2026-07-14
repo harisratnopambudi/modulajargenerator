@@ -933,7 +933,14 @@ function renderPreview(){
     <div class="rubric-student-line"><span>Nama Siswa: <span class="fill"></span></span><span>Kelas: <span class="fill short"></span></span></div>
     <table class="rubric-table">
       <tr><th style="width:18%">Kriteria</th><th>Sangat Baik (4)</th><th>Baik (3)</th><th>Cukup (2)</th><th>Perlu Bimbingan (1)</th></tr>
-      ${rubrik2Rows.map(r=>`<tr><td><b>${esc(r[0]||"")}</b></td><td>${esc(r[2]||"")}</td><td>${esc(r[3]||"")}</td><td>${esc(r[4]||"")}</td><td>${esc(r[5]||"")}</td></tr>`).join("")}
+      ${rubrik2Rows.map(r=>{
+        const hasIndikator = r.length >= 6;
+        const sb = esc(r[hasIndikator ? 2 : 1]||"");
+        const b  = esc(r[hasIndikator ? 3 : 2]||"");
+        const c  = esc(r[hasIndikator ? 4 : 3]||"");
+        const pb = esc(r[hasIndikator ? 5 : 4]||"");
+        return `<tr><td><b>${esc(r[0]||"")}</b></td><td>${sb}</td><td>${b}</td><td>${c}</td><td>${pb}</td></tr>`;
+      }).join("")}
     </table>` : "";
 
   const kkmContainerHTML = `
@@ -1603,8 +1610,11 @@ async function generateWithAI(){
 }
 
 /* ---------- BIND ALL INPUTS ---------- */
-document.querySelectorAll('.editor input[type=text], .editor textarea').forEach(el=>{
-  el.addEventListener('input', renderPreview);
+document.querySelector('.editor').addEventListener('input', function(e){
+  const tag = e.target.tagName;
+  if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'){
+    renderPreview();
+  }
 });
 
 renderStepsEditor();
