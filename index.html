@@ -538,6 +538,92 @@
       color-adjust:exact !important;
     }
   }
+
+  /* ---------- FLOATING INFO ---------- */
+  .floating-info {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 50;
+  }
+  .info-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-size: 22px;
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .info-btn:hover {
+    transform: scale(1.05);
+    background: var(--navy-dark);
+  }
+  .info-panel {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    width: 340px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    transform-origin: bottom right;
+    animation: popIn 0.2s ease-out;
+  }
+  .info-panel.show {
+    display: flex;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .info-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 14px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .info-header button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+  .info-header button:hover {
+    color: #ffcccc;
+  }
+  .info-body {
+    padding: 14px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .info-body ul {
+    margin: 6px 0 0;
+    padding-left: 20px;
+  }
+  .info-body li {
+    margin-bottom: 4px;
+  }
 </style>
 </head>
 <body>
@@ -854,6 +940,25 @@
           <div class="gen-loader"></div>
           <div class="gen-status-text" id="genStatusText">Menyusun modul ajar...</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floating-info no-print">
+    <button class="info-btn" onclick="toggleInfoPanel()" title="Tentang Aplikasi">i</button>
+    <div class="info-panel" id="infoPanel">
+      <div class="info-header">
+        <b>Tentang Aplikasi</b>
+        <button onclick="toggleInfoPanel()">&times;</button>
+      </div>
+      <div class="info-body">
+        <b>Generator Modul Ajar</b> ini dirancang dan dikembangkan oleh <b>Haris Ratno Pambudi</b> (Haris DevLab).
+        <br><br>
+        Modul ajar yang dihasilkan disusun secara spesifik berdasarkan pedoman terbaru:
+        <ul>
+          <li><b>Kurikulum Merdeka</b>, mencakup pemetaan otomatis tingkat kelas menuju hierarki Fase (A hingga F).</li>
+          <li><b>Kerangka Pembelajaran Mendalam</b> (merujuk pada Naskah Akademik PM Kemendikdasmen, Februari 2025), yang mengintegrasikan secara utuh pendekatan 3 Prinsip (<i>Mindful, Meaningful, Joyful</i>) dan siklus 3 Tahap Pengalaman Belajar (<i>Memahami, Mengaplikasi, Merefleksi</i>).</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -1968,6 +2073,11 @@ renderPreview();
   const el = document.getElementById(id);
   if(el) el.addEventListener('input', () => el.classList.remove('field-error'));
 });
+
+function toggleInfoPanel() {
+  const panel = document.getElementById('infoPanel');
+  if(panel) panel.classList.toggle('show');
+}
 </script>
 </body>
 </html>
