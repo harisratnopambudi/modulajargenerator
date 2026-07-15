@@ -592,6 +592,11 @@
           <label>Kelas</label>
           <input type="text" id="aiKelas" placeholder="Contoh: Kelas 5" value="">
         </div>
+        <div class="field">
+          <label>Keyword / Konteks Tambahan (opsional)</label>
+          <textarea id="aiKeyword" rows="2" placeholder="Contoh: Fokuskan ke studi kasus pencemaran laut (AI for Ocean)..."></textarea>
+          <div class="hint">Jika diisi, modul ajar akan diarahkan agar sesuai dengan konteks atau tema ini.</div>
+        </div>
         <button type="button" class="btn-ai" id="btnGenerateAI" onclick="generateWithAI()">
           <span class="spinner"></span><span id="btnAILabel">Generate Otomatis dengan AI</span>
         </button>
@@ -1509,14 +1514,16 @@ function geminiSchema(){
   };
 }
 
-function buildAIPrompt(cp, tp, kelas){
+function buildAIPrompt(cp, tp, kelas, keyword){
   const mapelTetap = document.getElementById('mapel') ? document.getElementById('mapel').value.trim() : "";
   const jenjangTetap = document.getElementById('jenjang') ? document.getElementById('jenjang').value.trim() : "";
+  const keywordText = keyword ? `\nKONTEKS / KEYWORD TAMBAHAN:\n${keyword}\n\nPastikan seluruh konten modul (termasuk langkah pembelajaran dan asesmen) sangat relevan dengan konteks/keyword di atas.\n` : "";
+
   return `Susun seluruh komponen Modul Ajar berikut berdasarkan data dari guru:
 
 MATA PELAJARAN (tetap, jangan diubah, gunakan persis ini): ${mapelTetap}
 JENJANG SEKOLAH (tetap, jangan diubah, gunakan persis ini): ${jenjangTetap}
-KELAS: ${kelas}
+KELAS: ${kelas}${keywordText}
 CAPAIAN PEMBELAJARAN (CP):
 ${cp}
 
@@ -1552,12 +1559,12 @@ Aturan wajib:
 - JANGAN PERNAH menggunakan emoji atau simbol dekoratif sejenis di bagian mana pun dalam modul ajar.
 - Jangan menyertakan markdown atau teks di luar JSON.`;
 
-async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas) {
+async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas, keyword) {
   const body = {
     model: model,
     messages: [
       { role: "system", content: systemInstruction },
-      { role: "user", content: buildAIPrompt(cp, tp, kelas) }
+      { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword) }
     ],
     response_format: { type: "json_object" },
     temperature: 0.3
@@ -1765,11 +1772,11 @@ async function applyAIResultTyped(r){
   renderPreview();
 }
 
-async function callGemini(apiKey, model, cp, tp, kelas, onRetry){
+async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry){
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const body = {
     systemInstruction: { parts:[{ text: AI_SYSTEM_INSTRUCTION }] },
-    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas) }] }],
+    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas, keyword) }] }],
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: geminiSchema(),
@@ -1867,6 +1874,7 @@ async function generateWithAI(){
   const cp = document.getElementById('aiCP').value.trim();
   const tp = document.getElementById('aiTP').value.trim();
   const kelas = document.getElementById('aiKelas').value.trim();
+  const keyword = document.getElementById('aiKeyword') ? document.getElementById('aiKeyword').value.trim() : "";
   const btn = document.getElementById('btnGenerateAI');
   const label = document.getElementById('btnAILabel');
 
@@ -1920,11 +1928,11 @@ async function generateWithAI(){
       const onRetry = (attempt, maxAttempts, reason) => {
         aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
       };
-      result = await callGemini(apiKey, model, cp, tp, kelas, onRetry);
+      result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry);
     } else if (provider === "openai") {
-      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas);
+      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword);
     } else if (provider === "groq") {
-      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas);
+      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword);
     }
     
     hideGenOverlay();
