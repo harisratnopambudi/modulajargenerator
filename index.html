@@ -151,12 +151,68 @@
   }
   #page-container{
     display:inline-block;
+    position:relative;
     text-align:left;
     vertical-align:top;
     margin:0 auto;
     box-shadow:0 10px 30px rgba(0,0,0,0.15), 0 1px 8px rgba(0,0,0,0.1);
     border-radius:4px;
     background:var(--paper);
+  }
+
+  /* ---------- GENERATE OVERLAY (efek "sedang mengetik") ---------- */
+  .editor.generating{
+    pointer-events:none;
+    opacity:0.7;
+    filter:grayscale(0.15);
+    transition:opacity .25s;
+  }
+  .gen-overlay{
+    position:absolute; inset:0;
+    background:rgba(255,255,255,0.9);
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    padding:30px;
+    z-index:5;
+    border-radius:4px;
+  }
+  .gen-overlay.show{display:flex;}
+  .gen-overlay-inner{width:78%; max-width:440px;}
+  .gen-caret-line{
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy-dark);
+    min-height:18px;
+    margin-bottom:18px;
+    text-align:center;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+  .gen-caret{
+    display:inline-block;
+    margin-left:2px;
+    color:var(--teal-dark);
+    animation:genBlink .9s steps(1) infinite;
+  }
+  @keyframes genBlink{50%{opacity:0;}}
+  .gen-skel-lines{display:flex; flex-direction:column; gap:10px;}
+  .gen-skel-line{
+    height:9px; border-radius:4px;
+    background:linear-gradient(90deg, #e3e8ea 25%, #f2f5f6 37%, #e3e8ea 63%);
+    background-size:400% 100%;
+    animation:genShimmer 1.6s ease-in-out infinite;
+  }
+  .gen-skel-line.w1{width:94%;}
+  .gen-skel-line.w2{width:78%;}
+  .gen-skel-line.w3{width:62%;}
+  .gen-skel-line.w4{width:85%;}
+  @keyframes genShimmer{
+    0%{background-position:100% 0;}
+    100%{background-position:0 0;}
   }
   .sheet{
     background:var(--paper);
@@ -742,6 +798,18 @@
     <div class="canvas">
       <div id="page-container">
         <div id="page" class="sheet a4 portrait"></div>
+        <div id="genOverlay" class="gen-overlay no-print">
+          <div class="gen-overlay-inner">
+            <div class="gen-caret-line"><span id="genCaretText"></span><span class="gen-caret">|</span></div>
+            <div class="gen-skel-lines">
+              <div class="gen-skel-line w1"></div>
+              <div class="gen-skel-line w2"></div>
+              <div class="gen-skel-line w3"></div>
+              <div class="gen-skel-line w4"></div>
+              <div class="gen-skel-line w2"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1083,8 +1151,8 @@ function renderPreview(){
     <div class="m-banner"><img src="${BANNER_SRC}" alt="Akreditasi &amp; Kurikulum Merdeka" onerror="this.parentElement.style.display='none';"></div>
     <div class="m-header">
       <div class="m-logo">${logoHTML}</div>
-      <div class="m-title">${esc(v('judul')).toUpperCase()}</div>
-      <div class="m-badge">${nlToBr(v('badge'))}</div>
+      <div class="m-title">${esc(v('judul').replace(/^\s*modul\s*ajar\s*:?\s*/i, '')).toUpperCase()}</div>
+      <div class="m-badge">MODUL AJAR : ${nlToBr(v('badge'))}</div>
     </div>
 
     <table class="mtab">
@@ -1479,6 +1547,190 @@ async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, t
 
 function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
 
+/* ---------- OVERLAY "SEDANG MENGETIK" (saat menunggu respons AI) ---------- */
+const GEN_PHRASES = [
+  "Menyusun identitas modul...",
+  "Merumuskan capaian & tujuan pembelajaran...",
+  "Menyusun langkah-langkah pembelajaran...",
+  "Menyiapkan asesmen dan rubrik penilaian...",
+  "Mencari kaitan ayat Al-Qur'an & Hadits..."
+];
+let genOverlayStop = true;
+
+async function typeCaretLoop(){
+  const el = document.getElementById('genCaretText');
+  if(!el) return;
+  let i = 0;
+  while(!genOverlayStop){
+    const phrase = GEN_PHRASES[i % GEN_PHRASES.length];
+    for(let c=1; c<=phrase.length; c++){
+      if(genOverlayStop) return;
+      el.textContent = phrase.slice(0, c);
+      await sleep(28);
+    }
+    for(let w=0; w<25 && !genOverlayStop; w++){ await sleep(28); }
+    for(let c=phrase.length; c>=0; c--){
+      if(genOverlayStop) return;
+      el.textContent = phrase.slice(0, c);
+      await sleep(14);
+    }
+    await sleep(150);
+    i++;
+  }
+}
+
+function showGenOverlay(){
+  const ov = document.getElementById('genOverlay');
+  if(!ov) return;
+  genOverlayStop = false;
+  ov.classList.add('show');
+  const editorEl = document.querySelector('.editor');
+  if(editorEl) editorEl.classList.add('generating');
+  typeCaretLoop();
+}
+function hideGenOverlay(){
+  genOverlayStop = true;
+  const ov = document.getElementById('genOverlay');
+  if(ov) ov.classList.remove('show');
+  const editorEl = document.querySelector('.editor');
+  if(editorEl) editorEl.classList.remove('generating');
+  const el = document.getElementById('genCaretText');
+  if(el) el.textContent = '';
+}
+
+/* ---------- EFEK MENGETIK UNTUK MENGISI HASIL AI ---------- */
+function typeInto(el, text){
+  return new Promise(resolve=>{
+    if(!el){ resolve(); return; }
+    const full = (text===undefined || text===null) ? '' : String(text);
+    el.value = '';
+    if(!full){ resolve(); return; }
+    const duration = Math.min(1100, Math.max(220, full.length * 9));
+    const start = performance.now();
+    let lastRender = 0;
+    function frame(now){
+      const t = Math.min(1, (now - start) / duration);
+      const n = Math.max(1, Math.round(t * full.length));
+      el.value = full.slice(0, n);
+      if(now - lastRender > 65){ renderPreview(); lastRender = now; }
+      if(t < 1){
+        requestAnimationFrame(frame);
+      }else{
+        el.value = full;
+        renderPreview();
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+async function checkDimensiTyped(list){
+  const checks = Array.from(document.querySelectorAll('#dimGrid input[type=checkbox]'));
+  for(const chk of checks){
+    const should = list.includes(chk.value);
+    if(should && !chk.checked){
+      chk.checked = true;
+      renderPreview();
+      await sleep(90);
+    }else if(!should && chk.checked){
+      chk.checked = false;
+    }
+  }
+  renderPreview();
+}
+
+function typeStepContent(i, textarea, full){
+  return new Promise(resolve=>{
+    if(!full){ steps[i].content=''; textarea.value=''; resolve(); return; }
+    const duration = Math.min(1400, Math.max(260, full.length * 7));
+    const start = performance.now();
+    let lastRender = 0;
+    function frame(now){
+      const t = Math.min(1, (now - start) / duration);
+      const n = Math.max(1, Math.round(t * full.length));
+      const partial = full.slice(0, n);
+      textarea.value = partial;
+      steps[i].content = partial;
+      if(now - lastRender > 65){ renderPreview(); lastRender = now; }
+      if(t < 1){
+        requestAnimationFrame(frame);
+      }else{
+        textarea.value = full;
+        steps[i].content = full;
+        renderPreview();
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+async function typeSteps(list){
+  if(!Array.isArray(list) || !list.length) return;
+  steps = list.map(s=>({
+    title: s.title || "Tahap", durasi: s.durasi || "",
+    tahapPM: s.tahapPM || "Memahami", content: ""
+  }));
+  renderStepsEditor();
+  renderPreview();
+  await sleep(150);
+  const cards = document.querySelectorAll('#stepsEditor .step-card');
+  for(let i=0; i<list.length; i++){
+    const card = cards[i];
+    const textarea = card ? card.querySelector('textarea') : null;
+    if(!textarea) continue;
+    await typeStepContent(i, textarea, list[i].content || "");
+  }
+}
+
+async function applyAIResultTyped(r){
+  const seqA = [
+    ['judul', r.judul], ['badge', r.badge], ['fase', r.fase], ['elemenSingkat', r.elemenSingkat],
+    ['alokasi', r.alokasi], ['cp', r.cp], ['tp', r.tp], ['dpl', r.dpl],
+    ['prinsipMindful', r.prinsipMindful], ['prinsipMeaningful', r.prinsipMeaningful], ['prinsipJoyful', r.prinsipJoyful],
+    ['teknologiDigital', r.teknologiDigital], ['praktik', r.praktik], ['kemitraan', r.kemitraan], ['lingkungan', r.lingkungan]
+  ];
+  for(const [id, val] of seqA){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  if(Array.isArray(r.dimensiProfilLulusan)){
+    await checkDimensiTyped(r.dimensiProfilLulusan);
+  }
+
+  if(Array.isArray(r.langkahPembelajaran) && r.langkahPembelajaran.length){
+    await typeSteps(r.langkahPembelajaran);
+  }
+
+  const seqB = [
+    ['asAwal', r.asAwal], ['asFormatif', r.asFormatif], ['asSumatif', r.asSumatif],
+    ['rubrik1Judul', r.rubrik1Judul], ['rubrik1', r.rubrik1],
+    ['rubrik2Judul', r.rubrik2Judul], ['rubrik2', r.rubrik2],
+    ['skorMaks', r.skorMaks], ['kkm', r.kkm], ['sarana', r.sarana],
+    ['sudahKKM', r.sudahKKM], ['belumKKM', r.belumKKM]
+  ];
+  for(const [id, val] of seqB){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  if(r.catatan){ await typeInto(document.getElementById('catatan'), r.catatan); }
+
+  const seqC = [
+    ['quranArab', r.quranArab || ''], ['quranTerjemah', r.quranTerjemah || ''], ['quranRef', r.quranRef || ''],
+    ['haditsArab', r.haditsArab || ''], ['haditsTerjemah', r.haditsTerjemah || ''], ['haditsRef', r.haditsRef || ''],
+    ['quranKait', r.quranKait]
+  ];
+  for(const [id, val] of seqC){
+    if(val===undefined) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  renderPreview();
+}
+
 async function callGemini(apiKey, model, cp, tp, kelas, onRetry){
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const body = {
@@ -1626,6 +1878,7 @@ async function generateWithAI(){
   btn.disabled = true; btn.classList.add('loading');
   label.textContent = "Sedang menyusun modul ajar...";
   aiStatus("Proses: AI sedang menyusun seluruh komponen modul ajar, mohon tunggu (biasanya 10–30 detik)...", "info");
+  showGenOverlay();
  
   try{
     let result;
@@ -1640,12 +1893,17 @@ async function generateWithAI(){
       result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas);
     }
     
-    applyAIResult(result);
+    hideGenOverlay();
+    label.textContent = "Menuliskan hasil...";
+    aiStatus("Proses: hasil diterima, sedang dituliskan ke modul...", "info");
+    await applyAIResultTyped(result);
     aiStatus("Sukses: Modul ajar berhasil disusun otomatis! AI turut memilihkan ayat/hadits beserta terjemahannya — mohon tetap diperiksa ulang keakuratannya sebelum dicetak.", "success");
   }catch(err){
     console.error(err);
+    hideGenOverlay();
     aiStatus("Gagal: " + (err.message || "Terjadi kesalahan saat memanggil AI."), "error");
   }finally{
+    hideGenOverlay();
     btn.disabled = false; btn.classList.remove('loading');
     label.textContent = "Generate Otomatis dengan AI";
   }
