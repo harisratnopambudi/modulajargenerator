@@ -137,6 +137,22 @@
   .toolbar .grp{display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--navy-dark);}
   .toolbar select{width:auto; padding:5px 8px;}
   .toolbar .spacer{flex:1;}
+  /* toggle switch */
+  .toggle-grp{display:flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--navy-dark);}
+  .toggle-switch{
+    position:relative; display:inline-block; width:34px; height:18px; flex-shrink:0;
+  }
+  .toggle-switch input{opacity:0; width:0; height:0;}
+  .toggle-slider{
+    position:absolute; inset:0; background:#c9d3d6; border-radius:18px; cursor:pointer;
+    transition:background .25s;
+  }
+  .toggle-slider::before{
+    content:''; position:absolute; left:2px; top:2px; width:14px; height:14px;
+    background:#fff; border-radius:50%; transition:transform .25s;
+  }
+  .toggle-switch input:checked + .toggle-slider{background:var(--teal);}
+  .toggle-switch input:checked + .toggle-slider::before{transform:translateX(16px);}
 
   /* ---------- PREVIEW ---------- */
   .preview-wrap{display:flex; flex-direction:column; height:100vh;}
@@ -160,7 +176,7 @@
     background:var(--paper);
   }
 
-  /* ---------- GENERATE OVERLAY (efek "sedang mengetik") ---------- */
+  /* ---------- GENERATE OVERLAY (efek loading spinner) ---------- */
   .editor.generating{
     pointer-events:none;
     opacity:0.7;
@@ -169,50 +185,71 @@
   }
   .gen-overlay{
     position:absolute; inset:0;
-    background:rgba(255,255,255,0.9);
+    background:rgba(30,40,50,0.88);
     display:none;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:16px;
+    gap:24px;
     padding:30px;
     z-index:5;
     border-radius:4px;
+    backdrop-filter:blur(6px);
   }
   .gen-overlay.show{display:flex;}
-  .gen-overlay-inner{width:78%; max-width:440px;}
-  .gen-caret-line{
-    font-family:'Courier New', monospace;
+  .gen-loader{
+    --color-1: #fff;
+    --color-2: #ff3d00;
+    --size: 1px;
+    transform: rotateZ(45deg);
+    perspective: calc(1000 * var(--size));
+    border-radius: 50%;
+    width: calc(48 * var(--size));
+    height: calc(48 * var(--size));
+    color: var(--color-1);
+    position:relative;
+  }
+  .gen-loader:before,
+  .gen-loader:after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    border-radius: 50%;
+    transform: rotateX(70deg);
+    animation: 1s genSpin linear infinite;
+  }
+  .gen-loader:after{
+    color: var(--color-2);
+    transform: rotateY(70deg);
+    animation-delay: 0.4s;
+  }
+  @keyframes genSpin{
+    0%, 100%{ box-shadow: 0.2em 0 0 0 currentcolor; }
+    12%{ box-shadow: 0.2em 0.2em 0 0 currentcolor; }
+    25%{ box-shadow: 0 0.2em 0 0 currentcolor; }
+    37%{ box-shadow: -0.2em 0.2em 0 0 currentcolor; }
+    50%{ box-shadow: -0.2em 0 0 0 currentcolor; }
+    62%{ box-shadow: -0.2em -0.2em 0 0 currentcolor; }
+    75%{ box-shadow: 0 -0.2em 0 0 currentcolor; }
+    87%{ box-shadow: 0.2em -0.2em 0 0 currentcolor; }
+  }
+  .gen-status-text{
+    font-family:'Inter', 'Segoe UI', Arial, sans-serif;
     font-size:13px;
-    font-weight:700;
-    color:var(--navy-dark);
-    min-height:18px;
-    margin-bottom:18px;
+    font-weight:500;
+    color:rgba(255,255,255,0.92);
     text-align:center;
-    white-space:nowrap;
-    overflow:hidden;
+    min-height:20px;
+    letter-spacing:.2px;
+    animation: genBreathe 2.5s ease-in-out infinite;
   }
-  .gen-caret{
-    display:inline-block;
-    margin-left:2px;
-    color:var(--teal-dark);
-    animation:genBlink .9s steps(1) infinite;
-  }
-  @keyframes genBlink{50%{opacity:0;}}
-  .gen-skel-lines{display:flex; flex-direction:column; gap:10px;}
-  .gen-skel-line{
-    height:9px; border-radius:4px;
-    background:linear-gradient(90deg, #e3e8ea 25%, #f2f5f6 37%, #e3e8ea 63%);
-    background-size:400% 100%;
-    animation:genShimmer 1.6s ease-in-out infinite;
-  }
-  .gen-skel-line.w1{width:94%;}
-  .gen-skel-line.w2{width:78%;}
-  .gen-skel-line.w3{width:62%;}
-  .gen-skel-line.w4{width:85%;}
-  @keyframes genShimmer{
-    0%{background-position:100% 0;}
-    100%{background-position:0 0;}
+  @keyframes genBreathe{
+    0%, 100%{ opacity:0.45; }
+    50%{ opacity:1; }
   }
   .sheet{
     background:var(--paper);
@@ -795,20 +832,22 @@
       <span style="font-size:10.5px; color:#8a6d00; max-width:260px;">Saat print, pastikan opsi <b>"Background graphics"</b> / "Grafik latar belakang" dicentang agar warna ikut tercetak.</span>
       <button class="btn-print" onclick="window.print()">Cetak / Simpan PDF</button>
     </div>
+    <div class="toolbar no-print" style="border-bottom:none; padding:5px 20px; gap:16px; background:#f7f9fa;">
+      <label class="toggle-grp">
+        <span class="toggle-switch"><input type="checkbox" id="toggleBanner" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
+        Banner
+      </label>
+      <label class="toggle-grp">
+        <span class="toggle-switch"><input type="checkbox" id="toggleQuran" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
+        Qur'an & Hadits
+      </label>
+    </div>
     <div class="canvas">
       <div id="page-container">
         <div id="page" class="sheet a4 portrait"></div>
         <div id="genOverlay" class="gen-overlay no-print">
-          <div class="gen-overlay-inner">
-            <div class="gen-caret-line"><span id="genCaretText"></span><span class="gen-caret">|</span></div>
-            <div class="gen-skel-lines">
-              <div class="gen-skel-line w1"></div>
-              <div class="gen-skel-line w2"></div>
-              <div class="gen-skel-line w3"></div>
-              <div class="gen-skel-line w4"></div>
-              <div class="gen-skel-line w2"></div>
-            </div>
-          </div>
+          <div class="gen-loader"></div>
+          <div class="gen-status-text" id="genStatusText">Menyusun modul ajar...</div>
         </div>
       </div>
     </div>
@@ -1147,12 +1186,15 @@ function renderPreview(){
       ${v('quranKait').trim() ? `<div class="quran-kait"><b>Keterkaitan dengan materi:</b> ${esc(v('quranKait'))}</div>` : ""}
     </div>` : "";
 
+  const showBanner = document.getElementById('toggleBanner')?.checked !== false;
+  const showQuran = document.getElementById('toggleQuran')?.checked !== false;
+
   const html = `
-    <div class="m-banner"><img src="${BANNER_SRC}" alt="Akreditasi &amp; Kurikulum Merdeka" onerror="this.parentElement.style.display='none';"></div>
+    ${showBanner ? `<div class="m-banner"><img src="${BANNER_SRC}" alt="Akreditasi &amp; Kurikulum Merdeka" onerror="this.parentElement.style.display='none';"></div>` : ""}
     <div class="m-header">
       <div class="m-logo">${logoHTML}</div>
       <div class="m-title">${esc(v('judul').replace(/^\s*modul\s*ajar\s*:?\s*/i, '')).toUpperCase()}</div>
-      <div class="m-badge">MODUL AJAR : ${nlToBr(v('badge'))}</div>
+      <div class="m-badge">MODUL AJAR<br>${nlToBr(v('badge'))}</div>
     </div>
 
     <table class="mtab">
@@ -1167,7 +1209,7 @@ function renderPreview(){
       <tr><td class="key">Alokasi Waktu</td><td>${esc(v('alokasi'))}</td></tr>
     </table>
 
-    ${quranHTML}
+    ${showQuran ? quranHTML : ""}
 
     <table class="mtab">
       ${secRow("B.", "IDENTIFIKASI")}
@@ -1547,34 +1589,26 @@ async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, t
 
 function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
 
-/* ---------- OVERLAY "SEDANG MENGETIK" (saat menunggu respons AI) ---------- */
+/* ---------- OVERLAY LOADING SPINNER (saat menunggu respons AI) ---------- */
 const GEN_PHRASES = [
   "Menyusun identitas modul...",
   "Merumuskan capaian & tujuan pembelajaran...",
   "Menyusun langkah-langkah pembelajaran...",
   "Menyiapkan asesmen dan rubrik penilaian...",
-  "Mencari kaitan ayat Al-Qur'an & Hadits..."
+  "Mencari kaitan ayat Al-Qur'an & Hadits...",
+  "Merancang sarana dan media pembelajaran...",
+  "Menyusun rencana tindak lanjut..."
 ];
 let genOverlayStop = true;
 
-async function typeCaretLoop(){
-  const el = document.getElementById('genCaretText');
+async function genPhraseLoop(){
+  const el = document.getElementById('genStatusText');
   if(!el) return;
   let i = 0;
   while(!genOverlayStop){
-    const phrase = GEN_PHRASES[i % GEN_PHRASES.length];
-    for(let c=1; c<=phrase.length; c++){
-      if(genOverlayStop) return;
-      el.textContent = phrase.slice(0, c);
-      await sleep(28);
-    }
-    for(let w=0; w<25 && !genOverlayStop; w++){ await sleep(28); }
-    for(let c=phrase.length; c>=0; c--){
-      if(genOverlayStop) return;
-      el.textContent = phrase.slice(0, c);
-      await sleep(14);
-    }
-    await sleep(150);
+    el.textContent = GEN_PHRASES[i % GEN_PHRASES.length];
+    // Wait 3 seconds per phrase (matches breathing animation cycle)
+    for(let w = 0; w < 30 && !genOverlayStop; w++){ await sleep(100); }
     i++;
   }
 }
@@ -1586,7 +1620,7 @@ function showGenOverlay(){
   ov.classList.add('show');
   const editorEl = document.querySelector('.editor');
   if(editorEl) editorEl.classList.add('generating');
-  typeCaretLoop();
+  genPhraseLoop();
 }
 function hideGenOverlay(){
   genOverlayStop = true;
@@ -1594,7 +1628,7 @@ function hideGenOverlay(){
   if(ov) ov.classList.remove('show');
   const editorEl = document.querySelector('.editor');
   if(editorEl) editorEl.classList.remove('generating');
-  const el = document.getElementById('genCaretText');
+  const el = document.getElementById('genStatusText');
   if(el) el.textContent = '';
 }
 
