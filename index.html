@@ -158,7 +158,8 @@
   .preview-wrap{display:flex; flex-direction:column; height:100vh;}
   .canvas{
     flex:1;
-    overflow:auto;
+    overflow-y:auto;
+    scrollbar-gutter:stable;
     text-align:center;
     padding:40px 20px;
     background:#e4e8eb;
@@ -639,6 +640,7 @@
       <div class="body">
         <div class="ai-hint">
           Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, pilih provider AI, lalu masukkan API key Anda. AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. API key dikirim langsung dari browser Anda ke provider terkait tanpa melalui server perantara.
+          <br><br>Tips: pilih <b>Model Pembelajaran</b> di bawah jika ingin langkah pembelajaran mengikuti sintaks model tertentu (mis. PBL, PjBL, Discovery Learning) — AI akan menyusun tahapan sesuai sintaks resmi model tersebut, dan Praktik Pedagogis (Model, Metode, Pendekatan) akan terisi otomatis.
         </div>
         <div class="field">
           <label>Provider AI</label>
@@ -660,11 +662,15 @@
         </div>
         <div class="field">
           <label>Model</label>
-          <select id="aiModel">
+          <select id="aiModel" onchange="onModelChange()">
             <option value="gemini-2.5-flash">Gemini 2.5 Flash (cepat &amp; hemat — direkomendasikan)</option>
             <option value="gemini-2.5-pro">Gemini 2.5 Pro (lebih detail, lebih lambat)</option>
             <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (paling ringan/cepat)</option>
           </select>
+          <div id="customModelField" style="display:none; margin-top:6px;">
+            <label style="font-size:10.5px; font-weight:600; color:var(--muted);">Nama Model Kustom</label>
+            <input type="text" id="customModelInput" placeholder="Contoh: gemini-1.5-flash">
+          </div>
         </div>
         <div class="field">
           <label>Capaian Pembelajaran (CP)</label>
@@ -682,6 +688,11 @@
           <label>Keyword / Konteks Tambahan (opsional)</label>
           <textarea id="aiKeyword" rows="2" placeholder="Contoh: Fokuskan ke studi kasus pencemaran laut (AI for Ocean)..."></textarea>
           <div class="hint">Jika diisi, modul ajar akan diarahkan agar sesuai dengan konteks atau tema ini.</div>
+        </div>
+        <div class="field">
+          <label>Model Pembelajaran (opsional)</label>
+          <select id="metodeModel" onchange="onMetodeChange()"></select>
+          <div class="hint">Jika dipilih, Praktik Pedagogis (Model, Metode, Pendekatan) otomatis terisi, dan AI akan menyusun Langkah Pembelajaran mengikuti sintaks resmi model ini.</div>
         </div>
         <button type="button" class="btn-ai" id="btnGenerateAI" onclick="generateWithAI()">
           <span class="spinner"></span><span id="btnAILabel">Generate Otomatis dengan AI</span>
@@ -799,7 +810,7 @@
       <div class="body">
         <div class="field">
           <label>Praktik Pedagogis</label>
-          <textarea id="praktik" rows="2" placeholder="Contoh: Metode: Diskusi Kelompok, Permainan Peran (Unplugged), dll."></textarea>
+          <textarea id="praktik" rows="4" placeholder="Contoh: Pembelajaran ini menerapkan model Problem Based Learning (PBL) yang bertujuan untuk mendorong murid aktif memecahkan masalah. Aktivitas didukung oleh metode diskusi kelompok dan tanya jawab guna memfasilitasi kolaborasi. Seluruh proses dijalankan melalui pendekatan saintifik untuk membimbing penyelidikan secara sistematis."></textarea>
         </div>
         <div class="field">
           <label>Kemitraan Belajar</label>
@@ -994,13 +1005,134 @@ const dimensiColors = {
   "Komunikasi": "#319795"
 };
 const dimensiDefaultChecked = [];
+
+/* ---------- MODEL / METODE / PENDEKATAN PEMBELAJARAN (Praktik Pedagogis) ---------- */
+const METODE_PEMBELAJARAN = {
+  pbl: {
+    label: "Problem Based Learning (PBL)",
+    metode: "Diskusi Kelompok, Tanya Jawab, Penugasan, Presentasi",
+    pendekatan: "Saintifik dan Kolaboratif",
+    alasanModel: "melatih peserta didik memecahkan masalah nyata secara sistematis dan reflektif",
+    alasanMetode: "mendukung eksplorasi solusi secara kolaboratif dan penyampaian hasil analisis",
+    alasanPendekatan: "mengarahkan peserta didik menemukan konsep melalui proses ilmiah dan kerja sama",
+    sintaks: [
+      { title: "Orientasi Peserta Didik pada Masalah", tahapPM: "Memahami" },
+      { title: "Mengorganisasikan Peserta Didik untuk Belajar", tahapPM: "Memahami" },
+      { title: "Membimbing Penyelidikan Individu/Kelompok", tahapPM: "Mengaplikasi" },
+      { title: "Mengembangkan dan Menyajikan Hasil Karya", tahapPM: "Mengaplikasi" },
+      { title: "Menganalisis dan Mengevaluasi Proses Pemecahan Masalah", tahapPM: "Merefleksi" }
+    ]
+  },
+  pjbl: {
+    label: "Project Based Learning (PjBL)",
+    metode: "Diskusi Kelompok, Penugasan Proyek, Demonstrasi, Presentasi",
+    pendekatan: "Kontekstual dan Kolaboratif",
+    alasanModel: "melatih peserta didik menghasilkan produk nyata melalui proses perencanaan dan kolaborasi",
+    alasanMetode: "mendukung proses perencanaan, pengerjaan, dan presentasi proyek secara bertahap",
+    alasanPendekatan: "mengaitkan pembelajaran dengan konteks nyata dan kerja sama tim",
+    sintaks: [
+      { title: "Penentuan Pertanyaan Mendasar", tahapPM: "Memahami" },
+      { title: "Mendesain Perencanaan Produk", tahapPM: "Memahami" },
+      { title: "Menyusun Jadwal Pembuatan", tahapPM: "Mengaplikasi" },
+      { title: "Memonitor Keaktifan dan Perkembangan Proyek", tahapPM: "Mengaplikasi" },
+      { title: "Menguji Hasil", tahapPM: "Mengaplikasi" },
+      { title: "Evaluasi Pengalaman Belajar", tahapPM: "Merefleksi" }
+    ]
+  },
+  discovery: {
+    label: "Discovery Learning",
+    metode: "Tanya Jawab, Eksperimen/Percobaan, Diskusi, Penugasan",
+    pendekatan: "Saintifik",
+    alasanModel: "mendorong peserta didik menemukan sendiri konsep melalui pengamatan dan pengolahan data",
+    alasanMetode: "memberi ruang eksplorasi aktif melalui percobaan dan diskusi temuan",
+    alasanPendekatan: "menekankan proses ilmiah dalam menemukan konsep secara mandiri",
+    sintaks: [
+      { title: "Stimulation (Pemberian Rangsangan)", tahapPM: "Memahami" },
+      { title: "Problem Statement (Identifikasi Masalah)", tahapPM: "Memahami" },
+      { title: "Data Collection (Pengumpulan Data)", tahapPM: "Mengaplikasi" },
+      { title: "Data Processing (Pengolahan Data)", tahapPM: "Mengaplikasi" },
+      { title: "Verification (Pembuktian)", tahapPM: "Merefleksi" },
+      { title: "Generalization (Menarik Kesimpulan)", tahapPM: "Merefleksi" }
+    ]
+  },
+  inquiry: {
+    label: "Inquiry Learning",
+    metode: "Tanya Jawab, Eksperimen/Percobaan, Diskusi, Penugasan",
+    pendekatan: "Saintifik",
+    alasanModel: "melatih peserta didik menyelidiki dan menjawab masalah secara sistematis melalui pertanyaan dan data",
+    alasanMetode: "mendukung proses penyelidikan melalui percobaan, tanya jawab, dan diskusi hasil",
+    alasanPendekatan: "menekankan proses berpikir ilmiah dalam merumuskan dan menguji hipotesis",
+    sintaks: [
+      { title: "Orientasi", tahapPM: "Memahami" },
+      { title: "Merumuskan Masalah", tahapPM: "Memahami" },
+      { title: "Merumuskan Hipotesis", tahapPM: "Mengaplikasi" },
+      { title: "Mengumpulkan Data", tahapPM: "Mengaplikasi" },
+      { title: "Menguji Hipotesis dan Merumuskan Kesimpulan", tahapPM: "Merefleksi" }
+    ]
+  },
+  cooperative: {
+    label: "Cooperative Learning (STAD)",
+    metode: "Diskusi Kelompok, Kerja Kelompok, Kuis, Presentasi",
+    pendekatan: "Kolaboratif",
+    alasanModel: "melatih kerja sama dan tanggung jawab peserta didik dalam kelompok kecil yang heterogen",
+    alasanMetode: "mendukung interaksi aktif dan saling membantu antaranggota kelompok",
+    alasanPendekatan: "menekankan pembelajaran melalui kolaborasi dan saling ketergantungan positif",
+    sintaks: [
+      { title: "Penyampaian Tujuan dan Motivasi", tahapPM: "Memahami" },
+      { title: "Pembagian Kelompok", tahapPM: "Memahami" },
+      { title: "Presentasi dari Guru", tahapPM: "Mengaplikasi" },
+      { title: "Kegiatan Belajar dalam Tim (Kerja Kelompok)", tahapPM: "Mengaplikasi" },
+      { title: "Kuis/Evaluasi dan Penghargaan Kelompok", tahapPM: "Merefleksi" }
+    ]
+  },
+  gbl: {
+    label: "Game Based Learning",
+    metode: "Permainan/Games, Diskusi, Tanya Jawab, Demonstrasi",
+    pendekatan: "Menyenangkan (Joyful Learning) dan Kolaboratif",
+    alasanModel: "membuat proses belajar lebih menyenangkan sekaligus melatih pemahaman konsep melalui permainan",
+    alasanMetode: "mendukung keterlibatan aktif peserta didik lewat tantangan dan diskusi hasil permainan",
+    alasanPendekatan: "menekankan suasana belajar yang menggembirakan dan kerja sama antarpeserta didik",
+    sintaks: [
+      { title: "Pengenalan Aturan dan Tujuan Permainan", tahapPM: "Memahami" },
+      { title: "Pembagian Kelompok/Tim", tahapPM: "Memahami" },
+      { title: "Pelaksanaan Permainan/Tantangan", tahapPM: "Mengaplikasi" },
+      { title: "Diskusi dan Refleksi Hasil Permainan", tahapPM: "Merefleksi" },
+      { title: "Penguatan Konsep dan Evaluasi", tahapPM: "Merefleksi" }
+    ]
+  }
+};
+
+function metodeDeskripsi(m){
+  return `Pembelajaran ini menerapkan model ${m.label} yang bertujuan untuk ${m.alasanModel}. Aktivitas didukung oleh metode ${m.metode.toLowerCase()} guna ${m.alasanMetode}. Seluruh proses ini dijalankan melalui pendekatan ${m.pendekatan.toLowerCase()} untuk ${m.alasanPendekatan}.`;
+}
+
+function renderMetodeSelect(){
+  const el = document.getElementById('metodeModel');
+  if(!el) return;
+  const opts = ['<option value="">— Pilih model pembelajaran —</option>'];
+  Object.keys(METODE_PEMBELAJARAN).forEach(key=>{
+    opts.push(`<option value="${key}">${escRaw(METODE_PEMBELAJARAN[key].label)}</option>`);
+  });
+  opts.push('<option value="lainnya">Lainnya (isi manual)</option>');
+  el.innerHTML = opts.join("");
+}
+
+function onMetodeChange(){
+  const key = document.getElementById('metodeModel').value;
+  const praktikEl = document.getElementById('praktik');
+  if(key && key !== 'lainnya'){
+    praktikEl.value = metodeDeskripsi(METODE_PEMBELAJARAN[key]);
+  }
+  renderPreview();
+}
+
 function renderDimGrid(){
   const el = document.getElementById('dimGrid');
   el.innerHTML = dimensiPM.map((d,i)=>`
     <label class="dim-item">
-      <input type="checkbox" value="${esc(d)}" ${dimensiDefaultChecked.includes(d)?'checked':''} onchange="renderPreview()">
+      <input type="checkbox" value="${escRaw(d)}" ${dimensiDefaultChecked.includes(d)?'checked':''} onchange="renderPreview()">
       <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dimensiColors[d]};flex-shrink:0;"></span>
-      ${esc(d)}
+      ${escRaw(d)}
     </label>
   `).join("");
 }
@@ -1008,8 +1140,73 @@ function getSelectedDimensi(){
   return Array.from(document.querySelectorAll('#dimGrid input:checked')).map(el=>el.value);
 }
 
-function esc(s){
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function italicizeForeign(text) {
+  if (!text) return "";
+  const terms = [
+    "Problem Based Learning",
+    "Project Based Learning",
+    "Discovery Learning",
+    "Inquiry Learning",
+    "Cooperative Learning",
+    "Game Based Learning",
+    "Joyful Learning",
+    "Computational Thinking",
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Internet of Things",
+    "Big Data",
+    "Cloud Computing",
+    "Cyber Security",
+    "Computational",
+    "Thinking",
+    "Unplugged",
+    "Plugged",
+    "Coding",
+    "Games",
+    "Mindful",
+    "Meaningful",
+    "Joyful",
+    "Feedback",
+    "Debugging",
+    "Debug",
+    "Hardware",
+    "Software",
+    "Brainstorming",
+    "Ice Breaking",
+    "Icebreaker",
+    "Post-test",
+    "Pre-test",
+    "Peer Assessment",
+    "Self Assessment",
+    "Assessment",
+    "Rubric",
+    "Flowchart",
+    "Algorithm",
+    "AI for Ocean",
+    "online",
+    "offline",
+    "AI"
+  ];
+  let result = text;
+  const sortedTerms = [...terms].sort((a, b) => b.length - a.length);
+  sortedTerms.forEach(term => {
+    const regex = new RegExp(`\\b(${escapeRegExp(term)})\\b`, 'gi');
+    result = result.replace(regex, '<i>$1</i>');
+  });
+  return result;
+}
+
+function escRaw(s){
   return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function esc(s){
+  let escaped = (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return italicizeForeign(escaped);
 }
 function linesToOl(text){
   const rawLines = (text||"").split("\n").map(s=>s.trim()).filter(Boolean);
@@ -1113,9 +1310,9 @@ function renderStepsEditor(){
       </div>
       <div class="row2">
         <div class="field"><label>Judul Tahap</label>
-          <input type="text" value="${esc(s.title)}" oninput="steps[${i}].title=this.value; renderPreview();"></div>
+          <input type="text" value="${escRaw(s.title)}" oninput="steps[${i}].title=this.value; renderPreview();"></div>
         <div class="field"><label>Durasi</label>
-          <input type="text" value="${esc(s.durasi)}" oninput="steps[${i}].durasi=this.value; renderPreview();"></div>
+          <input type="text" value="${escRaw(s.durasi)}" oninput="steps[${i}].durasi=this.value; renderPreview();"></div>
       </div>
       <div class="field"><label>Pengalaman Belajar (PM)</label>
         <select onchange="steps[${i}].tahapPM=this.value; renderPreview();">
@@ -1125,7 +1322,7 @@ function renderStepsEditor(){
         </select>
       </div>
       <div class="field"><label>Isi Langkah (1 baris = 1 poin)</label>
-        <textarea rows="4" oninput="steps[${i}].content=this.value; renderPreview();">${esc(s.content)}</textarea></div>
+        <textarea rows="4" oninput="steps[${i}].content=this.value; renderPreview();">${escRaw(s.content)}</textarea></div>
     </div>
   `).join("");
 }
@@ -1497,17 +1694,39 @@ const modelsByProvider = {
   gemini: [
     { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (cepat & hemat — direkomendasikan)" },
     { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (lebih detail, lebih lambat)" },
-    { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite (paling ringan/cepat)" }
+    { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite (paling ringan/cepat)" },
+    { value: "custom", label: "Model Kustom (Ketik manual...)" }
   ],
   openai: [
     { value: "gpt-4o-mini", label: "GPT-4o Mini (sangat cepat & akurat — direkomendasikan)" },
-    { value: "gpt-4o", label: "GPT-4o (sangat cerdas & detail)" }
+    { value: "gpt-4o", label: "GPT-4o (sangat cerdas & detail)" },
+    { value: "custom", label: "Model Kustom (Ketik manual...)" }
   ],
   groq: [
     { value: "llama-3.3-70b-specdec", label: "Llama 3.3 70B (super cepat & cerdas — direkomendasikan)" },
-    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (cepat & efisien)" }
+    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (cepat & efisien)" },
+    { value: "custom", label: "Model Kustom (Ketik manual...)" }
   ]
 };
+
+function onModelChange() {
+  const modelEl = document.getElementById('aiModel');
+  const customField = document.getElementById('customModelField');
+  if(!modelEl || !customField) return;
+  
+  if (modelEl.value === 'custom') {
+    customField.style.display = 'block';
+    try {
+      const provider = document.getElementById('aiProvider').value;
+      const savedCustom = localStorage.getItem(`hdl_${provider}_custom_model`);
+      if (savedCustom) {
+        document.getElementById('customModelInput').value = savedCustom;
+      }
+    } catch(e) {}
+  } else {
+    customField.style.display = 'none';
+  }
+}
 
 function onProviderChange() {
   const provider = document.getElementById('aiProvider').value;
@@ -1540,10 +1759,11 @@ function onProviderChange() {
 
   try {
     const savedModel = localStorage.getItem(`hdl_${provider}_model`);
-    if (savedModel && modelsByProvider[provider].some(m => m.value === savedModel)) {
+    if (savedModel && (modelsByProvider[provider].some(m => m.value === savedModel) || savedModel === 'custom')) {
       modelEl.value = savedModel;
     }
   } catch(e) {}
+  onModelChange();
 }
 
 (function initApiKey(){
@@ -1619,16 +1839,25 @@ function geminiSchema(){
   };
 }
 
-function buildAIPrompt(cp, tp, kelas, keyword){
+function buildAIPrompt(cp, tp, kelas, keyword, metodeKey){
   const mapelTetap = document.getElementById('mapel') ? document.getElementById('mapel').value.trim() : "";
   const jenjangTetap = document.getElementById('jenjang') ? document.getElementById('jenjang').value.trim() : "";
   const keywordText = keyword ? `\nKONTEKS / KEYWORD TAMBAHAN:\n${keyword}\n\nPastikan seluruh konten modul (termasuk langkah pembelajaran dan asesmen) sangat relevan dengan konteks/keyword di atas.\n` : "";
+
+  let metodeText = "";
+  const metode = metodeKey ? METODE_PEMBELAJARAN[metodeKey] : null;
+  if(metode){
+    const daftarTahap = metode.sintaks.map((s,i)=>`${i+1}. ${s.title} (tahapPM: ${s.tahapPM})`).join("\n");
+    metodeText = `\nMODEL PEMBELAJARAN YANG WAJIB DIGUNAKAN: ${metode.label}\nField "praktik" WAJIB diisi dalam bentuk satu paragraf narasi terpadu berikut (jangan dipisah per baris), dengan bagian alasan di dalam tanda kurung sudut ditulis ulang menjadi penjelasan spesifik yang benar-benar relevan dengan CP/TP guru di atas:\nPembelajaran ini menerapkan model ${metode.label} yang bertujuan untuk <alasan spesifik kenapa model ini cocok untuk CP/TP di atas>. Aktivitas didukung oleh metode ${metode.metode.toLowerCase()} guna <alasan spesifik kenapa metode-metode ini cocok untuk CP/TP di atas>. Seluruh proses ini dijalankan melalui pendekatan ${metode.pendekatan.toLowerCase()} untuk <alasan spesifik kenapa pendekatan ini cocok untuk CP/TP di atas>.\nField "langkahPembelajaran" WAJIB mengikuti PERSIS ${metode.sintaks.length} tahap sintaks resmi model ini berikut, dengan judul tahap ("title") dan nilai "tahapPM" persis seperti daftar berikut (urutan tidak boleh diubah, jangan gunakan label Pendahuluan/Inti/Penutup generik):\n${daftarTahap}\nMeskipun judul tahap mengikuti sintaks resmi di atas, tahap pertama tetap WAJIB memuat poin doa dan Pertanyaan Pemantik sesuai aturan pada instruksi sistem.\n`;
+  } else if(metodeKey === 'lainnya'){
+    metodeText = `\nCatatan: guru memilih metode "Lainnya" — tentukan sendiri metode/praktik pedagogis yang paling relevan dengan CP/TP di atas dan gunakan struktur tahap generik (Pendahuluan, Inti, Penutup) seperti biasa.\n`;
+  }
 
   return `Susun seluruh komponen Modul Ajar berikut berdasarkan data dari guru:
 
 MATA PELAJARAN (tetap, jangan diubah, gunakan persis ini): ${mapelTetap}
 JENJANG SEKOLAH (tetap, jangan diubah, gunakan persis ini): ${jenjangTetap}
-KELAS: ${kelas}${keywordText}
+KELAS: ${kelas}${keywordText}${metodeText}
 CAPAIAN PEMBELAJARAN (CP):
 ${cp}
 
@@ -1648,9 +1877,10 @@ Aturan wajib:
 - Pemetaan Fase Kurikulum Merdeka: Kelas 1-2 = Fase A, Kelas 3-4 = Fase B, Kelas 5-6 = Fase C, Kelas 7-9 = Fase D, Kelas 10 = Fase E, Kelas 11-12 = Fase F.
 - Field "fase" berformat seperti: "Fase C, V (Lima), I (Ganjil)" — sesuaikan angka romawi kelas dan semester dari konteks (jika semester tidak disebutkan, asumsikan Ganjil).
 - "badge" adalah teks pendek berisi nama mata pelajaran + kelas, huruf besar, cocok untuk badge di pojok kanan atas dokumen.
-- "langkahPembelajaran": 5-7 tahap runtut (Pendahuluan, beberapa tahap Inti, Penutup), total durasi harus konsisten dengan field "alokasi", dan tahapPM dibagi rata antara Memahami, Mengaplikasi, dan Merefleksi. Field "content" setiap tahap berisi beberapa poin instruksi konkret, satu baris satu poin, dipisah karakter newline. Aplikasi akan otomatis menomori setiap baris tersebut sebagai daftar bernomor, jadi JANGAN PERNAH menambahkan angka atau simbol penomoran/bullet manual sendiri (mis. "1.", "2)", "-", "•") di awal baris manapun — tulis kalimatnya langsung tanpa prefix apa pun.
+- "langkahPembelajaran": jika prompt pengguna TIDAK menyertakan instruksi "METODE/MODEL PEMBELAJARAN YANG WAJIB DIGUNAKAN", susun 5-7 tahap runtut (Pendahuluan, beberapa tahap Inti, Penutup) dengan tahapPM dibagi rata antara Memahami, Mengaplikasi, dan Merefleksi. Jika prompt pengguna MENYERTAKAN instruksi tersebut, WAJIB ikuti persis jumlah tahap, judul tahap, dan tahapPM yang diberikan dalam instruksi itu (jangan menambah/mengurangi/mengganti nama tahap). Pada kedua kasus, total durasi harus konsisten dengan field "alokasi". Field "content" setiap tahap berisi beberapa poin instruksi konkret, satu baris satu poin, dipisah karakter newline. Aplikasi akan otomatis menomori setiap baris tersebut sebagai daftar bernomor, jadi JANGAN PERNAH menambahkan angka atau simbol penomoran/bullet manual sendiri (mis. "1.", "2)", "-", "•") di awal baris manapun — tulis kalimatnya langsung tanpa prefix apa pun.
 - Pada tahap Pendahuluan, WAJIB selalu menyertakan satu poin di awal yang berbunyi kurang lebih: "Guru mengajak salah satu murid untuk memimpin doa sebelum memulai pembelajaran." (bukan guru sendiri yang memimpin doa, melainkan salah satu murid, mencerminkan pembiasaan kemandirian dan kepemimpinan siswa).
 - Tahap Pendahuluan pada "langkahPembelajaran" WAJIB memuat "Pertanyaan Pemantik" berupa MINIMAL 3 pertanyaan terbuka yang relevan dengan materi/TP untuk memantik rasa ingin tahu dan mengaitkan dengan pengalaman murid sehari-hari. Tulis satu baris berisi kalimat pengantar (mis. "Guru mengajukan Pertanyaan Pemantik:"), lalu setiap pertanyaan pemantik pada baris-baris SETELAHNYA WAJIB diawali penanda ">>" (dua tanda lebih-besar tanpa spasi, mis. ">>Pernahkah kalian melihat robot yang bisa berbicara seperti manusia?") — ini akan otomatis dirender sebagai sub-nomor bercetak miring oleh aplikasi. Penanda ">>" HANYA dipakai untuk pertanyaan pemantik, jangan dipakai di baris lain manapun.
+- "praktik" (Praktik Pedagogis) WAJIB selalu diisi dalam bentuk satu paragraf narasi terpadu (bukan poin-poin/baris terpisah), dengan pola: "Pembelajaran ini menerapkan model [nama model] yang bertujuan untuk [alasan singkat]. Aktivitas didukung oleh metode [daftar metode] guna [alasan singkat]. Seluruh proses ini dijalankan melalui pendekatan [nama pendekatan] untuk [alasan singkat]." Setiap bagian alasan WAJIB berupa 1 kalimat pendek yang menjelaskan mengapa pilihan tersebut relevan/cocok dengan CP dan TP yang diberikan guru (bukan kalimat generik yang bisa dipakai untuk materi apa saja). Jika prompt pengguna menyertakan instruksi "MODEL PEMBELAJARAN YANG WAJIB DIGUNAKAN", gunakan model, metode, dan pendekatan yang ditentukan di situ dengan menyusunnya ke dalam pola narasi di atas.
 - Mode pengerjaan tugas/aktivitas murid (individu, berpasangan, atau kelompok) TIDAK boleh selalu default kelompok — pilih yang paling sesuai dengan karakter TP dan aktivitasnya. Jika materi/tugasnya memang lebih cocok dikerjakan sendiri (mis. melatih pemahaman/keterampilan personal, asesmen individu, refleksi diri), gunakan mode individu; gunakan kelompok/berpasangan hanya jika aktivitasnya memang menuntut kolaborasi/diskusi. Terapkan pilihan ini secara konsisten pada "langkahPembelajaran" (field "content"), "praktik", "kemitraan", dan "lingkungan" agar tidak kontradiktif satu sama lain.
 - "dpl": narasi 1 baris per Dimensi Profil Lulusan terpilih, format "Nama Dimensi: penjelasan singkat keterkaitannya dengan materi.", dipisah newline. Pilih 2-4 dimensi paling relevan dari 8 pilihan pada schema.
 - "rubrik1" dan "rubrik2": setiap baris = "Aspek | Indikator | Level4 | Level3 | Level2 | Level1", antar baris dipisah newline. rubrik1 tentang sikap, rubrik2 tentang produk/kinerja hasil belajar.
@@ -1664,12 +1894,12 @@ Aturan wajib:
 - JANGAN PERNAH menggunakan emoji atau simbol dekoratif sejenis di bagian mana pun dalam modul ajar.
 - Jangan menyertakan markdown atau teks di luar JSON.`;
 
-async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas, keyword) {
+async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas, keyword, metodeKey) {
   const body = {
     model: model,
     messages: [
       { role: "system", content: systemInstruction },
-      { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword) }
+      { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }
     ],
     response_format: { type: "json_object" },
     temperature: 0.3
@@ -1831,57 +2061,117 @@ async function typeSteps(list){
 }
 
 async function applyAIResultTyped(r){
-  const seqA = [
-    ['judul', r.judul], ['badge', r.badge], ['fase', r.fase], ['elemenSingkat', r.elemenSingkat],
-    ['alokasi', r.alokasi], ['cp', r.cp], ['tp', r.tp], ['dpl', r.dpl],
-    ['prinsipMindful', r.prinsipMindful], ['prinsipMeaningful', r.prinsipMeaningful], ['prinsipJoyful', r.prinsipJoyful],
-    ['teknologiDigital', r.teknologiDigital], ['praktik', r.praktik], ['kemitraan', r.kemitraan], ['lingkungan', r.lingkungan]
+  // Clear all fields before typing starts so they don't show pre-filled text
+  const fieldsToClear = [
+    'judul', 'badge', 'fase', 'elemenSingkat', 'alokasi',
+    'quranArab', 'quranTerjemah', 'quranRef', 'haditsArab', 'haditsTerjemah', 'haditsRef', 'quranKait',
+    'cp', 'dpl', 'tp',
+    'prinsipMindful', 'prinsipMeaningful', 'prinsipJoyful',
+    'praktik', 'kemitraan', 'lingkungan', 'teknologiDigital',
+    'sarana',
+    'asAwal', 'asFormatif', 'asSumatif',
+    'rubrik1Judul', 'rubrik1', 'rubrik2Judul', 'rubrik2',
+    'skorMaks', 'kkm',
+    'sudahKKM', 'belumKKM',
+    'catatan'
   ];
-  for(const [id, val] of seqA){
+  fieldsToClear.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+
+  // Clear steps
+  steps = [];
+  renderStepsEditor();
+
+  // Clear checkboxes
+  document.querySelectorAll('#dimGrid input[type=checkbox]').forEach(chk => chk.checked = false);
+
+  // Render initial clean preview
+  renderPreview();
+
+  // 1. Identitas Modul (A)
+  const seq1 = [
+    ['judul', r.judul], ['badge', r.badge], ['fase', r.fase], ['elemenSingkat', r.elemenSingkat], ['alokasi', r.alokasi]
+  ];
+  for(const [id, val] of seq1){
     if(val===undefined || val===null) continue;
     await typeInto(document.getElementById(id), val);
   }
 
-  if(Array.isArray(r.dimensiProfilLulusan)){
-    await checkDimensiTyped(r.dimensiProfilLulusan);
-  }
-
-  if(Array.isArray(r.langkahPembelajaran) && r.langkahPembelajaran.length){
-    await typeSteps(r.langkahPembelajaran);
-  }
-
-  const seqB = [
-    ['asAwal', r.asAwal], ['asFormatif', r.asFormatif], ['asSumatif', r.asSumatif],
-    ['rubrik1Judul', r.rubrik1Judul], ['rubrik1', r.rubrik1],
-    ['rubrik2Judul', r.rubrik2Judul], ['rubrik2', r.rubrik2],
-    ['skorMaks', r.skorMaks], ['kkm', r.kkm], ['sarana', r.sarana],
-    ['sudahKKM', r.sudahKKM], ['belumKKM', r.belumKKM]
-  ];
-  for(const [id, val] of seqB){
-    if(val===undefined || val===null) continue;
-    await typeInto(document.getElementById(id), val);
-  }
-
-  if(r.catatan){ await typeInto(document.getElementById('catatan'), r.catatan); }
-
-  const seqC = [
+  // 2. Landasan Nilai Qur'ani & Hadits
+  const seq2 = [
     ['quranArab', r.quranArab || ''], ['quranTerjemah', r.quranTerjemah || ''], ['quranRef', r.quranRef || ''],
     ['haditsArab', r.haditsArab || ''], ['haditsTerjemah', r.haditsTerjemah || ''], ['haditsRef', r.haditsRef || ''],
     ['quranKait', r.quranKait]
   ];
-  for(const [id, val] of seqC){
-    if(val===undefined) continue;
+  for(const [id, val] of seq2){
+    if(val===undefined || val===null) continue;
     await typeInto(document.getElementById(id), val);
+  }
+
+  // 3. Identifikasi (B)
+  if(r.cp!==undefined && r.cp!==null) await typeInto(document.getElementById('cp'), r.cp);
+  if(r.dpl!==undefined && r.dpl!==null) await typeInto(document.getElementById('dpl'), r.dpl);
+  if(Array.isArray(r.dimensiProfilLulusan)){
+    await checkDimensiTyped(r.dimensiProfilLulusan);
+  }
+  if(r.tp!==undefined && r.tp!==null) await typeInto(document.getElementById('tp'), r.tp);
+
+  // 4. Kerangka PM & Desain Pembelajaran (C)
+  const seq4 = [
+    ['prinsipMindful', r.prinsipMindful], ['prinsipMeaningful', r.prinsipMeaningful], ['prinsipJoyful', r.prinsipJoyful],
+    ['praktik', r.praktik], ['kemitraan', r.kemitraan], ['lingkungan', r.lingkungan], ['teknologiDigital', r.teknologiDigital]
+  ];
+  for(const [id, val] of seq4){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  // 5. Sarana / Media
+  if(r.sarana!==undefined && r.sarana!==null){
+    await typeInto(document.getElementById('sarana'), r.sarana);
+  }
+
+  // 6. Langkah Pembelajaran (D)
+  if(Array.isArray(r.langkahPembelajaran) && r.langkahPembelajaran.length){
+    await typeSteps(r.langkahPembelajaran);
+  }
+
+  // 7. Asesmen Pembelajaran (E) & Rubrik & KKTP
+  const seq5 = [
+    ['asAwal', r.asAwal], ['asFormatif', r.asFormatif], ['asSumatif', r.asSumatif],
+    ['rubrik1Judul', r.rubrik1Judul], ['rubrik1', r.rubrik1],
+    ['rubrik2Judul', r.rubrik2Judul], ['rubrik2', r.rubrik2],
+    ['skorMaks', r.skorMaks], ['kkm', r.kkm]
+  ];
+  for(const [id, val] of seq5){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  // 8. Rencana Tindak Lanjut (F)
+  const seq6 = [
+    ['sudahKKM', r.sudahKKM], ['belumKKM', r.belumKKM]
+  ];
+  for(const [id, val] of seq6){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  // 9. Catatan
+  if(r.catatan!==undefined && r.catatan!==null){
+    await typeInto(document.getElementById('catatan'), r.catatan);
   }
 
   renderPreview();
 }
 
-async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry){
+async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey){
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const body = {
     systemInstruction: { parts:[{ text: AI_SYSTEM_INSTRUCTION }] },
-    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas, keyword) }] }],
+    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }] }],
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: geminiSchema(),
@@ -1975,18 +2265,22 @@ function applyAIResult(r){
 async function generateWithAI(){
   const provider = document.getElementById('aiProvider').value;
   const apiKey = document.getElementById('geminiApiKey').value.trim();
-  const model = document.getElementById('aiModel').value;
+  let model = document.getElementById('aiModel').value;
+  if (model === 'custom') {
+    model = document.getElementById('customModelInput').value.trim();
+  }
   const cp = document.getElementById('aiCP').value.trim();
   const tp = document.getElementById('aiTP').value.trim();
   const kelas = document.getElementById('aiKelas').value.trim();
   const keyword = document.getElementById('aiKeyword') ? document.getElementById('aiKeyword').value.trim() : "";
+  const metodeKey = document.getElementById('metodeModel') ? document.getElementById('metodeModel').value : "";
   const btn = document.getElementById('btnGenerateAI');
   const label = document.getElementById('btnAILabel');
 
   const providerLabel = provider === 'gemini' ? 'Gemini' : provider === 'openai' ? 'OpenAI' : 'Groq';
 
   // Reset highlight merah dari validasi sebelumnya
-  ['geminiApiKey','aiCP','aiTP','aiKelas'].forEach(id=>{
+  ['geminiApiKey','aiCP','aiTP','aiKelas','customModelInput'].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.classList.remove('field-error');
   });
@@ -1996,6 +2290,9 @@ async function generateWithAI(){
   if(!cp) kosong.push({ id:'aiCP', label:'CP' });
   if(!tp) kosong.push({ id:'aiTP', label:'TP' });
   if(!kelas) kosong.push({ id:'aiKelas', label:'Kelas' });
+  if(document.getElementById('aiModel').value === 'custom' && !document.getElementById('customModelInput').value.trim()) {
+    kosong.push({ id:'customModelInput', label:'Nama Model Kustom' });
+  }
 
   if(kosong.length){
     kosong.forEach(f=>{
@@ -2012,12 +2309,16 @@ async function generateWithAI(){
     if(document.getElementById('saveKeyChk').checked){
       localStorage.setItem('hdl_ai_provider', provider);
       localStorage.setItem(`hdl_${provider}_key`, apiKey);
-      localStorage.setItem(`hdl_${provider}_model`, model);
+      localStorage.setItem(`hdl_${provider}_model`, document.getElementById('aiModel').value);
+      if(document.getElementById('aiModel').value === 'custom') {
+        localStorage.setItem(`hdl_${provider}_custom_model`, document.getElementById('customModelInput').value.trim());
+      }
       localStorage.setItem('hdl_save_key_checked', 'true');
     }else{
       localStorage.removeItem('hdl_ai_provider');
       localStorage.removeItem(`hdl_${provider}_key`);
       localStorage.removeItem(`hdl_${provider}_model`);
+      localStorage.removeItem(`hdl_${provider}_custom_model`);
       localStorage.setItem('hdl_save_key_checked', 'false');
     }
   }catch(e){ /* penyimpanan tidak tersedia */ }
@@ -2033,11 +2334,11 @@ async function generateWithAI(){
       const onRetry = (attempt, maxAttempts, reason) => {
         aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
       };
-      result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry);
+      result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
     } else if (provider === "openai") {
-      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword);
+      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword, metodeKey);
     } else if (provider === "groq") {
-      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword);
+      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword, metodeKey);
     }
     
     hideGenOverlay();
@@ -2066,6 +2367,7 @@ document.querySelector('.editor').addEventListener('input', function(e){
 
 renderStepsEditor();
 renderDimGrid();
+renderMetodeSelect();
 updatePageStyle();
 renderPreview();
 
