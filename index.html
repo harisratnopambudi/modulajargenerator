@@ -772,9 +772,107 @@
   .info-body li {
     margin-bottom: 4px;
   }
+
+  /* ---------- WELCOME POPUP ---------- */
+  .welcome-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    animation: welcomeFadeIn 0.4s ease-out;
+  }
+  .welcome-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: welcomeScaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-top: 5px solid var(--teal);
+  }
+  .welcome-icon {
+    margin-bottom: 12px;
+    animation: welcomeBounceEmoji 2.5s infinite ease-in-out;
+  }
+  .welcome-card h2 {
+    margin: 0 0 12px 0;
+    color: var(--navy);
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .welcome-card p {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0 0 12px 0;
+  }
+  .welcome-support {
+    background: #f0f7f5;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid var(--teal);
+    font-weight: 500;
+    color: var(--teal-dark) !important;
+    text-align: center;
+  }
+  .welcome-btn {
+    margin-top: 15px;
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 24px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+  }
+  .welcome-btn:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+  }
+  .welcome-btn:active {
+    transform: translateY(1px);
+  }
+  @keyframes welcomeFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes welcomeScaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes welcomeBounceEmoji {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
 </style>
 </head>
 <body>
+
+  <!-- =============== WELCOME POPUP =============== -->
+  <div id="welcomePopup" class="welcome-overlay no-print" style="display: none;">
+    <div class="welcome-card">
+      <svg class="welcome-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 10L12 5L22 10L12 15L2 10Z"></path>
+        <path d="M6 12V18C6 19.1 8.68 20 12 20C15.32 20 18 19.1 18 18V12"></path>
+        <path d="M22 10V16"></path>
+      </svg>
+      <h2>Selamat Datang, Guru Hebat!</h2>
+      <p>Terima kasih banyak sudah menggunakan <strong>Generator Modul Ajar</strong> ini.</p>
+      <p>Aplikasi ini dikembangkan oleh <strong>Haris DevLab</strong> untuk memudahkan tugas administrasi Bapak/Ibu Guru dalam menyusun Rencana Pembelajaran Kurikulum Merdeka secara praktis dan berkualitas.</p>
+      <p class="welcome-support">Semoga platform ini dapat mempermudah dan membantu meningkatkan efektivitas aktivitas mengajar Bapak/Ibu Guru sehari-hari.</p>
+      <button class="welcome-btn" onclick="closeWelcomePopup()">Mulai Buat Modul</button>
+    </div>
+  </div>
+
 <div class="app">
 
   <!-- =============== EDITOR =============== -->
@@ -2024,7 +2122,24 @@ function initApiKey(){
     }
     
     onProviderChange();
+    checkWelcomePopup();
   }catch(e){ /* localStorage tidak tersedia */ }
+}
+
+function checkWelcomePopup() {
+  try {
+    const shown = localStorage.getItem('hdl_welcome_shown');
+    if (!shown) {
+      document.getElementById('welcomePopup').style.display = 'flex';
+    }
+  } catch (e) {}
+}
+
+function closeWelcomePopup() {
+  document.getElementById('welcomePopup').style.display = 'none';
+  try {
+    localStorage.setItem('hdl_welcome_shown', 'true');
+  } catch (e) {}
 }
 
 function toggleKeyVisibility(){
