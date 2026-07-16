@@ -745,7 +745,8 @@
         </div>
         <div class="field">
           <label>Badge Kanan Atas (mapel + kelas)</label>
-          <textarea id="badge" rows="3">KODING DAN KECERDASAN ARTIFISIAL KELAS 5</textarea>
+          <textarea id="badge" rows="3">KODING DAN KECERDASAN ARTIFISIAL
+KELAS 5</textarea>
         </div>
         <div class="row2">
           <div class="field"><label>Penyusun</label><input type="text" id="penyusun" value="Haris Ratno Pambudi, S.T"></div>
@@ -1805,7 +1806,7 @@ Tugas: berdasarkan CP, TP, dan kelas yang diberikan guru, susun SELURUH komponen
 Aturan wajib:
 - Pemetaan Fase Kurikulum Merdeka: Kelas 1-2 = Fase A, Kelas 3-4 = Fase B, Kelas 5-6 = Fase C, Kelas 7-9 = Fase D, Kelas 10 = Fase E, Kelas 11-12 = Fase F.
 - Field "fase" berformat seperti: "Fase C, V (Lima), I (Ganjil)" — sesuaikan angka romawi kelas dan semester dari konteks (jika semester tidak disebutkan, asumsikan Ganjil).
-- "badge" adalah teks pendek berisi nama mata pelajaran + kelas, huruf besar, cocok untuk badge di pojok kanan atas dokumen.
+- "badge" adalah teks berisi nama mata pelajaran dan kelas, huruf besar, dipisah dengan karakter newline (\n) di antara mata pelajaran dan kelas (contoh: "KODING DAN KECERDASAN ARTIFISIAL\nKELAS 5").
 - "langkahPembelajaran": 5-7 tahap runtut (Pendahuluan, beberapa tahap Inti, Penutup), total durasi harus konsisten dengan field "alokasi", dan tahapPM dibagi rata antara Memahami, Mengaplikasi, dan Merefleksi. Field "content" setiap tahap berisi beberapa poin instruksi konkret, satu baris satu poin, dipisah karakter newline. Aplikasi akan otomatis menomori setiap baris tersebut sebagai daftar bernomor, jadi JANGAN PERNAH menambahkan angka atau simbol penomoran/bullet manual sendiri (mis. "1.", "2)", "-", "•") di awal baris manapun — tulis kalimatnya langsung tanpa prefix apa pun.
 - Pada tahap Pendahuluan, WAJIB selalu menyertakan satu poin di awal yang berbunyi kurang lebih: "Guru mengajak salah satu murid untuk memimpin doa sebelum memulai pembelajaran." (bukan guru sendiri yang memimpin doa, melainkan salah satu murid, mencerminkan pembiasaan kemandirian dan kepemimpinan siswa).
 - Tahap Pendahuluan pada "langkahPembelajaran" WAJIB memuat "Pertanyaan Pemantik" berupa MINIMAL 3 pertanyaan terbuka yang relevan dengan materi/TP untuk memantik rasa ingin tahu dan mengaitkan dengan pengalaman murid sehari-hari. Tulis satu baris berisi kalimat pengantar (mis. "Guru mengajukan Pertanyaan Pemantik:"), lalu setiap pertanyaan pemantik pada baris-baris SETELAHNYA WAJIB diawali penanda ">>" (dua tanda lebih-besar tanpa spasi, mis. ">>Pernahkah kalian melihat robot yang bisa berbicara seperti manusia?") — ini akan otomatis dirender sebagai sub-nomor bercetak miring oleh aplikasi. Penanda ">>" HANYA dipakai untuk pertanyaan pemantik, jangan dipakai di baris lain manapun.
