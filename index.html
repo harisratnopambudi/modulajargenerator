@@ -654,14 +654,14 @@
           </select>
         </div>
         <div class="field">
-          <label id="apiKeyLabel">API Key Gemini</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <label id="apiKeyLabel" style="margin: 0;">API Key Gemini</label>
+            <a id="apiKeyLink" href="https://aistudio.google.com/apikey" target="_blank" style="font-size: 11.5px; color: var(--teal); text-decoration: underline; font-weight: bold;">Dapatkan API Key</a>
+          </div>
           <div class="apikey-row">
             <input type="password" id="geminiApiKey" placeholder="AIzaSy...">
             <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
           </div>
-          <label class="save-key-line" style="margin-top:5px;">
-            <input type="checkbox" id="saveKeyChk"> Simpan key ini di browser saya
-          </label>
         </div>
         <div class="field">
           <label>Model</label>
@@ -1540,17 +1540,30 @@ function onProviderChange() {
   const labelEl = document.getElementById('apiKeyLabel');
   const inputEl = document.getElementById('geminiApiKey');
   const modelEl = document.getElementById('aiModel');
+  const linkEl = document.getElementById('apiKeyLink');
   if(!labelEl || !inputEl || !modelEl) return;
 
   if (provider === 'gemini') {
     labelEl.textContent = 'API Key Gemini';
     inputEl.placeholder = 'AIzaSy...';
+    if(linkEl) {
+      linkEl.href = 'https://aistudio.google.com/apikey';
+      linkEl.style.display = 'inline-block';
+    }
   } else if (provider === 'openai') {
     labelEl.textContent = 'API Key OpenAI';
     inputEl.placeholder = 'sk-...';
+    if(linkEl) {
+      linkEl.href = 'https://platform.openai.com/api-keys';
+      linkEl.style.display = 'inline-block';
+    }
   } else if (provider === 'groq') {
     labelEl.textContent = 'API Key Groq';
     inputEl.placeholder = 'gsk_...';
+    if(linkEl) {
+      linkEl.href = 'https://console.groq.com/keys';
+      linkEl.style.display = 'inline-block';
+    }
   }
 
   try {
@@ -1579,13 +1592,27 @@ function onProviderChange() {
     if(providerEl) { providerEl.value = savedProvider; }
     
     onProviderChange();
-    
-    const savedChk = localStorage.getItem('hdl_save_key_checked');
-    if(savedChk === 'true') {
-      document.getElementById('saveKeyChk').checked = true;
-    }
   }catch(e){ /* localStorage tidak tersedia */ }
 })();
+
+// Auto-save input values
+document.getElementById('geminiApiKey').addEventListener('input', function(e){
+  try{
+    const provider = document.getElementById('aiProvider').value;
+    localStorage.setItem(`hdl_${provider}_key`, e.target.value);
+  }catch(err){}
+});
+document.getElementById('aiModel').addEventListener('change', function(e){
+  try{
+    const provider = document.getElementById('aiProvider').value;
+    localStorage.setItem(`hdl_${provider}_model`, e.target.value);
+  }catch(err){}
+});
+document.getElementById('aiProvider').addEventListener('change', function(e){
+  try{
+    localStorage.setItem('hdl_ai_provider', e.target.value);
+  }catch(err){}
+});
 
 function toggleKeyVisibility(){
   const el = document.getElementById('geminiApiKey');
@@ -2035,17 +2062,9 @@ async function generateWithAI(){
   }
  
   try{
-    if(document.getElementById('saveKeyChk').checked){
-      localStorage.setItem('hdl_ai_provider', provider);
-      localStorage.setItem(`hdl_${provider}_key`, apiKey);
-      localStorage.setItem(`hdl_${provider}_model`, model);
-      localStorage.setItem('hdl_save_key_checked', 'true');
-    }else{
-      localStorage.removeItem('hdl_ai_provider');
-      localStorage.removeItem(`hdl_${provider}_key`);
-      localStorage.removeItem(`hdl_${provider}_model`);
-      localStorage.setItem('hdl_save_key_checked', 'false');
-    }
+    localStorage.setItem('hdl_ai_provider', provider);
+    localStorage.setItem(`hdl_${provider}_key`, apiKey);
+    localStorage.setItem(`hdl_${provider}_model`, model);
   }catch(e){ /* penyimpanan tidak tersedia */ }
  
   btn.disabled = true; btn.classList.add('loading');
