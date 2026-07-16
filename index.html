@@ -651,14 +651,19 @@
           </select>
         </div>
         <div class="field">
-          <label id="apiKeyLabel">API Key Gemini</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <label id="apiKeyLabel" style="margin-bottom: 0;">API Key Gemini</label>
+            <span id="apiStatusBadge" style="display: none; font-size: 10px; font-weight: 700; color: #2e7d32; background-color: #e8f5e9; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Connected</span>
+          </div>
           <div class="apikey-row">
-            <input type="password" id="geminiApiKey" placeholder="AIzaSy...">
+            <input type="password" id="geminiApiKey" placeholder="AIzaSy..." oninput="checkAPIKeyStatus()">
             <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
           </div>
-          <label class="save-key-line" style="margin-top:5px;">
-            <input type="checkbox" id="saveKeyChk"> Simpan key ini di browser saya
-          </label>
+          <div style="margin-top: 6px; font-size: 11px;">
+            <a id="apiKeyLink" href="https://aistudio.google.com/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 500;">
+              🔑 Dapatkan API Key Gemini Gratis di sini
+            </a>
+          </div>
         </div>
         <div class="field">
           <label>Model</label>
@@ -1733,25 +1738,34 @@ function onProviderChange() {
   const labelEl = document.getElementById('apiKeyLabel');
   const inputEl = document.getElementById('geminiApiKey');
   const modelEl = document.getElementById('aiModel');
+  const linkEl = document.getElementById('apiKeyLink');
   if(!labelEl || !inputEl || !modelEl) return;
 
   if (provider === 'gemini') {
     labelEl.textContent = 'API Key Gemini';
     inputEl.placeholder = 'AIzaSy...';
+    if (linkEl) {
+      linkEl.href = 'https://aistudio.google.com/';
+      linkEl.innerHTML = '🔑 Dapatkan API Key Gemini Gratis di sini';
+    }
   } else if (provider === 'openai') {
     labelEl.textContent = 'API Key OpenAI';
     inputEl.placeholder = 'sk-...';
+    if (linkEl) {
+      linkEl.href = 'https://platform.openai.com/api-keys';
+      linkEl.innerHTML = '🔑 Dapatkan API Key OpenAI di sini';
+    }
   } else if (provider === 'groq') {
     labelEl.textContent = 'API Key Groq';
     inputEl.placeholder = 'gsk_...';
+    if (linkEl) {
+      linkEl.href = 'https://console.groq.com/keys';
+      linkEl.innerHTML = '🔑 Dapatkan API Key Groq Gratis di sini';
+    }
   }
 
-  try {
-    const savedKey = localStorage.getItem(`hdl_${provider}_key`);
-    inputEl.value = savedKey || '';
-  } catch(e) {
-    inputEl.value = '';
-  }
+  inputEl.value = '';
+  checkAPIKeyStatus();
 
   modelEl.innerHTML = modelsByProvider[provider].map(m => `
     <option value="${m.value}">${m.label}</option>
@@ -1768,22 +1782,88 @@ function onProviderChange() {
 
 (function initApiKey(){
   try{
+    // Hapus key yang mungkin tersimpan sebelumnya demi keamanan/privasi
+    localStorage.removeItem('hdl_gemini_key');
+    localStorage.removeItem('hdl_openai_key');
+    localStorage.removeItem('hdl_groq_key');
+
     const savedProvider = localStorage.getItem('hdl_ai_provider') || 'gemini';
     const providerEl = document.getElementById('aiProvider');
     if(providerEl) { providerEl.value = savedProvider; }
     
     onProviderChange();
-    
-    const savedChk = localStorage.getItem('hdl_save_key_checked');
-    if(savedChk === 'true') {
-      document.getElementById('saveKeyChk').checked = true;
-    }
   }catch(e){ /* localStorage tidak tersedia */ }
 })();
 
 function toggleKeyVisibility(){
   const el = document.getElementById('geminiApiKey');
   el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+let apiCheckTimeout = null;
+
+async function checkAPIKeyStatus() {
+  const inputEl = document.getElementById('geminiApiKey');
+  const badgeEl = document.getElementById('apiStatusBadge');
+  if (!inputEl || !badgeEl) return;
+
+  const apiKey = inputEl.value.trim();
+  
+  if (apiKey.length === 0) {
+    badgeEl.style.display = 'none';
+    return;
+  }
+
+  // Menampilkan status sedang memeriksa
+  badgeEl.style.display = 'inline-block';
+  badgeEl.textContent = '🔄 Checking...';
+  badgeEl.style.color = '#7f8c8d';
+  badgeEl.style.backgroundColor = '#f5f6fa';
+
+  if (apiCheckTimeout) clearTimeout(apiCheckTimeout);
+
+  apiCheckTimeout = setTimeout(async () => {
+    if (inputEl.value.trim().length === 0) {
+      badgeEl.style.display = 'none';
+      return;
+    }
+
+    const provider = document.getElementById('aiProvider').value;
+    let isValid = false;
+
+    try {
+      if (provider === 'gemini') {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
+        });
+        isValid = res.ok;
+      } else {
+        // Untuk OpenAI dan Groq, coba fetch endpoint list models
+        const url = provider === 'openai' ? 'https://api.openai.com/v1/models' : 'https://api.groq.com/openai/v1/models';
+        const res = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${apiKey}` }
+        });
+        isValid = res.ok;
+      }
+    } catch(e) {
+      isValid = false;
+    }
+
+    // Pastikan input tidak berubah selama proses request asynchronous
+    if (inputEl.value.trim() !== apiKey) return;
+
+    if (isValid) {
+      badgeEl.textContent = 'Connected';
+      badgeEl.style.color = '#2e7d32';
+      badgeEl.style.backgroundColor = '#e8f5e9';
+    } else {
+      badgeEl.textContent = 'Invalid Key';
+      badgeEl.style.color = '#c62828';
+      badgeEl.style.backgroundColor = '#ffebee';
+    }
+  }, 1000);
 }
 
 const DIMENSI_PM_LIST = [
@@ -2306,20 +2386,10 @@ async function generateWithAI(){
   }
  
   try{
-    if(document.getElementById('saveKeyChk').checked){
-      localStorage.setItem('hdl_ai_provider', provider);
-      localStorage.setItem(`hdl_${provider}_key`, apiKey);
-      localStorage.setItem(`hdl_${provider}_model`, document.getElementById('aiModel').value);
-      if(document.getElementById('aiModel').value === 'custom') {
-        localStorage.setItem(`hdl_${provider}_custom_model`, document.getElementById('customModelInput').value.trim());
-      }
-      localStorage.setItem('hdl_save_key_checked', 'true');
-    }else{
-      localStorage.removeItem('hdl_ai_provider');
-      localStorage.removeItem(`hdl_${provider}_key`);
-      localStorage.removeItem(`hdl_${provider}_model`);
-      localStorage.removeItem(`hdl_${provider}_custom_model`);
-      localStorage.setItem('hdl_save_key_checked', 'false');
+    localStorage.setItem('hdl_ai_provider', provider);
+    localStorage.setItem(`hdl_${provider}_model`, document.getElementById('aiModel').value);
+    if(document.getElementById('aiModel').value === 'custom') {
+      localStorage.setItem(`hdl_${provider}_custom_model`, document.getElementById('customModelInput').value.trim());
     }
   }catch(e){ /* penyimpanan tidak tersedia */ }
  
