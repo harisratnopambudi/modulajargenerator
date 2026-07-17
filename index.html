@@ -887,15 +887,13 @@
           Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, pilih provider AI, lalu masukkan API key Anda. AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. API key dikirim langsung dari browser Anda ke provider terkait tanpa melalui server perantara.
           <br><br>Tips: pilih <b>Model Pembelajaran</b> di bawah jika ingin langkah pembelajaran mengikuti sintaks model tertentu (mis. PBL, PjBL, Discovery Learning) — AI akan menyusun tahapan sesuai sintaks resmi model tersebut, dan Praktik Pedagogis (Model, Metode, Pendekatan) akan terisi otomatis.
         </div>
-        <div class="field">
+        <div class="field" style="display: none;">
           <label>Provider AI</label>
           <select id="aiProvider" onchange="onProviderChange()">
             <option value="gemini">Google Gemini</option>
-            <option value="openai">OpenAI (ChatGPT)</option>
-            <option value="groq">Groq (Llama 3)</option>
           </select>
         </div>
-        <div class="field">
+        <div class="field" id="apiKeyField">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
             <div style="display: flex; align-items: center;">
               <label id="apiKeyLabel" style="margin: 0;">API Key Gemini</label>
@@ -911,9 +909,7 @@
         <div class="field">
           <label>Model</label>
           <select id="aiModel">
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (cepat &amp; hemat — direkomendasikan)</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro (lebih detail, lebih lambat)</option>
-            <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (paling ringan/cepat)</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)</option>
           </select>
         </div>
         <div class="field">
@@ -2020,17 +2016,7 @@ window.addEventListener('resize', () => {
 /* ---------- AI GENERATOR (GEMINI) ---------- */
 const modelsByProvider = {
   gemini: [
-    { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (cepat & hemat — direkomendasikan)" },
-    { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (lebih detail, lebih lambat)" },
-    { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite (paling ringan/cepat)" }
-  ],
-  openai: [
-    { value: "gpt-4o-mini", label: "GPT-4o Mini (sangat cepat & akurat — direkomendasikan)" },
-    { value: "gpt-4o", label: "GPT-4o (sangat cerdas & detail)" }
-  ],
-  groq: [
-    { value: "llama-3.3-70b-specdec", label: "Llama 3.3 70B (super cepat & cerdas — direkomendasikan)" },
-    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (cepat & efisien)" }
+    { value: "gemini-3.5-flash", label: "Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)" }
   ]
 };
 
@@ -2042,6 +2028,7 @@ function onProviderChange() {
   const inputEl = document.getElementById('geminiApiKey');
   const modelEl = document.getElementById('aiModel');
   const linkEl = document.getElementById('apiKeyLink');
+  const fieldEl = document.getElementById('apiKeyField');
   if(!labelEl || !inputEl || !modelEl) return;
 
   if (provider === 'gemini') {
@@ -2051,23 +2038,32 @@ function onProviderChange() {
       linkEl.href = 'https://aistudio.google.com/apikey';
       linkEl.textContent = 'Dapatkan API Key';
     }
-  } else if (provider === 'openai') {
-    labelEl.textContent = 'API Key OpenAI';
-    inputEl.placeholder = 'sk-...';
-    if (linkEl) {
-      linkEl.href = 'https://platform.openai.com/api-keys';
-      linkEl.textContent = 'Dapatkan API Key';
+    if (fieldEl) {
+      fieldEl.style.display = 'none';
     }
-  } else if (provider === 'groq') {
-    labelEl.textContent = 'API Key Groq';
-    inputEl.placeholder = 'gsk_...';
-    if (linkEl) {
-      linkEl.href = 'https://console.groq.com/keys';
-      linkEl.textContent = 'Dapatkan API Key';
+    inputEl.value = 'CLOUDFLARE_PROXY';
+  } else {
+    if (fieldEl) {
+      fieldEl.style.display = 'block';
+    }
+    inputEl.value = '';
+    if (provider === 'openai') {
+      labelEl.textContent = 'API Key OpenAI';
+      inputEl.placeholder = 'sk-...';
+      if (linkEl) {
+        linkEl.href = 'https://platform.openai.com/api-keys';
+        linkEl.textContent = 'Dapatkan API Key';
+      }
+    } else if (provider === 'groq') {
+      labelEl.textContent = 'API Key Groq';
+      inputEl.placeholder = 'gsk_...';
+      if (linkEl) {
+        linkEl.href = 'https://console.groq.com/keys';
+        linkEl.textContent = 'Dapatkan API Key';
+      }
     }
   }
 
-  inputEl.value = '';
   checkAPIKeyStatus();
 
   modelEl.innerHTML = modelsByProvider[provider].map(m => `
@@ -2179,7 +2175,7 @@ async function checkAPIKeyStatus() {
 
     try {
       if (provider === 'gemini') {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+        const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`);
         isValid = res.ok;
       } else {
         // Untuk OpenAI dan Groq, coba fetch endpoint list models
@@ -2588,7 +2584,7 @@ async function applyAIResultTyped(r){
 }
 
 async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey){
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const url = `https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models/${model}:generateContent`;
   const body = {
     systemInstruction: { parts:[{ text: AI_SYSTEM_INSTRUCTION }] },
     contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }] }],
@@ -2731,16 +2727,10 @@ async function generateWithAI(){
  
   try{
     let result;
-    if (provider === "gemini") {
-      const onRetry = (attempt, maxAttempts, reason) => {
-        aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
-      };
-      result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
-    } else if (provider === "openai") {
-      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword, metodeKey);
-    } else if (provider === "groq") {
-      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword, metodeKey);
-    }
+    const onRetry = (attempt, maxAttempts, reason) => {
+      aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
+    };
+    result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
     
     hideGenOverlay();
     label.textContent = "Menuliskan hasil...";
