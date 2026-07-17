@@ -1651,7 +1651,7 @@
       <div class="sub">Isi form di bawah — pratinjau otomatis diperbarui di kanan. Haris DevLab.</div>
 
       <details class="section ai-panel" open>
-        <summary>Generate Otomatis dengan AI</summary>
+        <summary>Generate Modul</summary>
         <div class="body">
           <div class="ai-hint">
             Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, lalu klik tombol di bawah. Fitur AI akan mengisi otomatis
@@ -1694,6 +1694,7 @@
             <label>Capaian Pembelajaran (CP)</label>
             <textarea id="aiCP" rows="5"
               placeholder="Tempel/ketik CP dari buku panduan kurikulum di sini..."></textarea>
+            <div class="hint">Belum punya CP? Cari/unduh dokumen CP terbaru di <a href="https://guru.kemendikdasmen.go.id/dokumen/74r6Yln0zK" target="_blank" style="color: var(--teal); font-weight: bold; text-decoration: underline;">Kepka BSKAP No. 046/2025 (CP Terbaru)</a>.</div>
           </div>
           <div class="field">
             <label>Tujuan Pembelajaran (TP)</label>
@@ -1716,7 +1717,7 @@
               menyusun Langkah Pembelajaran mengikuti sintaks resmi model ini.</div>
           </div>
           <button type="button" class="btn-ai" id="btnGenerateAI" onclick="generateWithAI()">
-            <span class="spinner"></span><span id="btnAILabel">Generate Otomatis dengan AI</span>
+            <span class="spinner"></span><span id="btnAILabel">Generate Modul</span>
           </button>
           <div class="ai-status" id="aiStatus"></div>
         </div>
@@ -1776,6 +1777,7 @@ KELAS 5</textarea>
             <label>Elemen &amp; Capaian Pembelajaran (CP)</label>
             <textarea id="cp" rows="5"
               placeholder="Contoh: Elemen: Berpikir Komputasional. Pada akhir Fase C, murid memahami..."></textarea>
+            <div class="hint">Belum punya CP? Cari/unduh dokumen CP terbaru di <a href="https://guru.kemendikdasmen.go.id/dokumen/74r6Yln0zK" target="_blank" style="color: var(--teal); font-weight: bold; text-decoration: underline;">Kepka BSKAP No. 046/2025 (CP Terbaru)</a>.</div>
           </div>
           <div class="field">
             <label>Dimensi Profil Lulusan (DPL) — 1 baris = 1 poin</label>
@@ -2518,6 +2520,7 @@ KELAS 5</textarea>
     function v(id) { return document.getElementById(id).value; }
 
     function renderPreview() {
+      saveProfileFields();
       const rubrik1Rows = pipeRows(v('rubrik1'));
       const rubrik2Rows = pipeRows(v('rubrik2'));
       const saranaRows = pipeRows(v('sarana'));
@@ -2966,6 +2969,9 @@ KELAS 5</textarea>
         } else {
           applyPresetTheme(savedMode);
         }
+
+        // Load saved profile data
+        loadProfileFields();
 
         onProviderChange();
         checkWelcomePopup();
@@ -3665,7 +3671,7 @@ Aturan wajib:
       } finally {
         hideGenOverlay();
         btn.disabled = false; btn.classList.remove('loading');
-        label.textContent = "Generate Otomatis dengan AI";
+        label.textContent = "Generate Modul";
       }
     }
 
@@ -3925,6 +3931,50 @@ Aturan wajib:
         localStorage.setItem('hdl_paper_theme_mode', 'custom');
         localStorage.setItem('hdl_paper_theme_hue', h);
       } catch(e) {}
+    }
+
+    const PERSIST_PROFILE_FIELDS = [
+      'penyusun', 'instansi', 'tahun', 'jenjang', 'mapel', 'fase',
+      'tempatTgl', 'kepsekNama', 'kepsekNIY', 'guruNama', 'guruNIY'
+    ];
+    const PERSIST_PROFILE_CHECKBOXES = [
+      'toggleBanner', 'toggleLogoYayasan', 'toggleQuran'
+    ];
+
+    function saveProfileFields() {
+      try {
+        PERSIST_PROFILE_FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            localStorage.setItem(`hdl_persisted_${id}`, el.value);
+          }
+        });
+        PERSIST_PROFILE_CHECKBOXES.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            localStorage.setItem(`hdl_persisted_${id}`, el.checked ? 'true' : 'false');
+          }
+        });
+      } catch (e) { }
+    }
+
+    function loadProfileFields() {
+      try {
+        PERSIST_PROFILE_FIELDS.forEach(id => {
+          const val = localStorage.getItem(`hdl_persisted_${id}`);
+          const el = document.getElementById(id);
+          if (val !== null && el) {
+            el.value = val;
+          }
+        });
+        PERSIST_PROFILE_CHECKBOXES.forEach(id => {
+          const val = localStorage.getItem(`hdl_persisted_${id}`);
+          const el = document.getElementById(id);
+          if (val !== null && el) {
+            el.checked = (val === 'true');
+          }
+        });
+      } catch (e) { }
     }
 
     function toggleInfoPanel() {
