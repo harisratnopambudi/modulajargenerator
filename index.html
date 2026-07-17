@@ -2550,6 +2550,10 @@ KELAS 5</textarea>
         }
       }
 
+      if (bodyText) {
+        bodyText = bodyText.replace(/^[:\-\s\.]+\s*/, "");
+      }
+
       if (elemName) {
         return `<div style="font-weight:700; color:#2d3748; margin-bottom:6px;">Elemen: ${esc(elemName)}</div><div style="text-align:justify; line-height:1.5;">${esc(bodyText)}</div>`;
       } else {
