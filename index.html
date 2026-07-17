@@ -873,6 +873,27 @@
     </div>
   </div>
 
+  <!-- =============== ACCESS CODE POPUP =============== -->
+  <div id="accessPopup" class="welcome-overlay no-print" style="display: none;">
+    <div class="welcome-card">
+      <svg class="welcome-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" width="18" height="11"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <h2>Akses Fitur Premium AI</h2>
+      <p>Fitur penyusunan otomatis menggunakan AI Gemini 3.5 Flash memerlukan Kode Akses Premium.</p>
+      <div class="field" style="width: 100%; text-align: left; margin: 15px 0 5px;">
+        <label style="font-size: 12px; font-weight: bold;">Kode Akses Premium</label>
+        <input type="password" id="popupAccessCode" placeholder="Masukkan kode akses Anda..." style="padding: 10px; font-size: 14px; width: 100%;">
+      </div>
+      <div id="popupAccessError" style="color: #c53030; font-size: 12px; margin-top: 5px; display: none; font-weight: 500;">Kode akses salah atau tidak valid.</div>
+      <div style="display: flex; gap: 10px; width: 100%; margin-top: 15px;">
+        <button class="welcome-btn" style="margin-top: 0; background: #c9d3d6; color: var(--ink);" onclick="closeAccessPopup()">Batal</button>
+        <button class="welcome-btn" style="margin-top: 0;" id="btnSubmitAccessCode" onclick="submitAccessCode()">Submit</button>
+      </div>
+    </div>
+  </div>
+
 <div class="app">
 
   <!-- =============== EDITOR =============== -->
@@ -893,16 +914,16 @@
             <option value="gemini">Google Gemini</option>
           </select>
         </div>
-        <div class="field" id="apiKeyField">
+        <div class="field" id="apiKeyField" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
             <div style="display: flex; align-items: center;">
-              <label id="apiKeyLabel" style="margin: 0;">API Key Gemini</label>
+              <label id="apiKeyLabel" style="margin: 0;">Kode Akses Premium</label>
               <span id="apiStatusBadge" class="status-badge"></span>
             </div>
-            <a id="apiKeyLink" href="https://aistudio.google.com/apikey" target="_blank" style="font-size: 11.5px; color: var(--teal); text-decoration: underline; font-weight: bold;">Dapatkan API Key</a>
+            <a id="apiKeyLink" href="#" style="font-size: 11.5px; color: var(--teal); text-decoration: underline; font-weight: bold;">Hubungi Admin</a>
           </div>
           <div class="apikey-row">
-            <input type="password" id="geminiApiKey" placeholder="AIzaSy..." oninput="checkAPIKeyStatus()">
+            <input type="password" id="geminiApiKey" placeholder="Masukkan kode akses Anda..." oninput="checkAPIKeyStatus()">
             <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
           </div>
         </div>
@@ -2032,36 +2053,19 @@ function onProviderChange() {
   if(!labelEl || !inputEl || !modelEl) return;
 
   if (provider === 'gemini') {
-    labelEl.textContent = 'API Key Gemini';
-    inputEl.placeholder = 'AIzaSy...';
+    labelEl.textContent = 'Kode Akses Premium';
+    inputEl.placeholder = 'Masukkan kode akses Anda...';
     if (linkEl) {
-      linkEl.href = 'https://aistudio.google.com/apikey';
-      linkEl.textContent = 'Dapatkan API Key';
+      linkEl.href = '#';
+      linkEl.textContent = 'Hubungi Admin';
     }
     if (fieldEl) {
       fieldEl.style.display = 'none';
     }
-    inputEl.value = 'CLOUDFLARE_PROXY';
-  } else {
-    if (fieldEl) {
-      fieldEl.style.display = 'block';
-    }
-    inputEl.value = '';
-    if (provider === 'openai') {
-      labelEl.textContent = 'API Key OpenAI';
-      inputEl.placeholder = 'sk-...';
-      if (linkEl) {
-        linkEl.href = 'https://platform.openai.com/api-keys';
-        linkEl.textContent = 'Dapatkan API Key';
-      }
-    } else if (provider === 'groq') {
-      labelEl.textContent = 'API Key Groq';
-      inputEl.placeholder = 'gsk_...';
-      if (linkEl) {
-        linkEl.href = 'https://console.groq.com/keys';
-        linkEl.textContent = 'Dapatkan API Key';
-      }
-    }
+    try {
+      const savedCode = localStorage.getItem('hdl_access_code') || '';
+      inputEl.value = savedCode;
+    } catch(e) {}
   }
 
   checkAPIKeyStatus();
@@ -2138,6 +2142,59 @@ function closeWelcomePopup() {
   } catch (e) {}
 }
 
+function closeAccessPopup() {
+  document.getElementById('accessPopup').style.display = 'none';
+  document.getElementById('popupAccessError').style.display = 'none';
+}
+
+async function submitAccessCode() {
+  const codeEl = document.getElementById('popupAccessCode');
+  const errorEl = document.getElementById('popupAccessError');
+  const btnEl = document.getElementById('btnSubmitAccessCode');
+  if (!codeEl || !errorEl || !btnEl) return;
+
+  const code = codeEl.value.trim();
+  if (code.length === 0) {
+    errorEl.textContent = "Silakan masukkan kode akses.";
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.textContent = "Memeriksa...";
+  errorEl.style.display = 'none';
+
+  try {
+    const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
+      headers: { 'Authorization': `Bearer ${code}` }
+    });
+    
+    if (res.ok) {
+      try {
+        localStorage.setItem('hdl_access_code', code);
+      } catch(e) {}
+      
+      const keyInput = document.getElementById('geminiApiKey');
+      if (keyInput) {
+        keyInput.value = code;
+        checkAPIKeyStatus();
+      }
+      
+      closeAccessPopup();
+      generateWithAI();
+    } else {
+      errorEl.textContent = "Kode akses salah atau tidak valid.";
+      errorEl.style.display = 'block';
+    }
+  } catch(e) {
+    errorEl.textContent = "Gagal memverifikasi. Periksa koneksi internet Anda.";
+    errorEl.style.display = 'block';
+  } finally {
+    btnEl.disabled = false;
+    btnEl.textContent = "Submit";
+  }
+}
+
 function toggleKeyVisibility(){
   const el = document.getElementById('geminiApiKey');
   el.type = el.type === 'password' ? 'text' : 'password';
@@ -2175,12 +2232,7 @@ async function checkAPIKeyStatus() {
 
     try {
       if (provider === 'gemini') {
-        const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`);
-        isValid = res.ok;
-      } else {
-        // Untuk OpenAI dan Groq, coba fetch endpoint list models
-        const url = provider === 'openai' ? 'https://api.openai.com/v1/models' : 'https://api.groq.com/openai/v1/models';
-        const res = await fetch(url, {
+        const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
           headers: { 'Authorization': `Bearer ${apiKey}` }
         });
         isValid = res.ok;
@@ -2194,10 +2246,10 @@ async function checkAPIKeyStatus() {
 
     if (isValid) {
       badgeEl.className = 'status-badge connected';
-      badgeEl.textContent = 'Connected';
+      badgeEl.textContent = 'Aktif';
     } else {
       badgeEl.className = 'status-badge error';
-      badgeEl.textContent = 'Key Tidak Valid';
+      badgeEl.textContent = 'Tidak Valid';
     }
   }, 1200);
 }
@@ -2603,7 +2655,10 @@ async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metode
     try{
       res = await fetch(url, {
         method:"POST",
-        headers:{ "Content-Type":"application/json" },
+        headers:{ 
+          "Content-Type":"application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
         body: JSON.stringify(body)
       });
     }catch(networkErr){
@@ -2634,8 +2689,15 @@ async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metode
       continue;
     }
 
-    if(res.status === 400) throw new Error("API key tidak valid atau format permintaan salah. " + detail);
-    if(res.status === 403) throw new Error("API key ditolak (403). Periksa kembali key Anda di Google AI Studio. " + detail);
+    if(res.status === 401 || res.status === 403) {
+      try {
+        localStorage.removeItem('hdl_access_code');
+        const keyInput = document.getElementById('geminiApiKey');
+        if (keyInput) keyInput.value = '';
+      } catch(e) {}
+      throw new Error("Kode Akses Premium tidak valid atau kedaluwarsa. Silakan hubungi admin. " + detail);
+    }
+    if(res.status === 400) throw new Error("Format permintaan salah. " + detail);
     if(res.status === 404) throw new Error("Model tidak ditemukan. Coba ganti pilihan Model. " + detail);
     if(res.status === 429) throw new Error("Kuota/rate limit Gemini API tercapai setelah beberapa kali percobaan. Coba lagi beberapa saat lagi. " + detail);
     if(res.status === 503) throw new Error("Model Gemini sedang mengalami lonjakan permintaan tinggi, sudah dicoba ulang beberapa kali namun tetap gagal. Coba lagi dalam beberapa menit, atau ganti ke model lain (mis. Flash). " + detail);
@@ -2680,7 +2742,20 @@ function applyAIResult(r){
 
 async function generateWithAI(){
   const provider = document.getElementById('aiProvider').value;
-  const apiKey = document.getElementById('geminiApiKey').value.trim();
+  let apiKey = document.getElementById('geminiApiKey').value.trim();
+
+  if (provider === 'gemini') {
+    const savedCode = localStorage.getItem('hdl_access_code') || '';
+    if (!savedCode) {
+      document.getElementById('accessPopup').style.display = 'flex';
+      document.getElementById('popupAccessCode').value = '';
+      document.getElementById('popupAccessCode').focus();
+      return;
+    } else {
+      apiKey = savedCode;
+      document.getElementById('geminiApiKey').value = savedCode;
+    }
+  }
   const model = document.getElementById('aiModel').value;
   const cp = document.getElementById('aiCP').value.trim();
   const tp = document.getElementById('aiTP').value.trim();
@@ -2765,7 +2840,14 @@ renderPreview();
 
 ['geminiApiKey','aiCP','aiTP','aiKelas'].forEach(id=>{
   const el = document.getElementById(id);
-  if(el) el.addEventListener('input', () => el.classList.remove('field-error'));
+  if(el) el.addEventListener('input', () => {
+    el.classList.remove('field-error');
+    if (id === 'geminiApiKey') {
+      try {
+        localStorage.setItem('hdl_access_code', el.value.trim());
+      } catch(e) {}
+    }
+  });
 });
 
 function toggleInfoPanel() {
