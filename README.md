@@ -1,54 +1,70 @@
 # 📋 Generator Modul Ajar
 
-Aplikasi web satu-file (client-side, tanpa backend) untuk membantu guru menyusun **Modul Ajar Kurikulum Merdeka** yang lengkap, rapi, dan siap cetak — dilengkapi fitur **pengisian otomatis menggunakan AI (Google Gemini)**.
+Aplikasi web satu-file (client-side, tanpa backend) untuk membantu guru menyusun **Modul Ajar Kurikulum Merdeka** yang lengkap, rapi, dan siap cetak — dilengkapi fitur **pengisian otomatis menggunakan AI (Google Gemini)** via Cloudflare Worker.
 
 Dibuat oleh **Haris DevLab** — SD Plus 2 Al-Muhajirin, Purwakarta.
 
-## ✨ Fitur
+---
 
-- **Generate otomatis dengan AI** — cukup isi Capaian Pembelajaran (CP), Tujuan Pembelajaran (TP), dan Kelas, lalu AI (Gemini) akan menyusun seluruh komponen modul ajar: identitas, Dimensi Profil Lulusan, prinsip Pembelajaran Mendalam (Mindful, Meaningful, Joyful), langkah-langkah pembelajaran lengkap dengan pertanyaan pemantik, asesmen, rubrik penilaian, sarana/media, hingga landasan nilai Qur'ani/Hadits beserta terjemahannya.
-- **Editor manual lengkap** — setiap komponen modul ajar tetap bisa diisi/diedit secara manual tanpa AI.
-- **Live preview** — tampilan dokumen langsung diperbarui saat data diketik.
-- **Kustomisasi ukuran & orientasi kertas** — A4 / F4, Portrait / Landscape.
-- **Cetak / Simpan sebagai PDF** langsung dari browser.
-- **Logo sekolah & banner akreditasi** — logo sekolah dan banner logo Kurikulum Merdeka tampil otomatis di kepala dokumen, dan bisa diganti sesuai kebutuhan.
+## ✨ Fitur Utama
+
+- **Generate Modul dengan AI** — Cukup isi Capaian Pembelajaran (CP), Tujuan Pembelajaran (TP), dan Kelas, lalu AI (Gemini) akan menyusun seluruh komponen modul ajar secara instan.
+- **Keamanan API Key via Cloudflare Worker** — Panggilan AI dialihkan melalui Cloudflare Worker terenkripsi untuk menyembunyikan API key Google Gemini yang asli demi keamanan data.
+- **Sistem Kode Akses & Trial Terbatas** — Mendukung input kode akses premium atau kode uji coba (trial) khusus yang dilengkapi dengan:
+  - **Kunci Perangkat (Device Lock)**: Menggunakan header custom `X-Device-ID` agar kode trial terkunci ke 1 perangkat setelah digunakan dan tidak bisa disalahgunakan di perangkat lain.
+  - **Batas Waktu**: Masa aktif kode trial dibatasi selama 1 jam dari pertama kali login di perangkat tersebut.
+- **Session Timeout 5 Jam** — Untuk keamanan akun, session kode akses di browser akan otomatis kedaluwarsa dan terhapus dalam waktu 5 jam, meminta pengguna untuk memasukkan ulang kodenya.
+- **Penyimpanan Otomatis Profil & Dokumen** — Secara otomatis menyimpan data profil guru, instansi, tahun pelajaran, jenjang, mata pelajaran, fase/kelas, serta tanda tangan guru & kepala sekolah ke dalam `localStorage` browser sehingga tidak perlu diketik berulang-ulang saat reload.
+- **Ganti Tema Warna & Kustom Hue** — Menyediakan 13 preset tema warna pastel premium (Mint, Sage, Sky, Lavender, Lilac, Sakura, Rose, Coral, Cream, Butter, Ocean, Steel, dan Hijau Original) atau kustomisasi warna bebas menggunakan **Slider Hue**.
+- **Tutorial Interaktif (Onboarding Walkthrough)** — Memandu pengguna baru saat pertama kali membuka aplikasi melalui sorotan visual (spotlight highlight) dan meredupkan (blur) area sekitar secara dinamis. Dapat diulang kapan saja melalui panel informasi.
+- **Toggle Banner & Logo Yayasan** — Fleksibilitas untuk menyembunyikan atau memunculkan banner kop dan logo yayasan pada dokumen.
+- **Tombol Cetak Melayang (Fixed Print)** — Tombol cetak berwarna merah mencolok yang selalu melayang di pojok kanan atas preview pane, memudahkan akses cetak kapan saja tanpa perlu scroll ke atas.
+- **Cetak / Simpan sebagai PDF** — Layout dokumen yang dioptimalkan khusus untuk print (bebas border canvas/titik grid) baik ukuran A4 maupun F4 / Folio.
+
+---
 
 ## 📁 Struktur Folder
 
 ```
 ├── index.html        # Aplikasi utama (buka file ini di browser)
 └── img/
-    ├── logo.png       # Logo sekolah (tampil di pojok kiri atas dokumen)
-    └── banner.png     # Banner akreditasi / logo Kurikulum Merdeka (tampil di atas dokumen)
+    ├── logosekolah.png  # Logo sekolah default (kop kiri)
+    ├── logoyayasan.png  # Logo yayasan default (kop kanan)
+    └── banner.png       # Banner akreditasi / Kurikulum Merdeka (tampil di atas dokumen)
 ```
 
-> Jika ingin mengganti logo sekolah atau banner, cukup timpa file `img/logo.png` dan `img/banner.png` dengan gambar baru — tidak perlu mengubah kode di `index.html`. Logo sekolah juga bisa diganti sementara langsung dari aplikasi lewat tombol unggah pada bagian **Identitas Modul**.
+> **Catatan**: Anda dapat menimpa file di dalam folder `img/` dengan file logo milik sekolah Anda secara permanen. Pengguna juga dapat mengunggah logo kustom sementara langsung dari aplikasi pada panel **Identitas Modul**.
+
+---
 
 ## 🚀 Cara Pakai
 
-1. **Clone / download** repository ini.
-2. Buka file `index.html` langsung di browser (Chrome/Edge disarankan), tidak perlu server atau instalasi apa pun.
-3. **(Opsional, untuk pengisian otomatis dengan AI)**
-   - Buka bagian **Generator Otomatis dengan AI** di panel kiri.
-   - Buat API key gratis di [Google AI Studio](https://aistudio.google.com/apikey).
-   - Tempelkan API key, isi CP, TP, dan Kelas, lalu klik **✨ Generate Otomatis dengan AI**.
-   - API key hanya dipakai langsung dari browser ke Google, tidak melewati server manapun, dan bisa disimpan secara lokal di browser Anda (opsional).
-4. Lengkapi/edit data pada tiap bagian sesuai kebutuhan.
-5. Atur ukuran kertas dan orientasi pada toolbar di atas pratinjau.
-6. Klik **🖨️ Cetak / Simpan PDF** untuk mencetak atau menyimpan modul ajar sebagai PDF.
-   - Saat dialog cetak muncul, pastikan opsi **"Background graphics" / "Grafik latar belakang"** dicentang agar warna dan gambar ikut tercetak.
+1. **Clone / download** repository ini ke komputer Anda.
+2. Buka file `index.html` langsung di browser Anda (disarankan Google Chrome atau Microsoft Edge).
+3. **Mengisi Kode Akses**:
+   - Jika Anda memiliki kode premium, masukkan pada form yang disediakan.
+   - Jika ingin mencoba, Anda dapat memasukkan kode trial khusus yang dibagikan oleh administrator.
+4. **Menyusun Modul**:
+   - Cari dan unduh dokumen CP terbaru (disediakan link cepat menuju **Kepka BSKAP No. 046/2025** langsung di bawah input CP).
+   - Masukkan CP, TP, dan Kelas di panel **Generate Modul**, pilih model pembelajaran (opsional), lalu klik **Generate Modul**.
+   - AI akan otomatis mengisi semua kolom dokumen di sebelah kanan dalam hitungan detik.
+5. **Kustomisasi & Cetak**:
+   - Ubah tema warna atau kustom warna dokumen sesuai selera sekolah Anda.
+   - Klik tombol **Cetak / Simpan PDF** di pojok kanan atas.
+   - **PENTING**: Saat dialog print browser muncul, pastikan Anda **mencentang opsi "Background graphics" / "Grafik latar belakang"** agar warna kop, warna tabel, dan logo ikut tercetak dengan sempurna.
 
-## 🛠️ Teknologi
+---
 
-- HTML, CSS, dan JavaScript murni (vanilla) — tanpa framework, tanpa build process.
-- [Google Gemini API](https://ai.google.dev/) untuk fitur penyusunan otomatis.
-- Font [Inter](https://fonts.google.com/specimen/Inter) & [Amiri](https://fonts.google.com/specimen/Amiri) dari Google Fonts.
+## 🛠️ Teknologi & API
 
-## ⚠️ Catatan
+- **Frontend**: HTML5, Vanilla CSS3 (Custom Variables/Themes), Vanilla JavaScript (ES6+).
+- **AI Engine**: Google Gemini API via [Cloudflare Workers Proxy](https://workers.cloudflare.com/).
+- **Database Sesi**: Cloudflare Workers KV (`TRIAL_STORE`) untuk tracking device lock dan durasi trial.
+- **Fonts**: [Inter](https://fonts.google.com/specimen/Inter) & [Amiri (Quranic Arabic)](https://fonts.google.com/specimen/Amiri) dari Google Fonts.
+- **Icons**: SVG inline.
 
-- Aplikasi ini berjalan sepenuhnya di sisi klien (browser). Tidak ada data yang dikirim ke server mana pun selain permintaan langsung ke Gemini API saat fitur AI digunakan.
-- Ayat Al-Qur'an/Hadits beserta terjemahan yang dipilih AI tetap perlu diperiksa ulang keakuratannya sebelum dicetak/digunakan.
+---
 
 ## 📄 Lisensi
 
-Silakan digunakan dan dimodifikasi sesuai kebutuhan sekolah/madrasah masing-masing.
+Silakan digunakan, dimodifikasi, dan disebarluaskan untuk kebutuhan akademis sekolah, madrasah, atau dinas pendidikan masing-masing.
