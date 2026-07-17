@@ -2999,6 +2999,27 @@ KELAS 5</textarea>
       document.getElementById('popupAccessError').style.display = 'none';
     }
 
+    function getOrCreateDeviceId() {
+      try {
+        let deviceId = localStorage.getItem('hdl_device_id');
+        if (!deviceId) {
+          deviceId = 'dev-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now().toString(36);
+          localStorage.setItem('hdl_device_id', deviceId);
+        }
+        return deviceId;
+      } catch (e) {
+        return 'dev-unknown';
+      }
+    }
+
+    function getEffectiveApiKey(key) {
+      const trimmed = (key || '').trim();
+      if (['COBAGRATIS', 'TRIALGURU', 'COBADULU'].includes(trimmed)) {
+        return 'TRIAL-MODULAJAR';
+      }
+      return trimmed;
+    }
+
     async function submitAccessCode() {
       const codeEl = document.getElementById('popupAccessCode');
       const errorEl = document.getElementById('popupAccessError');
@@ -3017,8 +3038,13 @@ KELAS 5</textarea>
       errorEl.style.display = 'none';
 
       try {
+        const verifyCode = getEffectiveApiKey(code);
+        const deviceId = getOrCreateDeviceId();
         const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
-          headers: { 'Authorization': `Bearer ${code}` }
+          headers: { 
+            'Authorization': `Bearer ${verifyCode}`,
+            'X-Device-ID': deviceId
+          }
         });
 
         if (res.ok) {
@@ -3084,8 +3110,13 @@ KELAS 5</textarea>
 
         try {
           if (provider === 'gemini') {
+            const verifyKey = getEffectiveApiKey(apiKey);
+            const deviceId = getOrCreateDeviceId();
             const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
-              headers: { 'Authorization': `Bearer ${apiKey}` }
+              headers: { 
+                'Authorization': `Bearer ${verifyKey}`,
+                'X-Device-ID': deviceId
+              }
             });
             isValid = res.ok;
           }
@@ -3505,11 +3536,14 @@ Aturan wajib:
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         let res;
         try {
+          const verifyKey = getEffectiveApiKey(apiKey);
+          const deviceId = getOrCreateDeviceId();
           res = await fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${apiKey}`
+              "Authorization": `Bearer ${verifyKey}`,
+              "X-Device-ID": deviceId
             },
             body: JSON.stringify(body)
           });
