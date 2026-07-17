@@ -881,7 +881,7 @@
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
       </svg>
       <h2>Akses Fitur Premium AI</h2>
-      <p>Fitur penyusunan otomatis menggunakan AI Gemini 3.5 Flash memerlukan Kode Akses Premium.</p>
+      <p>Fitur penyusunan otomatis menggunakan AI memerlukan Kode Akses Premium.</p>
       <div class="field" style="width: 100%; text-align: left; margin: 15px 0 5px;">
         <label style="font-size: 12px; font-weight: bold;">Kode Akses Premium</label>
         <input type="password" id="popupAccessCode" placeholder="Masukkan kode akses Anda..." style="padding: 10px; font-size: 14px; width: 100%;">
@@ -905,7 +905,7 @@
       <summary>Generate Otomatis dengan AI</summary>
       <div class="body">
         <div class="ai-hint">
-          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, pilih provider AI, lalu masukkan API key Anda. AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. API key dikirim langsung dari browser Anda ke provider terkait tanpa melalui server perantara.
+          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, lalu klik tombol di bawah. Fitur AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut.
           <br><br>Tips: pilih <b>Model Pembelajaran</b> di bawah jika ingin langkah pembelajaran mengikuti sintaks model tertentu (mis. PBL, PjBL, Discovery Learning) — AI akan menyusun tahapan sesuai sintaks resmi model tersebut, dan Praktik Pedagogis (Model, Metode, Pendekatan) akan terisi otomatis.
         </div>
         <div class="field" style="display: none;">
@@ -927,7 +927,7 @@
             <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" style="display: none;">
           <label>Model</label>
           <select id="aiModel">
             <option value="gemini-3.5-flash">Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)</option>
@@ -2699,9 +2699,9 @@ async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metode
     }
     if(res.status === 400) throw new Error("Format permintaan salah. " + detail);
     if(res.status === 404) throw new Error("Model tidak ditemukan. Coba ganti pilihan Model. " + detail);
-    if(res.status === 429) throw new Error("Kuota/rate limit Gemini API tercapai setelah beberapa kali percobaan. Coba lagi beberapa saat lagi. " + detail);
-    if(res.status === 503) throw new Error("Model Gemini sedang mengalami lonjakan permintaan tinggi, sudah dicoba ulang beberapa kali namun tetap gagal. Coba lagi dalam beberapa menit, atau ganti ke model lain (mis. Flash). " + detail);
-    throw new Error(`Gagal memanggil Gemini API (HTTP ${res.status}). ${detail}`);
+    if(res.status === 429) throw new Error("Kuota/rate limit sistem AI tercapai setelah beberapa kali percobaan. Coba lagi beberapa saat lagi. " + detail);
+    if(res.status === 503) throw new Error("Server AI sedang mengalami lonjakan permintaan tinggi, sudah dicoba ulang beberapa kali namun tetap gagal. Coba lagi dalam beberapa menit. " + detail);
+    throw new Error(`Gagal memanggil AI (HTTP ${res.status}). ${detail}`);
   }
 }
 
