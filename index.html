@@ -203,16 +203,23 @@
     }
 
     .btn-print {
-      background: var(--navy);
+      background: #c53030;
       color: #fff;
       font-weight: 700;
       font-size: 13px;
       padding: 9px 16px;
       border-radius: 6px;
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border: none;
+      cursor: pointer;
     }
 
     .btn-print:hover {
-      background: var(--navy-dark);
+      background: #9b2c2c;
     }
 
     .toolbar {
@@ -220,7 +227,7 @@
       align-items: center;
       gap: 14px;
       flex-wrap: wrap;
-      padding: 10px 20px;
+      padding: 10px 180px 10px 20px;
       background: var(--paper);
       border-bottom: 1px solid var(--border);
     }
@@ -1336,6 +1343,13 @@
         padding: 0;
         overflow: visible;
         display: block;
+        background: transparent !important;
+        background-image: none !important;
+      }
+
+      .preview-wrap {
+        height: auto !important;
+        display: block !important;
       }
 
       #page-container {
@@ -1589,6 +1603,99 @@
         transform: translateY(-8px);
       }
     }
+
+    /* ---------- ONBOARDING TOUR ---------- */
+    .tour-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+    }
+
+    #tourHighlightBox {
+      position: absolute;
+      z-index: 100000;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+      border-radius: 8px;
+      transition: all 0.25s ease-out;
+      pointer-events: none;
+      border: 3px solid var(--teal);
+    }
+
+    .tour-card {
+      position: absolute;
+      z-index: 100001;
+      width: 320px;
+      background: var(--paper);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: all 0.25s ease-out;
+      pointer-events: auto;
+      border: 1px solid var(--border);
+    }
+
+    .tour-card h3 {
+      font-size: 15.5px;
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .tour-card p {
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+
+    .tour-steps-indicator {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tour-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .tour-btn {
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .tour-btn-primary {
+      background: var(--teal);
+      color: var(--teal-text);
+    }
+
+    .tour-btn-primary:hover {
+      background: var(--teal-dark);
+    }
+
+    .tour-btn-secondary {
+      background: #e4e8eb;
+      color: var(--ink);
+    }
+
+    .tour-btn-secondary:hover {
+      background: #c9d3d6;
+    }
+
+    .tour-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 
@@ -1609,7 +1716,7 @@
         dalam menyusun Rencana Pembelajaran Kurikulum Merdeka secara praktis dan berkualitas.</p>
       <p class="welcome-support">Semoga platform ini dapat mempermudah dan membantu meningkatkan efektivitas aktivitas
         mengajar Bapak/Ibu Guru sehari-hari.</p>
-      <button class="welcome-btn" onclick="closeWelcomePopup()">Mulai Buat Modul</button>
+      <button class="welcome-btn" style="margin-top: 20px;" onclick="startTour()">Pelajari Fitur (Tutorial)</button>
     </div>
   </div>
 
@@ -2052,7 +2159,7 @@ KELAS 5</textarea>
         <span style="font-size:10.5px; color:#8a6d00; max-width:260px;">Saat print, pastikan opsi <b>"Background
             graphics"</b> / "Grafik latar belakang" dicentang agar warna ikut tercetak.</span>
 
-        <button class="btn-print" onclick="window.print()">Cetak / Simpan PDF</button>
+        <button class="btn-print no-print" onclick="window.print()">Cetak / Simpan PDF</button>
       </div>
       <div class="toolbar no-print" style="border-bottom:none; padding:5px 20px; gap:16px; background:#f7f9fa;">
         <label class="toggle-grp">
@@ -2103,6 +2210,7 @@ KELAS 5</textarea>
               (<i>Mindful, Meaningful, Joyful</i>) dan siklus 3 Tahap Pengalaman Belajar (<i>Memahami, Mengaplikasi,
                 Merefleksi</i>).</li>
           </ul>
+          <button onclick="startTour(); toggleInfoPanel();" class="welcome-btn" style="margin-top: 15px; padding: 8px 12px; font-size: 12px; font-weight: bold; width: 100%;">Ulangi Tutorial Interaktif</button>
         </div>
       </div>
     </div>
@@ -2884,7 +2992,12 @@ KELAS 5</textarea>
 
 
     function onProviderChange() {
-      const provider = document.getElementById('aiProvider').value;
+      let provider = document.getElementById('aiProvider').value;
+      if (!modelsByProvider[provider]) {
+        provider = 'gemini';
+        const providerEl = document.getElementById('aiProvider');
+        if (providerEl) providerEl.value = 'gemini';
+      }
       const labelEl = document.getElementById('apiKeyLabel');
       const inputEl = document.getElementById('geminiApiKey');
       const modelEl = document.getElementById('aiModel');
@@ -2939,6 +3052,7 @@ KELAS 5</textarea>
     }
 
     function initApiKey() {
+      checkAccessCodeSession();
       try {
         // Hapus key yang mungkin tersimpan sebelumnya demi keamanan/privasi
         localStorage.removeItem('hdl_gemini_key');
@@ -2999,6 +3113,22 @@ KELAS 5</textarea>
       document.getElementById('popupAccessError').style.display = 'none';
     }
 
+    function checkAccessCodeSession() {
+      try {
+        const savedTimeStr = localStorage.getItem('hdl_access_code_time');
+        if (savedTimeStr) {
+          const savedTime = parseInt(savedTimeStr, 10);
+          const fiveHoursMs = 5 * 60 * 60 * 1000;
+          if (Date.now() - savedTime > fiveHoursMs) {
+            localStorage.removeItem('hdl_access_code');
+            localStorage.removeItem('hdl_access_code_time');
+            const keyInput = document.getElementById('geminiApiKey');
+            if (keyInput) keyInput.value = '';
+          }
+        }
+      } catch (e) { }
+    }
+
     function getOrCreateDeviceId() {
       try {
         let deviceId = localStorage.getItem('hdl_device_id');
@@ -3050,6 +3180,7 @@ KELAS 5</textarea>
         if (res.ok) {
           try {
             localStorage.setItem('hdl_access_code', code);
+            localStorage.setItem('hdl_access_code_time', Date.now().toString());
           } catch (e) { }
 
           const keyInput = document.getElementById('geminiApiKey');
@@ -3627,6 +3758,7 @@ Aturan wajib:
     }
 
     async function generateWithAI() {
+      checkAccessCodeSession();
       const provider = document.getElementById('aiProvider').value;
       let apiKey = document.getElementById('geminiApiKey').value.trim();
 
@@ -3717,24 +3849,7 @@ Aturan wajib:
       }
     });
 
-    renderStepsEditor();
-    renderDimGrid();
-    renderMetodeSelect();
-    updatePageStyle();
-    initApiKey();
-    renderPreview();
 
-    ['geminiApiKey', 'aiCP', 'aiTP', 'aiKelas'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('input', () => {
-        el.classList.remove('field-error');
-        if (id === 'geminiApiKey') {
-          try {
-            localStorage.setItem('hdl_access_code', el.value.trim());
-          } catch (e) { }
-        }
-      });
-    });
 
     const themes = {
       original: {
@@ -4010,6 +4125,188 @@ Aturan wajib:
         });
       } catch (e) { }
     }
+
+    let currentTourStep = 0;
+    const tourSteps = [
+      {
+        targetId: 'logoFile',
+        title: 'Ganti Logo Sekolah',
+        desc: 'Klik di sini untuk mengunggah logo sekolah Anda. Logo ini akan menggantikan logo default pada kop modul ajar di sisi kanan.'
+      },
+      {
+        targetId: 'logoYayasanFile',
+        title: 'Ganti Logo Yayasan',
+        desc: 'Klik di sini jika ingin mengunggah logo yayasan. Anda juga dapat menampilkan atau menyembunyikan logo yayasan lewat tombol toggle di toolbar atas.'
+      },
+      {
+        targetId: 'aiCP',
+        title: 'Masukkan CP (Capaian Pembelajaran)',
+        desc: 'Tempelkan teks Capaian Pembelajaran Kurikulum Merdeka di sini. Gunakan link di bawahnya jika Anda belum mengunduh file CP resmi.'
+      },
+      {
+        targetId: 'aiTP',
+        title: 'Masukkan TP (Tujuan Pembelajaran)',
+        desc: 'Masukkan Tujuan Pembelajaran di kolom ini agar AI dapat menyusun langkah-langkah pembelajaran yang terarah.'
+      },
+      {
+        targetId: 'btnGenerateAI',
+        title: 'Generate Modul dengan AI',
+        desc: 'Terakhir, klik tombol merah "Generate Modul" untuk membiarkan AI menyusun isi modul ajar lengkap secara instan!'
+      }
+    ];
+
+    function startTour() {
+      currentTourStep = 0;
+      document.getElementById('welcomePopup').style.display = 'none';
+      
+      try {
+        localStorage.setItem('hdl_welcome_shown', 'true');
+      } catch (e) { }
+
+      let overlay = document.getElementById('tourOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'tourOverlay';
+        overlay.className = 'tour-overlay no-print';
+        overlay.innerHTML = `
+          <div id="tourHighlightBox"></div>
+          <div id="tourCard" class="tour-card">
+            <div class="tour-steps-indicator">Langkah <span id="tourCurrentStep">1</span> / 5</div>
+            <h3 id="tourTitle">Tutorial</h3>
+            <p id="tourDesc">Deskripsi...</p>
+            <div class="tour-buttons">
+              <button id="btnTourPrev" class="tour-btn tour-btn-secondary" onclick="prevTourStep()">Kembali</button>
+              <button id="btnTourNext" class="tour-btn tour-btn-primary" onclick="nextTourStep()">Lanjut</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+      }
+      
+      overlay.style.display = 'block';
+      
+      // Bind event scroll pada panel editor agar posisi highlight tetap pas saat di-scroll
+      const editorPanel = document.querySelector('.editor');
+      if (editorPanel) {
+        editorPanel.addEventListener('scroll', updateTourPosition);
+      }
+      window.addEventListener('resize', updateTourPosition);
+
+      showTourStep();
+    }
+
+    function updateTourPosition() {
+      const overlay = document.getElementById('tourOverlay');
+      if (!overlay || overlay.style.display === 'none') return;
+
+      const step = tourSteps[currentTourStep];
+      const targetEl = document.getElementById(step.targetId);
+      if (!targetEl) return;
+
+      const rect = targetEl.getBoundingClientRect();
+      const highlightBox = document.getElementById('tourHighlightBox');
+      const tourCard = document.getElementById('tourCard');
+
+      if (highlightBox && tourCard) {
+        const padding = 8;
+        // Posisikan highlight box tepat di atas koordinat viewport target
+        highlightBox.style.top = (rect.top + window.scrollY - padding) + 'px';
+        highlightBox.style.left = (rect.left + window.scrollX - padding) + 'px';
+        highlightBox.style.width = (rect.width + padding * 2) + 'px';
+        highlightBox.style.height = (rect.height + padding * 2) + 'px';
+
+        // Posisikan kartu petunjuk di samping kanan editor panel (posisi horizontal 450px)
+        tourCard.style.left = '450px';
+
+        // Hitung posisi vertikal agar sejajar dengan target, jaga batas atas-bawah layar
+        let cardTop = rect.top + window.scrollY - 30;
+        cardTop = Math.max(20, Math.min(cardTop, window.innerHeight - 240));
+        tourCard.style.top = cardTop + 'px';
+      }
+    }
+
+    function showTourStep() {
+      const step = tourSteps[currentTourStep];
+      const targetEl = document.getElementById(step.targetId);
+      
+      if (targetEl) {
+        // Buka paksa accordion details agar elemen tidak berdimensi 0
+        const detailsParent = targetEl.closest('details');
+        if (detailsParent) {
+          detailsParent.open = true;
+        }
+
+        // Scroll secara instan ke elemen target agar koordinat langsung stabil
+        targetEl.scrollIntoView({ block: 'center', behavior: 'auto' });
+
+        // Update posisi highlight langsung
+        updateTourPosition();
+
+        // Lakukan pembaruan ulang 100ms kemudian untuk mengantisipasi layout shifting saat accordion membuka
+        setTimeout(updateTourPosition, 100);
+      }
+
+      document.getElementById('tourTitle').textContent = step.title;
+      document.getElementById('tourDesc').textContent = step.desc;
+      document.getElementById('tourCurrentStep').textContent = (currentTourStep + 1);
+
+      const btnPrev = document.getElementById('btnTourPrev');
+      const btnNext = document.getElementById('btnTourNext');
+      if (btnPrev && btnNext) {
+        btnPrev.disabled = currentTourStep === 0;
+        btnNext.textContent = currentTourStep === tourSteps.length - 1 ? 'Selesai' : 'Lanjut';
+      }
+    }
+
+    function nextTourStep() {
+      if (currentTourStep < tourSteps.length - 1) {
+        currentTourStep++;
+        showTourStep();
+      } else {
+        endTour();
+      }
+    }
+
+    function prevTourStep() {
+      if (currentTourStep > 0) {
+        currentTourStep--;
+        showTourStep();
+      }
+    }
+
+    function endTour() {
+      const overlay = document.getElementById('tourOverlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+      
+      // Bersihkan event listener agar tidak membebani memori
+      const editorPanel = document.querySelector('.editor');
+      if (editorPanel) {
+        editorPanel.removeEventListener('scroll', updateTourPosition);
+      }
+      window.removeEventListener('resize', updateTourPosition);
+    }
+
+    renderStepsEditor();
+    renderDimGrid();
+    renderMetodeSelect();
+    updatePageStyle();
+    initApiKey();
+    renderPreview();
+
+    ['geminiApiKey', 'aiCP', 'aiTP', 'aiKelas'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', () => {
+        el.classList.remove('field-error');
+        if (id === 'geminiApiKey') {
+          try {
+            localStorage.setItem('hdl_access_code', el.value.trim());
+            localStorage.setItem('hdl_access_code_time', Date.now().toString());
+          } catch (e) { }
+        }
+      });
+    });
 
     function toggleInfoPanel() {
       const panel = document.getElementById('infoPanel');
