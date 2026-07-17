@@ -965,6 +965,10 @@
         Banner
       </label>
       <label class="toggle-grp">
+        <span class="toggle-switch"><input type="checkbox" id="toggleLogoYayasan" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
+        Logo Yayasan
+      </label>
+      <label class="toggle-grp">
         <span class="toggle-switch"><input type="checkbox" id="toggleQuran" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
         Qur'an & Hadits
       </label>
@@ -1344,11 +1348,12 @@ function renderPreview(){
 
   const showBanner = document.getElementById('toggleBanner')?.checked !== false;
   const showQuran = document.getElementById('toggleQuran')?.checked !== false;
+  const showLogoYayasan = document.getElementById('toggleLogoYayasan')?.checked !== false;
 
   const html = `
     ${showBanner ? `
     <div class="m-banner">
-      <img src="${yayasanLogoSrc}" class="m-banner-logo" onerror="this.style.display='none';">
+      ${showLogoYayasan ? `<img src="${yayasanLogoSrc}" class="m-banner-logo" onerror="this.style.display='none';">` : ""}
       <img src="${logoSrc}" class="m-banner-logo" onerror="this.style.display='none';">
       <img src="${BANNER_SRC}" class="m-banner-img" alt="Akreditasi &amp; Kurikulum Merdeka" onerror="this.style.display='none';">
     </div>
