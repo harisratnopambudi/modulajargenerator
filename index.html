@@ -14,9 +14,6 @@
     --teal:#6aa84f;
     --teal-dark:#588a41;
     --teal-light:#eaf3e5;
-    --teal-border-light:#cfe6c2;
-    --teal-bg-light:#f6faf4;
-    --teal-text:#ffffff;
     --border:#c9d3d6;
     --ink:#1f2a30;
     --muted:#5c6b70;
@@ -126,13 +123,14 @@
     font-size:11.5px;
     padding:6px 10px;
   }
-  .btn-add{background:var(--teal); color:var(--teal-text, #fff); font-weight:600;}
+  .btn-add{background:var(--teal); color:#fff; font-weight:600;}
   .btn-remove{background:#e5e9ea; color:#8a3b3b;}
   .btn-print{
     background:var(--navy); color:#fff; font-weight:700; font-size:13px;
     padding:9px 16px; border-radius:6px;
   }
   .btn-print:hover{background:var(--navy-dark);}
+
   .toolbar{
     display:flex; align-items:center; gap:14px; flex-wrap:wrap;
     padding:10px 20px; background:var(--paper); border-bottom:1px solid var(--border);
@@ -161,7 +159,8 @@
   .preview-wrap{display:flex; flex-direction:column; height:100vh;}
   .canvas{
     flex:1;
-    overflow:auto;
+    overflow-y:auto;
+    scrollbar-gutter:stable;
     text-align:center;
     padding:40px 20px;
     background:#e4e8eb;
@@ -262,6 +261,66 @@
     margin:0;
     box-shadow:none;
   }
+  /* ---- Paper Patterns ---- */
+  .sheet.pattern-y-so-serious {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/y-so-serious-white.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-double-bubble {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-papyrus {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/papyrus.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-leaves {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/leaves.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-hotel-wallpaper {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/hotel-wallpaper.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-full-bloom {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/full-bloom.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-grid {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/gridme.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-lined {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/linedpaper.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-waves {
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/white-waves.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-ricepaper {
+    background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/ricepaper.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-linen {
+    background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/linen.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-graphy {
+    background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/graphy.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet.pattern-subtle_dots {
+    background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/subtle_dots.png') !important;
+    background-repeat: repeat !important;
+  }
+  .sheet[class*="pattern-"] table.mtab td.key,
+  .sheet[class*="pattern-"] .lp-label,
+  .sheet[class*="pattern-"] .kkm-container,
+  .sheet[class*="pattern-"] .kkm-body,
+  .sheet[class*="pattern-"] .formula-box {
+    background: transparent !important;
+  }
   .sheet.a4.portrait{width:210mm; min-height:297mm;}
   .sheet.a4.landscape{width:297mm; min-height:210mm;}
   .sheet.f4.portrait{width:215mm; min-height:330mm;}
@@ -290,7 +349,7 @@
     padding:10px 14px; border-radius:2px; letter-spacing:.2px;
   }
   .m-badge{
-    width:150px; background:var(--teal); color:var(--teal-text, #fff); font-size:10.5px; font-weight:700;
+    width:150px; background:var(--teal); color:#fff; font-size:10.5px; font-weight:700;
     display:flex; align-items:center; justify-content:center; text-align:center;
     padding:8px; border-radius:2px; line-height:1.3;
   }
@@ -304,12 +363,12 @@
     text-align:center;
   }
   .sec-title{
-    background:var(--teal); color:var(--teal-text, #fff); font-weight:700; padding:5px 8px;
+    background:var(--teal); color:#fff; font-weight:700; padding:5px 8px;
     font-size:11.5px; letter-spacing:.3px;
   }
   .sec-flex{display:flex; align-items:stretch; margin:-1px;}
   .sec-badge{
-    background:var(--teal); color:var(--teal-text, #fff); font-weight:800; font-size:12px;
+    background:var(--teal); color:#fff; font-weight:800; font-size:12px;
     padding:6px 6px; width:46px; display:flex; align-items:center; justify-content:center;
     flex-shrink:0; text-align:center;
   }
@@ -333,7 +392,7 @@
   .rubric-table th{background:var(--navy); color:#fff; text-align:center;}
 
   .catatan-box{
-    border:2px dashed var(--teal); background:var(--teal-bg-light); border-radius:4px;
+    border:2px dashed var(--teal); background:#eefaf6; border-radius:4px;
     padding:14px; min-height:70px; font-size:11px; white-space:pre-wrap;
   }
 
@@ -452,7 +511,7 @@
   }
   .formula-teal {
     background: var(--teal-light);
-    border-color: var(--teal-border-light);
+    border-color: #cfe6c2;
   }
   .formula-teal .formula-label, .formula-teal .formula-numerator, .formula-teal .formula-fraction {
     color: var(--teal-dark);
@@ -479,11 +538,11 @@
     padding:3px 8px; border-radius:10px; letter-spacing:.2px;
   }
   .prinsip-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:10px;}
-  .prinsip-card{border:1px solid var(--teal); border-radius:6px; padding:6px 8px; background:var(--teal-bg-light);}
+  .prinsip-card{border:1px solid var(--teal); border-radius:6px; padding:6px 8px; background:#f6faf4;}
   .prinsip-card b{display:block; color:var(--teal-dark); font-size:10.5px; margin-bottom:3px;}
   .prinsip-card div{font-size:10px; line-height:1.4;}
   .step-tag{
-    display:inline-block; background:var(--teal); color:var(--teal-text, #fff); font-size:8.5px; font-weight:700;
+    display:inline-block; background:var(--teal); color:#fff; font-size:8.5px; font-weight:700;
     padding:1px 6px; border-radius:8px; margin:2px 0 1px;
   }
   .quran-box{
@@ -502,7 +561,7 @@
   .save-key-line{display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--muted); font-weight:400;}
   .save-key-line input{width:auto;}
   .btn-ai{
-    background:linear-gradient(90deg, var(--teal-dark), var(--teal)); color:var(--teal-text, #fff); font-weight:700; font-size:13px;
+    background:linear-gradient(90deg, var(--teal-dark), var(--teal)); color:#fff; font-weight:700; font-size:13px;
     padding:11px 14px; border-radius:6px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
   }
   .btn-ai:disabled{opacity:0.65; cursor:wait;}
@@ -516,7 +575,36 @@
   .ai-status.show{display:block;}
   .ai-status.info{background:#eaf1fa; color:#2b5580; border:1px solid #bcd4ec;}
   .ai-status.error{background:#fbeaea; color:#8a2b2b; border:1px solid #eec6c6;}
-  .ai-status.success{background:var(--teal-light); color:var(--teal-dark); border:1px solid var(--teal-border-light);}
+  .ai-status.success{background:var(--teal-light); color:var(--teal-dark); border:1px solid #cfe6c2;}
+
+  /* ---- API Key Status Badge ---- */
+  .status-badge {
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 6px;
+    display: none;
+    vertical-align: middle;
+    margin-left: 6px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status-badge.checking {
+    background: #eaf1fa;
+    color: #2b5580;
+    border: 1px solid #bcd4ec;
+  }
+  .status-badge.connected {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border: 1px solid #cfe6c2;
+  }
+  .status-badge.error {
+    background: #fbeaea;
+    color: #8a2b2b;
+    border: 1px solid #eec6c6;
+  }
   .quran-arabic{
     font-family:'Amiri', 'Traditional Arabic', 'Segoe UI', serif;
     font-size:18px; text-align:right; direction:rtl; line-height:2.1; margin-bottom:4px; color:var(--ink);
@@ -528,6 +616,58 @@
   @media print{
     .no-print{display:none !important;}
     body{background:#fff;}
+    body.pattern-y-so-serious {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/y-so-serious-white.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-double-bubble {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-papyrus {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/papyrus.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-leaves {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/leaves.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-hotel-wallpaper {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/hotel-wallpaper.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-full-bloom {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/full-bloom.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-grid {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/gridme.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-lined {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/linedpaper.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-waves {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/white-waves.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-ricepaper {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/ricepaper.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-linen {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/linen.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-graphy {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/graphy.png') !important;
+      background-repeat: repeat !important;
+    }
+    body.pattern-subtle_dots {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/subtle_dots.png') !important;
+      background-repeat: repeat !important;
+    }
     .canvas{padding:0; overflow:visible; display:block;}
     #page-container {
       display: block !important;
@@ -539,7 +679,7 @@
       background: none !important;
     }
     .app{display:block; height:auto;}
-    .sheet{box-shadow:none; margin:0 !important; padding:0 !important; width:auto !important; min-height:0 !important; transform:none !important;}
+    .sheet{box-shadow:none; margin:0 !important; padding:0 !important; width:auto !important; min-height:0 !important; transform:none !important; background: transparent !important;}
     .m-title, .m-badge, .sec-title, .rubric-table th, table.mtab td.key, table.mtab td[colspan]{
       -webkit-print-color-adjust:exact !important;
       print-color-adjust:exact !important;
@@ -632,9 +772,129 @@
   .info-body li {
     margin-bottom: 4px;
   }
+
+  /* ---------- WELCOME POPUP ---------- */
+  .welcome-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    animation: welcomeFadeIn 0.4s ease-out;
+  }
+  .welcome-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: welcomeScaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-top: 5px solid var(--teal);
+  }
+  .welcome-icon {
+    margin-bottom: 12px;
+    animation: welcomeBounceEmoji 2.5s infinite ease-in-out;
+  }
+  .welcome-card h2 {
+    margin: 0 0 12px 0;
+    color: var(--navy);
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .welcome-card p {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0 0 12px 0;
+  }
+  .welcome-support {
+    background: #f0f7f5;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid var(--teal);
+    font-weight: 500;
+    color: var(--teal-dark) !important;
+    text-align: center;
+  }
+  .welcome-btn {
+    margin-top: 15px;
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 24px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+  }
+  .welcome-btn:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+  }
+  .welcome-btn:active {
+    transform: translateY(1px);
+  }
+  @keyframes welcomeFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes welcomeScaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes welcomeBounceEmoji {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
 </style>
 </head>
 <body>
+
+  <!-- =============== WELCOME POPUP =============== -->
+  <div id="welcomePopup" class="welcome-overlay no-print" style="display: none;">
+    <div class="welcome-card">
+      <svg class="welcome-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 10L12 5L22 10L12 15L2 10Z"></path>
+        <path d="M6 12V18C6 19.1 8.68 20 12 20C15.32 20 18 19.1 18 18V12"></path>
+        <path d="M22 10V16"></path>
+      </svg>
+      <h2>Selamat Datang, Guru Hebat!</h2>
+      <p>Terima kasih banyak sudah menggunakan <strong>Generator Modul Ajar</strong> ini.</p>
+      <p>Aplikasi ini dikembangkan oleh <strong>Haris DevLab</strong> untuk memudahkan tugas administrasi Bapak/Ibu Guru dalam menyusun Rencana Pembelajaran Kurikulum Merdeka secara praktis dan berkualitas.</p>
+      <p class="welcome-support">Semoga platform ini dapat mempermudah dan membantu meningkatkan efektivitas aktivitas mengajar Bapak/Ibu Guru sehari-hari.</p>
+      <button class="welcome-btn" onclick="closeWelcomePopup()">Mulai Buat Modul</button>
+    </div>
+  </div>
+
+  <!-- =============== ACCESS CODE POPUP =============== -->
+  <div id="accessPopup" class="welcome-overlay no-print" style="display: none;">
+    <div class="welcome-card">
+      <svg class="welcome-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" width="18" height="11"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <h2>Akses Fitur Premium AI</h2>
+      <p>Fitur penyusunan otomatis menggunakan AI memerlukan Kode Akses Premium.</p>
+      <p style="font-size: 12.5px; margin: -5px 0 15px 0; color: var(--muted); text-align: center;">Belum memiliki kode akses? <a href="http://lynk.id/harisratnopambudi/mnk9mwwpn9ke/checkout" target="_blank" style="color: var(--teal); font-weight: bold; text-decoration: underline;">Dapatkan Kode Akses di Sini</a></p>
+      <div class="field" style="width: 100%; text-align: left; margin: 15px 0 5px;">
+        <label style="font-size: 12px; font-weight: bold;">Kode Akses Premium</label>
+        <input type="password" id="popupAccessCode" placeholder="Masukkan kode akses Anda..." style="padding: 10px; font-size: 14px; width: 100%;">
+      </div>
+      <div id="popupAccessError" style="color: #c53030; font-size: 12px; margin-top: 5px; display: none; font-weight: 500;">Kode akses salah atau tidak valid.</div>
+      <div style="display: flex; gap: 10px; width: 100%; margin-top: 15px;">
+        <button class="welcome-btn" style="margin-top: 0; background: #c9d3d6; color: var(--ink);" onclick="closeAccessPopup()">Batal</button>
+        <button class="welcome-btn" style="margin-top: 0;" id="btnSubmitAccessCode" onclick="submitAccessCode()">Submit</button>
+      </div>
+    </div>
+  </div>
+
 <div class="app">
 
   <!-- =============== EDITOR =============== -->
@@ -646,32 +906,32 @@
       <summary>Generate Otomatis dengan AI</summary>
       <div class="body">
         <div class="ai-hint">
-          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, pilih provider AI, lalu masukkan API key Anda. AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut. API key dikirim langsung dari browser Anda ke provider terkait tanpa melalui server perantara.
+          Isi <b>CP</b>, <b>TP</b>, dan <b>Kelas</b>, lalu klik tombol di bawah. Fitur AI akan mengisi otomatis identitas modul, DPL, prinsip Pembelajaran Mendalam, seluruh langkah pembelajaran, asesmen, rubrik, sarana, hingga rencana tindak lanjut.
+          <br><br>Tips: pilih <b>Model Pembelajaran</b> di bawah jika ingin langkah pembelajaran mengikuti sintaks model tertentu (mis. PBL, PjBL, Discovery Learning) — AI akan menyusun tahapan sesuai sintaks resmi model tersebut, dan Praktik Pedagogis (Model, Metode, Pendekatan) akan terisi otomatis.
         </div>
-        <div class="field">
+        <div class="field" style="display: none;">
           <label>Provider AI</label>
           <select id="aiProvider" onchange="onProviderChange()">
             <option value="gemini">Google Gemini</option>
-            <option value="openai">OpenAI (ChatGPT)</option>
-            <option value="groq">Groq (Llama 3)</option>
           </select>
         </div>
-        <div class="field">
+        <div class="field" id="apiKeyField" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-            <label id="apiKeyLabel" style="margin: 0;">API Key Gemini</label>
-            <a id="apiKeyLink" href="https://aistudio.google.com/apikey" target="_blank" style="font-size: 11.5px; color: var(--teal); text-decoration: underline; font-weight: bold;">Dapatkan API Key</a>
+            <div style="display: flex; align-items: center;">
+              <label id="apiKeyLabel" style="margin: 0;">Kode Akses Premium</label>
+              <span id="apiStatusBadge" class="status-badge"></span>
+            </div>
+            <a id="apiKeyLink" href="#" style="font-size: 11.5px; color: var(--teal); text-decoration: underline; font-weight: bold;">Hubungi Admin</a>
           </div>
           <div class="apikey-row">
-            <input type="password" id="geminiApiKey" placeholder="AIzaSy...">
+            <input type="password" id="geminiApiKey" placeholder="Masukkan kode akses Anda..." oninput="checkAPIKeyStatus()">
             <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" style="display: none;">
           <label>Model</label>
           <select id="aiModel">
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (cepat &amp; hemat — direkomendasikan)</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro (lebih detail, lebih lambat)</option>
-            <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (paling ringan/cepat)</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)</option>
           </select>
         </div>
         <div class="field">
@@ -690,6 +950,11 @@
           <label>Keyword / Konteks Tambahan (opsional)</label>
           <textarea id="aiKeyword" rows="2" placeholder="Contoh: Fokuskan ke studi kasus pencemaran laut (AI for Ocean)..."></textarea>
           <div class="hint">Jika diisi, modul ajar akan diarahkan agar sesuai dengan konteks atau tema ini.</div>
+        </div>
+        <div class="field">
+          <label>Model Pembelajaran (opsional)</label>
+          <select id="metodeModel" onchange="onMetodeChange()"></select>
+          <div class="hint">Jika dipilih, Praktik Pedagogis (Model, Metode, Pendekatan) otomatis terisi, dan AI akan menyusun Langkah Pembelajaran mengikuti sintaks resmi model ini.</div>
         </div>
         <button type="button" class="btn-ai" id="btnGenerateAI" onclick="generateWithAI()">
           <span class="spinner"></span><span id="btnAILabel">Generate Otomatis dengan AI</span>
@@ -717,7 +982,8 @@
         </div>
         <div class="field">
           <label>Badge Kanan Atas (mapel + kelas)</label>
-          <textarea id="badge" rows="3">KODING DAN KECERDASAN ARTIFISIAL KELAS 5</textarea>
+          <textarea id="badge" rows="3">KODING DAN KECERDASAN ARTIFISIAL
+KELAS 5</textarea>
         </div>
         <div class="row2">
           <div class="field"><label>Penyusun</label><input type="text" id="penyusun" value="Haris Ratno Pambudi, S.T"></div>
@@ -759,7 +1025,7 @@
     <details class="section" open>
       <summary>Kerangka Pembelajaran Mendalam (Naskah Akademik)</summary>
       <div class="body">
-        <div class="hint">Sesuai Naskah Akademik PM Kemendikdasmen Feb 2025. Centang Dimensi Profil Lulusan (akan otomatis muncul sebagai tag di baris DPL bagian B), dan isi bagaimana 3 prinsip PM diwujudkan di pertemuan ini.</div>
+        <div class="hint">Sesuai <a href="https://guru.kemendikdasmen.go.id/dokumen/kGn0z42DeN?parentCategory=Pemahaman%20tentang%20Implementasi" target="_blank" style="color: var(--teal); font-weight: bold; text-decoration: underline;">Naskah Akademik PM Kemendikdasmen Feb 2025</a>. Centang Dimensi Profil Lulusan (akan otomatis muncul sebagai tag di baris DPL bagian B), dan isi bagaimana 3 prinsip PM diwujudkan di pertemuan ini.</div>
         <div class="field">
           <label>Dimensi Profil Lulusan (8 Dimensi PM)</label>
           <div class="dim-grid" id="dimGrid"></div>
@@ -812,7 +1078,7 @@
       <div class="body">
         <div class="field">
           <label>Praktik Pedagogis</label>
-          <textarea id="praktik" rows="2" placeholder="Contoh: Metode: Diskusi Kelompok, Permainan Peran (Unplugged), dll."></textarea>
+          <textarea id="praktik" rows="4" placeholder="Contoh: Pembelajaran ini menerapkan model Problem Based Learning (PBL) yang bertujuan untuk mendorong murid aktif memecahkan masalah. Aktivitas didukung oleh metode diskusi kelompok dan tanya jawab guna memfasilitasi kolaborasi. Seluruh proses dijalankan melalui pendekatan saintifik untuk membimbing penyelidikan secara sistematis."></textarea>
         </div>
         <div class="field">
           <label>Kemitraan Belajar</label>
@@ -920,6 +1186,33 @@
           <option value="landscape">Landscape</option>
         </select>
       </div>
+      <div class="grp">Pattern Kertas:
+        <select id="paperPattern" onchange="onPatternChange()">
+          <option value="none">Polos (Putih)</option>
+          
+          <optgroup label="Tekstur Kertas &amp; Serat">
+            <option value="y-so-serious">Y-So-Serious</option>
+            <option value="ricepaper">Rice Paper (Kertas Beras)</option>
+            <option value="linen">White Linen (Serat Linen)</option>
+            <option value="papyrus">Papyrus (Serat Papirus)</option>
+            <option value="lined">Garis Buku (Lined)</option>
+          </optgroup>
+          
+          <optgroup label="Geometris &amp; Struktur">
+            <option value="grid">Grid Kotak (Matematika)</option>
+            <option value="graphy">Graphy (Kertas Grafik)</option>
+            <option value="subtle_dots">Subtle Dots (Titik Halus)</option>
+            <option value="waves">Gelombang Halus</option>
+            <option value="double-bubble">Double Bubble</option>
+          </optgroup>
+          
+          <optgroup label="Dekoratif &amp; Flora">
+            <option value="leaves">Leaves (Daun)</option>
+            <option value="hotel-wallpaper">Hotel Wallpaper (Klasik)</option>
+            <option value="full-bloom">Full Bloom (Bunga Mekar)</option>
+          </optgroup>
+        </select>
+      </div>
       <div class="grp">Zoom:
         <select id="zoom" onchange="applyZoom()">
           <option value="fit" selected>Sesuai Lebar</option>
@@ -932,41 +1225,15 @@
           <option value="1.5">150%</option>
         </select>
       </div>
-      <div class="grp">Tema Warna:
-        <select id="paperTheme" onchange="applyPresetTheme(this.value)">
-          <option value="original">Hijau (Original)</option>
-          <option value="mint">Pastel Mint (Hijau)</option>
-          <option value="sage">Pastel Sage (Matcha)</option>
-          <option value="sky">Pastel Sky (Biru)</option>
-          <option value="lavender">Pastel Lavender (Ungu-Biru)</option>
-          <option value="lilac">Pastel Lilac (Ungu)</option>
-          <option value="rose">Pastel Rose (Pink)</option>
-          <option value="sakura">Pastel Sakura (Pink Cerah)</option>
-          <option value="coral">Pastel Coral (Peach)</option>
-          <option value="cream">Pastel Cream (Krim)</option>
-          <option value="butter">Pastel Butter (Kuning)</option>
-          <option value="ocean">Pastel Ocean (Teal)</option>
-          <option value="steel">Pastel Steel (Abu-abu)</option>
-          <option value="custom">Kustom (Slider)</option>
-        </select>
-      </div>
-      <div class="grp" id="sliderGroup" style="display: none; align-items: center; gap: 6px;">
-        Hue:
-        <input type="range" id="themeHue" min="0" max="360" value="102" oninput="applyHueTheme(this.value)" style="width: 100px; vertical-align: middle; accent-color: var(--teal);">
-        <span id="hueVal">102°</span>
-      </div>
       <div class="spacer"></div>
       <span style="font-size:10.5px; color:#8a6d00; max-width:260px;">Saat print, pastikan opsi <b>"Background graphics"</b> / "Grafik latar belakang" dicentang agar warna ikut tercetak.</span>
+
       <button class="btn-print" onclick="window.print()">Cetak / Simpan PDF</button>
     </div>
     <div class="toolbar no-print" style="border-bottom:none; padding:5px 20px; gap:16px; background:#f7f9fa;">
       <label class="toggle-grp">
         <span class="toggle-switch"><input type="checkbox" id="toggleBanner" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
         Banner
-      </label>
-      <label class="toggle-grp">
-        <span class="toggle-switch"><input type="checkbox" id="toggleLogoYayasan" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
-        Logo Yayasan
       </label>
       <label class="toggle-grp">
         <span class="toggle-switch"><input type="checkbox" id="toggleQuran" checked onchange="renderPreview()"><span class="toggle-slider"></span></span>
@@ -997,7 +1264,7 @@
         Modul ajar yang dihasilkan disusun secara spesifik berdasarkan pedoman terbaru:
         <ul>
           <li><b>Kurikulum Merdeka</b>, mencakup pemetaan otomatis tingkat kelas menuju hierarki Fase (A hingga F).</li>
-          <li><b>Kerangka Pembelajaran Mendalam</b> (merujuk pada <a href="https://guru.kemendikdasmen.go.id/dokumen/kGn0z42DeN?parentCategory=Pemahaman%20tentang%20Implementasi" target="_blank" style="color: var(--teal); font-weight: bold; text-decoration: underline;">Buku Naskah Akademik Pembelajaran Mendalam</a> Kemendikdasmen, Februari 2025), yang mengintegrasikan secara utuh pendekatan 3 Prinsip (<i>Mindful, Meaningful, Joyful</i>) dan siklus 3 Tahap Pengalaman Belajar (<i>Memahami, Mengaplikasi, Merefleksi</i>).</li>
+          <li><b>Kerangka Pembelajaran Mendalam</b> (merujuk pada <a href="https://guru.kemendikdasmen.go.id/dokumen/kGn0z42DeN?parentCategory=Pemahaman%20tentang%20Implementasi" target="_blank" style="color: var(--teal); font-weight: bold; text-decoration: underline;">Naskah Akademik PM Kemendikdasmen, Februari 2025</a>), yang mengintegrasikan secara utuh pendekatan 3 Prinsip (<i>Mindful, Meaningful, Joyful</i>) dan siklus 3 Tahap Pengalaman Belajar (<i>Memahami, Mengaplikasi, Merefleksi</i>).</li>
         </ul>
       </div>
     </div>
@@ -1011,6 +1278,7 @@
 let steps = [];
 let logoDataUrl = "";
 let logoYayasanDataUrl = "";
+let apiCheckTimeout = null;
 const DEFAULT_LOGO_SRC = "img/logosekolah.png";
 const YAYASAN_LOGO_SRC = "img/logoyayasan.png";
 const BANNER_SRC = "img/banner.png";
@@ -1036,13 +1304,134 @@ const dimensiColors = {
   "Komunikasi": "#319795"
 };
 const dimensiDefaultChecked = [];
+
+/* ---------- MODEL / METODE / PENDEKATAN PEMBELAJARAN (Praktik Pedagogis) ---------- */
+const METODE_PEMBELAJARAN = {
+  pbl: {
+    label: "Problem Based Learning (PBL)",
+    metode: "Diskusi Kelompok, Tanya Jawab, Penugasan, Presentasi",
+    pendekatan: "Saintifik dan Kolaboratif",
+    alasanModel: "melatih peserta didik memecahkan masalah nyata secara sistematis dan reflektif",
+    alasanMetode: "mendukung eksplorasi solusi secara kolaboratif dan penyampaian hasil analisis",
+    alasanPendekatan: "mengarahkan peserta didik menemukan konsep melalui proses ilmiah dan kerja sama",
+    sintaks: [
+      { title: "Orientasi Peserta Didik pada Masalah", tahapPM: "Memahami" },
+      { title: "Mengorganisasikan Peserta Didik untuk Belajar", tahapPM: "Memahami" },
+      { title: "Membimbing Penyelidikan Individu/Kelompok", tahapPM: "Mengaplikasi" },
+      { title: "Mengembangkan dan Menyajikan Hasil Karya", tahapPM: "Mengaplikasi" },
+      { title: "Menganalisis dan Mengevaluasi Proses Pemecahan Masalah", tahapPM: "Merefleksi" }
+    ]
+  },
+  pjbl: {
+    label: "Project Based Learning (PjBL)",
+    metode: "Diskusi Kelompok, Penugasan Proyek, Demonstrasi, Presentasi",
+    pendekatan: "Kontekstual dan Kolaboratif",
+    alasanModel: "melatih peserta didik menghasilkan produk nyata melalui proses perencanaan dan kolaborasi",
+    alasanMetode: "mendukung proses perencanaan, pengerjaan, dan presentasi proyek secara bertahap",
+    alasanPendekatan: "mengaitkan pembelajaran dengan konteks nyata dan kerja sama tim",
+    sintaks: [
+      { title: "Penentuan Pertanyaan Mendasar", tahapPM: "Memahami" },
+      { title: "Mendesain Perencanaan Produk", tahapPM: "Memahami" },
+      { title: "Menyusun Jadwal Pembuatan", tahapPM: "Mengaplikasi" },
+      { title: "Memonitor Keaktifan dan Perkembangan Proyek", tahapPM: "Mengaplikasi" },
+      { title: "Menguji Hasil", tahapPM: "Mengaplikasi" },
+      { title: "Evaluasi Pengalaman Belajar", tahapPM: "Merefleksi" }
+    ]
+  },
+  discovery: {
+    label: "Discovery Learning",
+    metode: "Tanya Jawab, Eksperimen/Percobaan, Diskusi, Penugasan",
+    pendekatan: "Saintifik",
+    alasanModel: "mendorong peserta didik menemukan sendiri konsep melalui pengamatan dan pengolahan data",
+    alasanMetode: "memberi ruang eksplorasi aktif melalui percobaan dan diskusi temuan",
+    alasanPendekatan: "menekankan proses ilmiah dalam menemukan konsep secara mandiri",
+    sintaks: [
+      { title: "Stimulation (Pemberian Rangsangan)", tahapPM: "Memahami" },
+      { title: "Problem Statement (Identifikasi Masalah)", tahapPM: "Memahami" },
+      { title: "Data Collection (Pengumpulan Data)", tahapPM: "Mengaplikasi" },
+      { title: "Data Processing (Pengolahan Data)", tahapPM: "Mengaplikasi" },
+      { title: "Verification (Pembuktian)", tahapPM: "Merefleksi" },
+      { title: "Generalization (Menarik Kesimpulan)", tahapPM: "Merefleksi" }
+    ]
+  },
+  inquiry: {
+    label: "Inquiry Learning",
+    metode: "Tanya Jawab, Eksperimen/Percobaan, Diskusi, Penugasan",
+    pendekatan: "Saintifik",
+    alasanModel: "melatih peserta didik menyelidiki dan menjawab masalah secara sistematis melalui pertanyaan dan data",
+    alasanMetode: "mendukung proses penyelidikan melalui percobaan, tanya jawab, dan diskusi hasil",
+    alasanPendekatan: "menekankan proses berpikir ilmiah dalam merumuskan dan menguji hipotesis",
+    sintaks: [
+      { title: "Orientasi", tahapPM: "Memahami" },
+      { title: "Merumuskan Masalah", tahapPM: "Memahami" },
+      { title: "Merumuskan Hipotesis", tahapPM: "Mengaplikasi" },
+      { title: "Mengumpulkan Data", tahapPM: "Mengaplikasi" },
+      { title: "Menguji Hipotesis dan Merumuskan Kesimpulan", tahapPM: "Merefleksi" }
+    ]
+  },
+  cooperative: {
+    label: "Cooperative Learning (STAD)",
+    metode: "Diskusi Kelompok, Kerja Kelompok, Kuis, Presentasi",
+    pendekatan: "Kolaboratif",
+    alasanModel: "melatih kerja sama dan tanggung jawab peserta didik dalam kelompok kecil yang heterogen",
+    alasanMetode: "mendukung interaksi aktif dan saling membantu antaranggota kelompok",
+    alasanPendekatan: "menekankan pembelajaran melalui kolaborasi dan saling ketergantungan positif",
+    sintaks: [
+      { title: "Penyampaian Tujuan dan Motivasi", tahapPM: "Memahami" },
+      { title: "Pembagian Kelompok", tahapPM: "Memahami" },
+      { title: "Presentasi dari Guru", tahapPM: "Mengaplikasi" },
+      { title: "Kegiatan Belajar dalam Tim (Kerja Kelompok)", tahapPM: "Mengaplikasi" },
+      { title: "Kuis/Evaluasi dan Penghargaan Kelompok", tahapPM: "Merefleksi" }
+    ]
+  },
+  gbl: {
+    label: "Game Based Learning",
+    metode: "Permainan/Games, Diskusi, Tanya Jawab, Demonstrasi",
+    pendekatan: "Menyenangkan (Joyful Learning) dan Kolaboratif",
+    alasanModel: "membuat proses belajar lebih menyenangkan sekaligus melatih pemahaman konsep melalui permainan",
+    alasanMetode: "mendukung keterlibatan aktif peserta didik lewat tantangan dan diskusi hasil permainan",
+    alasanPendekatan: "menekankan suasana belajar yang menggembirakan dan kerja sama antarpeserta didik",
+    sintaks: [
+      { title: "Pengenalan Aturan dan Tujuan Permainan", tahapPM: "Memahami" },
+      { title: "Pembagian Kelompok/Tim", tahapPM: "Memahami" },
+      { title: "Pelaksanaan Permainan/Tantangan", tahapPM: "Mengaplikasi" },
+      { title: "Diskusi dan Refleksi Hasil Permainan", tahapPM: "Merefleksi" },
+      { title: "Penguatan Konsep dan Evaluasi", tahapPM: "Merefleksi" }
+    ]
+  }
+};
+
+function metodeDeskripsi(m){
+  return `Pembelajaran ini menerapkan model ${m.label} yang bertujuan untuk ${m.alasanModel}. Aktivitas didukung oleh metode ${m.metode.toLowerCase()} guna ${m.alasanMetode}. Seluruh proses ini dijalankan melalui pendekatan ${m.pendekatan.toLowerCase()} untuk ${m.alasanPendekatan}.`;
+}
+
+function renderMetodeSelect(){
+  const el = document.getElementById('metodeModel');
+  if(!el) return;
+  const opts = ['<option value="">— Pilih model pembelajaran —</option>'];
+  Object.keys(METODE_PEMBELAJARAN).forEach(key=>{
+    opts.push(`<option value="${key}">${escRaw(METODE_PEMBELAJARAN[key].label)}</option>`);
+  });
+  opts.push('<option value="lainnya">Lainnya (isi manual)</option>');
+  el.innerHTML = opts.join("");
+}
+
+function onMetodeChange(){
+  const key = document.getElementById('metodeModel').value;
+  const praktikEl = document.getElementById('praktik');
+  if(key && key !== 'lainnya'){
+    praktikEl.value = metodeDeskripsi(METODE_PEMBELAJARAN[key]);
+  }
+  renderPreview();
+}
+
 function renderDimGrid(){
   const el = document.getElementById('dimGrid');
   el.innerHTML = dimensiPM.map((d,i)=>`
     <label class="dim-item">
-      <input type="checkbox" value="${esc(d)}" ${dimensiDefaultChecked.includes(d)?'checked':''} onchange="renderPreview()">
+      <input type="checkbox" value="${escRaw(d)}" ${dimensiDefaultChecked.includes(d)?'checked':''} onchange="renderPreview()">
       <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dimensiColors[d]};flex-shrink:0;"></span>
-      ${esc(d)}
+      ${escRaw(d)}
     </label>
   `).join("");
 }
@@ -1050,8 +1439,100 @@ function getSelectedDimensi(){
   return Array.from(document.querySelectorAll('#dimGrid input:checked')).map(el=>el.value);
 }
 
-function esc(s){
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function italicizeForeign(text) {
+  if (!text) return "";
+  
+  // Split by HTML tags to prevent replacing terms inside HTML attributes
+  const parts = text.split(/(<[^>]+>)/g);
+  
+  const terms = [
+    "Problem Based Learning",
+    "Project Based Learning",
+    "Discovery Learning",
+    "Inquiry Learning",
+    "Cooperative Learning",
+    "Game Based Learning",
+    "Joyful Learning",
+    "Computational Thinking",
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Internet of Things",
+    "Big Data",
+    "Cloud Computing",
+    "Cyber Security",
+    "Computational",
+    "Thinking",
+    "Unplugged",
+    "Plugged",
+    "Coding",
+    "Games",
+    "Mindful",
+    "Meaningful",
+    "Joyful",
+    "Feedback",
+    "Debugging",
+    "Debug",
+    "Hardware",
+    "Software",
+    "Brainstorming",
+    "Ice Breaking",
+    "Icebreaker",
+    "Post-test",
+    "Pre-test",
+    "Peer Assessment",
+    "Self Assessment",
+    "Assessment",
+    "Rubric",
+    "Flowchart",
+    "Algorithm",
+    "AI for Ocean",
+    "online",
+    "offline",
+    "AI"
+  ];
+  
+  const sortedTerms = [...terms].sort((a, b) => b.length - a.length);
+  
+  const processedParts = parts.map(part => {
+    if (part.startsWith("<") && part.endsWith(">")) {
+      return part;
+    }
+    let result = part;
+    sortedTerms.forEach(term => {
+      const regex = new RegExp(`\\b(${escapeRegExp(term)})\\b`, 'gi');
+      result = result.replace(regex, '<i>$1</i>');
+    });
+    return result;
+  });
+  
+  return processedParts.join("");
+}
+
+function escRaw(s){
   return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function formatLinks(text) {
+  if (!text) return "";
+  const urlRegex = /(\b(https?:\/\/|www\.)[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]|\b[a-z0-9.-]+\.(org|com|edu|net|gov|id|io)\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/gi;
+  
+  return text.replace(urlRegex, function(match) {
+    let url = match;
+    if (!/^https?:\/\//i.test(url)) {
+      url = "https://" + url;
+    }
+    return `<a href="${url}" target="_blank" style="color: #0000ee; text-decoration: underline;">${match}</a>`;
+  });
+}
+
+function esc(s){
+  let escaped = (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  escaped = formatLinks(escaped);
+  return italicizeForeign(escaped);
 }
 function linesToOl(text){
   const rawLines = (text||"").split("\n").map(s=>s.trim()).filter(Boolean);
@@ -1155,9 +1636,9 @@ function renderStepsEditor(){
       </div>
       <div class="row2">
         <div class="field"><label>Judul Tahap</label>
-          <input type="text" value="${esc(s.title)}" oninput="steps[${i}].title=this.value; renderPreview();"></div>
+          <input type="text" value="${escRaw(s.title)}" oninput="steps[${i}].title=this.value; renderPreview();"></div>
         <div class="field"><label>Durasi</label>
-          <input type="text" value="${esc(s.durasi)}" oninput="steps[${i}].durasi=this.value; renderPreview();"></div>
+          <input type="text" value="${escRaw(s.durasi)}" oninput="steps[${i}].durasi=this.value; renderPreview();"></div>
       </div>
       <div class="field"><label>Pengalaman Belajar (PM)</label>
         <select onchange="steps[${i}].tahapPM=this.value; renderPreview();">
@@ -1167,7 +1648,7 @@ function renderStepsEditor(){
         </select>
       </div>
       <div class="field"><label>Isi Langkah (1 baris = 1 poin)</label>
-        <textarea rows="4" oninput="steps[${i}].content=this.value; renderPreview();">${esc(s.content)}</textarea></div>
+        <textarea rows="4" oninput="steps[${i}].content=this.value; renderPreview();">${escRaw(s.content)}</textarea></div>
     </div>
   `).join("");
 }
@@ -1348,12 +1829,11 @@ function renderPreview(){
 
   const showBanner = document.getElementById('toggleBanner')?.checked !== false;
   const showQuran = document.getElementById('toggleQuran')?.checked !== false;
-  const showLogoYayasan = document.getElementById('toggleLogoYayasan')?.checked !== false;
 
   const html = `
     ${showBanner ? `
     <div class="m-banner">
-      ${showLogoYayasan ? `<img src="${yayasanLogoSrc}" class="m-banner-logo" onerror="this.style.display='none';">` : ""}
+      <img src="${yayasanLogoSrc}" class="m-banner-logo" onerror="this.style.display='none';">
       <img src="${logoSrc}" class="m-banner-logo" onerror="this.style.display='none';">
       <img src="${BANNER_SRC}" class="m-banner-img" alt="Akreditasi &amp; Kurikulum Merdeka" onerror="this.style.display='none';">
     </div>
@@ -1465,9 +1945,15 @@ const sizes = {
 function updatePageStyle(){
   const size = document.getElementById('paperSize').value;
   const orient = document.getElementById('orientation').value;
+  const pattern = document.getElementById('paperPattern') ? document.getElementById('paperPattern').value : 'none';
   const page = document.getElementById('page');
   if(!page) return;
-  page.className = "sheet " + size + " " + orient;
+  
+  let patternClass = "";
+  if (pattern !== 'none') {
+    patternClass = " pattern-" + pattern;
+  }
+  page.className = "sheet " + size + " " + orient + patternClass;
   const [w,h] = sizes[size][orient];
   
   // Read dynamic values for the print footer
@@ -1552,19 +2038,11 @@ window.addEventListener('resize', () => {
 /* ---------- AI GENERATOR (GEMINI) ---------- */
 const modelsByProvider = {
   gemini: [
-    { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash (cepat & hemat — direkomendasikan)" },
-    { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro (lebih detail, lebih lambat)" },
-    { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite (paling ringan/cepat)" }
-  ],
-  openai: [
-    { value: "gpt-4o-mini", label: "GPT-4o Mini (sangat cepat & akurat — direkomendasikan)" },
-    { value: "gpt-4o", label: "GPT-4o (sangat cerdas & detail)" }
-  ],
-  groq: [
-    { value: "llama-3.3-70b-specdec", label: "Llama 3.3 70B (super cepat & cerdas — direkomendasikan)" },
-    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (cepat & efisien)" }
+    { value: "gemini-3.5-flash", label: "Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)" }
   ]
 };
+
+
 
 function onProviderChange() {
   const provider = document.getElementById('aiProvider').value;
@@ -1572,37 +2050,26 @@ function onProviderChange() {
   const inputEl = document.getElementById('geminiApiKey');
   const modelEl = document.getElementById('aiModel');
   const linkEl = document.getElementById('apiKeyLink');
+  const fieldEl = document.getElementById('apiKeyField');
   if(!labelEl || !inputEl || !modelEl) return;
 
   if (provider === 'gemini') {
-    labelEl.textContent = 'API Key Gemini';
-    inputEl.placeholder = 'AIzaSy...';
-    if(linkEl) {
-      linkEl.href = 'https://aistudio.google.com/apikey';
-      linkEl.style.display = 'inline-block';
+    labelEl.textContent = 'Kode Akses Premium';
+    inputEl.placeholder = 'Masukkan kode akses Anda...';
+    if (linkEl) {
+      linkEl.href = '#';
+      linkEl.textContent = 'Hubungi Admin';
     }
-  } else if (provider === 'openai') {
-    labelEl.textContent = 'API Key OpenAI';
-    inputEl.placeholder = 'sk-...';
-    if(linkEl) {
-      linkEl.href = 'https://platform.openai.com/api-keys';
-      linkEl.style.display = 'inline-block';
+    if (fieldEl) {
+      fieldEl.style.display = 'none';
     }
-  } else if (provider === 'groq') {
-    labelEl.textContent = 'API Key Groq';
-    inputEl.placeholder = 'gsk_...';
-    if(linkEl) {
-      linkEl.href = 'https://console.groq.com/keys';
-      linkEl.style.display = 'inline-block';
-    }
+    try {
+      const savedCode = localStorage.getItem('hdl_access_code') || '';
+      inputEl.value = savedCode;
+    } catch(e) {}
   }
 
-  try {
-    const savedKey = localStorage.getItem(`hdl_${provider}_key`);
-    inputEl.value = savedKey || '';
-  } catch(e) {
-    inputEl.value = '';
-  }
+  checkAPIKeyStatus();
 
   modelEl.innerHTML = modelsByProvider[provider].map(m => `
     <option value="${m.value}">${m.label}</option>
@@ -1616,38 +2083,176 @@ function onProviderChange() {
   } catch(e) {}
 }
 
-(function initApiKey(){
+function onPatternChange() {
+  const pattern = document.getElementById('paperPattern').value;
+  try {
+    localStorage.setItem('hdl_paper_pattern', pattern);
+  } catch(e) {}
+  
+  // Set pattern class on body to allow full-height printing
+  const body = document.body;
+  body.className = body.className.replace(/\bpattern-\S+/g, '').trim();
+  if (pattern !== 'none') {
+    body.classList.add('pattern-' + pattern);
+  }
+  
+  updatePageStyle();
+}
+
+function initApiKey(){
   try{
+    // Hapus key yang mungkin tersimpan sebelumnya demi keamanan/privasi
+    localStorage.removeItem('hdl_gemini_key');
+    localStorage.removeItem('hdl_openai_key');
+    localStorage.removeItem('hdl_groq_key');
+
     const savedProvider = localStorage.getItem('hdl_ai_provider') || 'gemini';
     const providerEl = document.getElementById('aiProvider');
     if(providerEl) { providerEl.value = savedProvider; }
     
+    // Load saved paper pattern
+    const savedPattern = localStorage.getItem('hdl_paper_pattern') || 'none';
+    const patternEl = document.getElementById('paperPattern');
+    if (patternEl) { 
+      patternEl.value = savedPattern; 
+      const body = document.body;
+      body.className = body.className.replace(/\bpattern-\S+/g, '').trim();
+      if (savedPattern !== 'none') {
+        body.classList.add('pattern-' + savedPattern);
+      }
+    }
+    
     onProviderChange();
+    checkWelcomePopup();
   }catch(e){ /* localStorage tidak tersedia */ }
-})();
+}
 
-// Auto-save input values
-document.getElementById('geminiApiKey').addEventListener('input', function(e){
-  try{
-    const provider = document.getElementById('aiProvider').value;
-    localStorage.setItem(`hdl_${provider}_key`, e.target.value);
-  }catch(err){}
-});
-document.getElementById('aiModel').addEventListener('change', function(e){
-  try{
-    const provider = document.getElementById('aiProvider').value;
-    localStorage.setItem(`hdl_${provider}_model`, e.target.value);
-  }catch(err){}
-});
-document.getElementById('aiProvider').addEventListener('change', function(e){
-  try{
-    localStorage.setItem('hdl_ai_provider', e.target.value);
-  }catch(err){}
-});
+function checkWelcomePopup() {
+  try {
+    const shown = localStorage.getItem('hdl_welcome_shown');
+    if (!shown) {
+      document.getElementById('welcomePopup').style.display = 'flex';
+    }
+  } catch (e) {}
+}
+
+function closeWelcomePopup() {
+  document.getElementById('welcomePopup').style.display = 'none';
+  try {
+    localStorage.setItem('hdl_welcome_shown', 'true');
+  } catch (e) {}
+}
+
+function closeAccessPopup() {
+  document.getElementById('accessPopup').style.display = 'none';
+  document.getElementById('popupAccessError').style.display = 'none';
+}
+
+async function submitAccessCode() {
+  const codeEl = document.getElementById('popupAccessCode');
+  const errorEl = document.getElementById('popupAccessError');
+  const btnEl = document.getElementById('btnSubmitAccessCode');
+  if (!codeEl || !errorEl || !btnEl) return;
+
+  const code = codeEl.value.trim();
+  if (code.length === 0) {
+    errorEl.textContent = "Silakan masukkan kode akses.";
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.textContent = "Memeriksa...";
+  errorEl.style.display = 'none';
+
+  try {
+    const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
+      headers: { 'Authorization': `Bearer ${code}` }
+    });
+    
+    if (res.ok) {
+      try {
+        localStorage.setItem('hdl_access_code', code);
+      } catch(e) {}
+      
+      const keyInput = document.getElementById('geminiApiKey');
+      if (keyInput) {
+        keyInput.value = code;
+        checkAPIKeyStatus();
+      }
+      
+      closeAccessPopup();
+      generateWithAI();
+    } else {
+      errorEl.textContent = "Kode akses salah atau tidak valid.";
+      errorEl.style.display = 'block';
+    }
+  } catch(e) {
+    errorEl.textContent = "Gagal memverifikasi. Periksa koneksi internet Anda.";
+    errorEl.style.display = 'block';
+  } finally {
+    btnEl.disabled = false;
+    btnEl.textContent = "Submit";
+  }
+}
 
 function toggleKeyVisibility(){
   const el = document.getElementById('geminiApiKey');
   el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+async function checkAPIKeyStatus() {
+  const inputEl = document.getElementById('geminiApiKey');
+  const badgeEl = document.getElementById('apiStatusBadge');
+  if (!inputEl || !badgeEl) return;
+
+  const apiKey = inputEl.value.trim();
+  
+  if (apiKey.length === 0) {
+    badgeEl.style.display = 'none';
+    badgeEl.className = 'status-badge';
+    return;
+  }
+
+  // Menampilkan status sedang memeriksa (tanpa emoji)
+  badgeEl.style.display = 'inline-block';
+  badgeEl.className = 'status-badge checking';
+  badgeEl.textContent = 'Memeriksa...';
+
+  if (apiCheckTimeout) clearTimeout(apiCheckTimeout);
+
+  apiCheckTimeout = setTimeout(async () => {
+    if (inputEl.value.trim().length === 0) {
+      badgeEl.style.display = 'none';
+      badgeEl.className = 'status-badge';
+      return;
+    }
+
+    const provider = document.getElementById('aiProvider').value;
+    let isValid = false;
+
+    try {
+      if (provider === 'gemini') {
+        const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
+          headers: { 'Authorization': `Bearer ${apiKey}` }
+        });
+        isValid = res.ok;
+      }
+    } catch(e) {
+      isValid = false;
+    }
+
+    // Pastikan input tidak berubah selama proses request asynchronous
+    if (inputEl.value.trim() !== apiKey) return;
+
+    if (isValid) {
+      badgeEl.className = 'status-badge connected';
+      badgeEl.textContent = 'Aktif';
+    } else {
+      badgeEl.className = 'status-badge error';
+      badgeEl.textContent = 'Tidak Valid';
+    }
+  }, 1200);
 }
 
 const DIMENSI_PM_LIST = [
@@ -1703,16 +2308,25 @@ function geminiSchema(){
   };
 }
 
-function buildAIPrompt(cp, tp, kelas, keyword){
+function buildAIPrompt(cp, tp, kelas, keyword, metodeKey){
   const mapelTetap = document.getElementById('mapel') ? document.getElementById('mapel').value.trim() : "";
   const jenjangTetap = document.getElementById('jenjang') ? document.getElementById('jenjang').value.trim() : "";
   const keywordText = keyword ? `\nKONTEKS / KEYWORD TAMBAHAN:\n${keyword}\n\nPastikan seluruh konten modul (termasuk langkah pembelajaran dan asesmen) sangat relevan dengan konteks/keyword di atas.\n` : "";
+
+  let metodeText = "";
+  const metode = metodeKey ? METODE_PEMBELAJARAN[metodeKey] : null;
+  if(metode){
+    const daftarTahap = metode.sintaks.map((s,i)=>`${i+1}. ${s.title} (tahapPM: ${s.tahapPM})`).join("\n");
+    metodeText = `\nMODEL PEMBELAJARAN YANG WAJIB DIGUNAKAN: ${metode.label}\nField "praktik" WAJIB diisi dalam bentuk satu paragraf narasi terpadu berikut (jangan dipisah per baris), dengan bagian alasan di dalam tanda kurung sudut ditulis ulang menjadi penjelasan spesifik yang benar-benar relevan dengan CP/TP guru di atas:\nPembelajaran ini menerapkan model ${metode.label} yang bertujuan untuk <alasan spesifik kenapa model ini cocok untuk CP/TP di atas>. Aktivitas didukung oleh metode ${metode.metode.toLowerCase()} guna <alasan spesifik kenapa metode-metode ini cocok untuk CP/TP di atas>. Seluruh proses ini dijalankan melalui pendekatan ${metode.pendekatan.toLowerCase()} untuk <alasan spesifik kenapa pendekatan ini cocok untuk CP/TP di atas>.\nField "langkahPembelajaran" WAJIB mengikuti PERSIS ${metode.sintaks.length} tahap sintaks resmi model ini berikut, dengan judul tahap ("title") dan nilai "tahapPM" persis seperti daftar berikut (urutan tidak boleh diubah, jangan gunakan label Pendahuluan/Inti/Penutup generik):\n${daftarTahap}\nMeskipun judul tahap mengikuti sintaks resmi di atas, tahap pertama tetap WAJIB memuat poin doa dan Pertanyaan Pemantik sesuai aturan pada instruksi sistem.\n`;
+  } else if(metodeKey === 'lainnya'){
+    metodeText = `\nCatatan: guru memilih metode "Lainnya" — tentukan sendiri metode/praktik pedagogis yang paling relevan dengan CP/TP di atas dan gunakan struktur tahap generik (Pendahuluan, Inti, Penutup) seperti biasa.\n`;
+  }
 
   return `Susun seluruh komponen Modul Ajar berikut berdasarkan data dari guru:
 
 MATA PELAJARAN (tetap, jangan diubah, gunakan persis ini): ${mapelTetap}
 JENJANG SEKOLAH (tetap, jangan diubah, gunakan persis ini): ${jenjangTetap}
-KELAS: ${kelas}${keywordText}
+KELAS: ${kelas}${keywordText}${metodeText}
 CAPAIAN PEMBELAJARAN (CP):
 ${cp}
 
@@ -1731,10 +2345,11 @@ Tugas: berdasarkan CP, TP, dan kelas yang diberikan guru, susun SELURUH komponen
 Aturan wajib:
 - Pemetaan Fase Kurikulum Merdeka: Kelas 1-2 = Fase A, Kelas 3-4 = Fase B, Kelas 5-6 = Fase C, Kelas 7-9 = Fase D, Kelas 10 = Fase E, Kelas 11-12 = Fase F.
 - Field "fase" berformat seperti: "Fase C, V (Lima), I (Ganjil)" — sesuaikan angka romawi kelas dan semester dari konteks (jika semester tidak disebutkan, asumsikan Ganjil).
-- "badge" adalah teks pendek berisi nama mata pelajaran + kelas, huruf besar, cocok untuk badge di pojok kanan atas dokumen.
-- "langkahPembelajaran": 5-7 tahap runtut (Pendahuluan, beberapa tahap Inti, Penutup), total durasi harus konsisten dengan field "alokasi", dan tahapPM dibagi rata antara Memahami, Mengaplikasi, dan Merefleksi. Field "content" setiap tahap berisi beberapa poin instruksi konkret, satu baris satu poin, dipisah karakter newline. Aplikasi akan otomatis menomori setiap baris tersebut sebagai daftar bernomor, jadi JANGAN PERNAH menambahkan angka atau simbol penomoran/bullet manual sendiri (mis. "1.", "2)", "-", "•") di awal baris manapun — tulis kalimatnya langsung tanpa prefix apa pun.
+- "badge" adalah teks berisi nama mata pelajaran dan kelas, huruf besar, dipisah dengan karakter newline (\n) di antara mata pelajaran dan kelas (contoh: "KODING DAN KECERDASAN ARTIFISIAL\nKELAS 5").
+- "langkahPembelajaran": jika prompt pengguna TIDAK menyertakan instruksi "METODE/MODEL PEMBELAJARAN YANG WAJIB DIGUNAKAN", susun 5-7 tahap runtut (Pendahuluan, beberapa tahap Inti, Penutup) dengan tahapPM dibagi rata antara Memahami, Mengaplikasi, dan Merefleksi. Jika prompt pengguna MENYERTAKAN instruksi tersebut, WAJIB ikuti persis jumlah tahap, judul tahap, dan tahapPM yang diberikan dalam instruksi itu (jangan menambah/mengurangi/mengganti nama tahap). Pada kedua kasus, total durasi harus konsisten dengan field "alokasi". Field "content" setiap tahap berisi beberapa poin instruksi konkret, satu baris satu poin, dipisah karakter newline. Aplikasi akan otomatis menomori setiap baris tersebut sebagai daftar bernomor, jadi JANGAN PERNAH menambahkan angka atau simbol penomoran/bullet manual sendiri (mis. "1.", "2)", "-", "•") di awal baris manapun — tulis kalimatnya langsung tanpa prefix apa pun.
 - Pada tahap Pendahuluan, WAJIB selalu menyertakan satu poin di awal yang berbunyi kurang lebih: "Guru mengajak salah satu murid untuk memimpin doa sebelum memulai pembelajaran." (bukan guru sendiri yang memimpin doa, melainkan salah satu murid, mencerminkan pembiasaan kemandirian dan kepemimpinan siswa).
 - Tahap Pendahuluan pada "langkahPembelajaran" WAJIB memuat "Pertanyaan Pemantik" berupa MINIMAL 3 pertanyaan terbuka yang relevan dengan materi/TP untuk memantik rasa ingin tahu dan mengaitkan dengan pengalaman murid sehari-hari. Tulis satu baris berisi kalimat pengantar (mis. "Guru mengajukan Pertanyaan Pemantik:"), lalu setiap pertanyaan pemantik pada baris-baris SETELAHNYA WAJIB diawali penanda ">>" (dua tanda lebih-besar tanpa spasi, mis. ">>Pernahkah kalian melihat robot yang bisa berbicara seperti manusia?") — ini akan otomatis dirender sebagai sub-nomor bercetak miring oleh aplikasi. Penanda ">>" HANYA dipakai untuk pertanyaan pemantik, jangan dipakai di baris lain manapun.
+- "praktik" (Praktik Pedagogis) WAJIB selalu diisi dalam bentuk satu paragraf narasi terpadu (bukan poin-poin/baris terpisah), dengan pola: "Pembelajaran ini menerapkan model [nama model] yang bertujuan untuk [alasan singkat]. Aktivitas didukung oleh metode [daftar metode] guna [alasan singkat]. Seluruh proses ini dijalankan melalui pendekatan [nama pendekatan] untuk [alasan singkat]." Setiap bagian alasan WAJIB berupa 1 kalimat pendek yang menjelaskan mengapa pilihan tersebut relevan/cocok dengan CP dan TP yang diberikan guru (bukan kalimat generik yang bisa dipakai untuk materi apa saja). Jika prompt pengguna menyertakan instruksi "MODEL PEMBELAJARAN YANG WAJIB DIGUNAKAN", gunakan model, metode, dan pendekatan yang ditentukan di situ dengan menyusunnya ke dalam pola narasi di atas.
 - Mode pengerjaan tugas/aktivitas murid (individu, berpasangan, atau kelompok) TIDAK boleh selalu default kelompok — pilih yang paling sesuai dengan karakter TP dan aktivitasnya. Jika materi/tugasnya memang lebih cocok dikerjakan sendiri (mis. melatih pemahaman/keterampilan personal, asesmen individu, refleksi diri), gunakan mode individu; gunakan kelompok/berpasangan hanya jika aktivitasnya memang menuntut kolaborasi/diskusi. Terapkan pilihan ini secara konsisten pada "langkahPembelajaran" (field "content"), "praktik", "kemitraan", dan "lingkungan" agar tidak kontradiktif satu sama lain.
 - "dpl": narasi 1 baris per Dimensi Profil Lulusan terpilih, format "Nama Dimensi: penjelasan singkat keterkaitannya dengan materi.", dipisah newline. Pilih 2-4 dimensi paling relevan dari 8 pilihan pada schema.
 - "rubrik1" dan "rubrik2": setiap baris = "Aspek | Indikator | Level4 | Level3 | Level2 | Level1", antar baris dipisah newline. rubrik1 tentang sikap, rubrik2 tentang produk/kinerja hasil belajar.
@@ -1748,12 +2363,12 @@ Aturan wajib:
 - JANGAN PERNAH menggunakan emoji atau simbol dekoratif sejenis di bagian mana pun dalam modul ajar.
 - Jangan menyertakan markdown atau teks di luar JSON.`;
 
-async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas, keyword) {
+async function callOpenAICompatible(url, apiKey, model, systemInstruction, cp, tp, kelas, keyword, metodeKey) {
   const body = {
     model: model,
     messages: [
       { role: "system", content: systemInstruction },
-      { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword) }
+      { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }
     ],
     response_format: { type: "json_object" },
     temperature: 0.3
@@ -1915,57 +2530,117 @@ async function typeSteps(list){
 }
 
 async function applyAIResultTyped(r){
-  const seqA = [
-    ['judul', r.judul], ['badge', r.badge], ['fase', r.fase], ['elemenSingkat', r.elemenSingkat],
-    ['alokasi', r.alokasi], ['cp', r.cp], ['tp', r.tp], ['dpl', r.dpl],
-    ['prinsipMindful', r.prinsipMindful], ['prinsipMeaningful', r.prinsipMeaningful], ['prinsipJoyful', r.prinsipJoyful],
-    ['teknologiDigital', r.teknologiDigital], ['praktik', r.praktik], ['kemitraan', r.kemitraan], ['lingkungan', r.lingkungan]
+  // Clear all fields before typing starts so they don't show pre-filled text
+  const fieldsToClear = [
+    'judul', 'badge', 'fase', 'elemenSingkat', 'alokasi',
+    'quranArab', 'quranTerjemah', 'quranRef', 'haditsArab', 'haditsTerjemah', 'haditsRef', 'quranKait',
+    'cp', 'dpl', 'tp',
+    'prinsipMindful', 'prinsipMeaningful', 'prinsipJoyful',
+    'praktik', 'kemitraan', 'lingkungan', 'teknologiDigital',
+    'sarana',
+    'asAwal', 'asFormatif', 'asSumatif',
+    'rubrik1Judul', 'rubrik1', 'rubrik2Judul', 'rubrik2',
+    'skorMaks', 'kkm',
+    'sudahKKM', 'belumKKM',
+    'catatan'
   ];
-  for(const [id, val] of seqA){
+  fieldsToClear.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+
+  // Clear steps
+  steps = [];
+  renderStepsEditor();
+
+  // Clear checkboxes
+  document.querySelectorAll('#dimGrid input[type=checkbox]').forEach(chk => chk.checked = false);
+
+  // Render initial clean preview
+  renderPreview();
+
+  // 1. Identitas Modul (A)
+  const seq1 = [
+    ['judul', r.judul], ['badge', r.badge], ['fase', r.fase], ['elemenSingkat', r.elemenSingkat], ['alokasi', r.alokasi]
+  ];
+  for(const [id, val] of seq1){
     if(val===undefined || val===null) continue;
     await typeInto(document.getElementById(id), val);
   }
 
-  if(Array.isArray(r.dimensiProfilLulusan)){
-    await checkDimensiTyped(r.dimensiProfilLulusan);
-  }
-
-  if(Array.isArray(r.langkahPembelajaran) && r.langkahPembelajaran.length){
-    await typeSteps(r.langkahPembelajaran);
-  }
-
-  const seqB = [
-    ['asAwal', r.asAwal], ['asFormatif', r.asFormatif], ['asSumatif', r.asSumatif],
-    ['rubrik1Judul', r.rubrik1Judul], ['rubrik1', r.rubrik1],
-    ['rubrik2Judul', r.rubrik2Judul], ['rubrik2', r.rubrik2],
-    ['skorMaks', r.skorMaks], ['kkm', r.kkm], ['sarana', r.sarana],
-    ['sudahKKM', r.sudahKKM], ['belumKKM', r.belumKKM]
-  ];
-  for(const [id, val] of seqB){
-    if(val===undefined || val===null) continue;
-    await typeInto(document.getElementById(id), val);
-  }
-
-  if(r.catatan){ await typeInto(document.getElementById('catatan'), r.catatan); }
-
-  const seqC = [
+  // 2. Landasan Nilai Qur'ani & Hadits
+  const seq2 = [
     ['quranArab', r.quranArab || ''], ['quranTerjemah', r.quranTerjemah || ''], ['quranRef', r.quranRef || ''],
     ['haditsArab', r.haditsArab || ''], ['haditsTerjemah', r.haditsTerjemah || ''], ['haditsRef', r.haditsRef || ''],
     ['quranKait', r.quranKait]
   ];
-  for(const [id, val] of seqC){
-    if(val===undefined) continue;
+  for(const [id, val] of seq2){
+    if(val===undefined || val===null) continue;
     await typeInto(document.getElementById(id), val);
+  }
+
+  // 3. Identifikasi (B)
+  if(r.cp!==undefined && r.cp!==null) await typeInto(document.getElementById('cp'), r.cp);
+  if(r.dpl!==undefined && r.dpl!==null) await typeInto(document.getElementById('dpl'), r.dpl);
+  if(Array.isArray(r.dimensiProfilLulusan)){
+    await checkDimensiTyped(r.dimensiProfilLulusan);
+  }
+  if(r.tp!==undefined && r.tp!==null) await typeInto(document.getElementById('tp'), r.tp);
+
+  // 4. Kerangka PM & Desain Pembelajaran (C)
+  const seq4 = [
+    ['prinsipMindful', r.prinsipMindful], ['prinsipMeaningful', r.prinsipMeaningful], ['prinsipJoyful', r.prinsipJoyful],
+    ['praktik', r.praktik], ['kemitraan', r.kemitraan], ['lingkungan', r.lingkungan], ['teknologiDigital', r.teknologiDigital]
+  ];
+  for(const [id, val] of seq4){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  // 5. Sarana / Media
+  if(r.sarana!==undefined && r.sarana!==null){
+    await typeInto(document.getElementById('sarana'), r.sarana);
+  }
+
+  // 6. Langkah Pembelajaran (D)
+  if(Array.isArray(r.langkahPembelajaran) && r.langkahPembelajaran.length){
+    await typeSteps(r.langkahPembelajaran);
+  }
+
+  // 7. Asesmen Pembelajaran (E) & Rubrik & KKTP
+  const seq5 = [
+    ['asAwal', r.asAwal], ['asFormatif', r.asFormatif], ['asSumatif', r.asSumatif],
+    ['rubrik1Judul', r.rubrik1Judul], ['rubrik1', r.rubrik1],
+    ['rubrik2Judul', r.rubrik2Judul], ['rubrik2', r.rubrik2],
+    ['skorMaks', r.skorMaks], ['kkm', r.kkm]
+  ];
+  for(const [id, val] of seq5){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  // 8. Rencana Tindak Lanjut (F)
+  const seq6 = [
+    ['sudahKKM', r.sudahKKM], ['belumKKM', r.belumKKM]
+  ];
+  for(const [id, val] of seq6){
+    if(val===undefined || val===null) continue;
+    await typeInto(document.getElementById(id), val);
+  }
+
+  // 9. Catatan
+  if(r.catatan!==undefined && r.catatan!==null){
+    await typeInto(document.getElementById('catatan'), r.catatan);
   }
 
   renderPreview();
 }
 
-async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry){
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey){
+  const url = `https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models/${model}:generateContent`;
   const body = {
     systemInstruction: { parts:[{ text: AI_SYSTEM_INSTRUCTION }] },
-    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas, keyword) }] }],
+    contents: [{ role:"user", parts:[{ text: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }] }],
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: geminiSchema(),
@@ -1981,7 +2656,10 @@ async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry){
     try{
       res = await fetch(url, {
         method:"POST",
-        headers:{ "Content-Type":"application/json" },
+        headers:{ 
+          "Content-Type":"application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
         body: JSON.stringify(body)
       });
     }catch(networkErr){
@@ -2012,12 +2690,19 @@ async function callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry){
       continue;
     }
 
-    if(res.status === 400) throw new Error("API key tidak valid atau format permintaan salah. " + detail);
-    if(res.status === 403) throw new Error("API key ditolak (403). Periksa kembali key Anda di Google AI Studio. " + detail);
+    if(res.status === 401 || res.status === 403) {
+      try {
+        localStorage.removeItem('hdl_access_code');
+        const keyInput = document.getElementById('geminiApiKey');
+        if (keyInput) keyInput.value = '';
+      } catch(e) {}
+      throw new Error("Kode Akses Premium tidak valid atau kedaluwarsa. Silakan hubungi admin. " + detail);
+    }
+    if(res.status === 400) throw new Error("Format permintaan salah. " + detail);
     if(res.status === 404) throw new Error("Model tidak ditemukan. Coba ganti pilihan Model. " + detail);
-    if(res.status === 429) throw new Error("Kuota/rate limit Gemini API tercapai setelah beberapa kali percobaan. Coba lagi beberapa saat lagi. " + detail);
-    if(res.status === 503) throw new Error("Model Gemini sedang mengalami lonjakan permintaan tinggi, sudah dicoba ulang beberapa kali namun tetap gagal. Coba lagi dalam beberapa menit, atau ganti ke model lain (mis. Flash). " + detail);
-    throw new Error(`Gagal memanggil Gemini API (HTTP ${res.status}). ${detail}`);
+    if(res.status === 429) throw new Error("Kuota/rate limit sistem AI tercapai setelah beberapa kali percobaan. Coba lagi beberapa saat lagi. " + detail);
+    if(res.status === 503) throw new Error("Server AI sedang mengalami lonjakan permintaan tinggi, sudah dicoba ulang beberapa kali namun tetap gagal. Coba lagi dalam beberapa menit. " + detail);
+    throw new Error(`Gagal memanggil AI (HTTP ${res.status}). ${detail}`);
   }
 }
 
@@ -2058,12 +2743,26 @@ function applyAIResult(r){
 
 async function generateWithAI(){
   const provider = document.getElementById('aiProvider').value;
-  const apiKey = document.getElementById('geminiApiKey').value.trim();
+  let apiKey = document.getElementById('geminiApiKey').value.trim();
+
+  if (provider === 'gemini') {
+    const savedCode = localStorage.getItem('hdl_access_code') || '';
+    if (!savedCode) {
+      document.getElementById('accessPopup').style.display = 'flex';
+      document.getElementById('popupAccessCode').value = '';
+      document.getElementById('popupAccessCode').focus();
+      return;
+    } else {
+      apiKey = savedCode;
+      document.getElementById('geminiApiKey').value = savedCode;
+    }
+  }
   const model = document.getElementById('aiModel').value;
   const cp = document.getElementById('aiCP').value.trim();
   const tp = document.getElementById('aiTP').value.trim();
   const kelas = document.getElementById('aiKelas').value.trim();
   const keyword = document.getElementById('aiKeyword') ? document.getElementById('aiKeyword').value.trim() : "";
+  const metodeKey = document.getElementById('metodeModel') ? document.getElementById('metodeModel').value : "";
   const btn = document.getElementById('btnGenerateAI');
   const label = document.getElementById('btnAILabel');
 
@@ -2094,7 +2793,6 @@ async function generateWithAI(){
  
   try{
     localStorage.setItem('hdl_ai_provider', provider);
-    localStorage.setItem(`hdl_${provider}_key`, apiKey);
     localStorage.setItem(`hdl_${provider}_model`, model);
   }catch(e){ /* penyimpanan tidak tersedia */ }
  
@@ -2105,16 +2803,10 @@ async function generateWithAI(){
  
   try{
     let result;
-    if (provider === "gemini") {
-      const onRetry = (attempt, maxAttempts, reason) => {
-        aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
-      };
-      result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry);
-    } else if (provider === "openai") {
-      result = await callOpenAICompatible("https://api.openai.com/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword);
-    } else if (provider === "groq") {
-      result = await callOpenAICompatible("https://api.groq.com/openai/v1/chat/completions", apiKey, model, AI_SYSTEM_INSTRUCTION, cp, tp, kelas, keyword);
-    }
+    const onRetry = (attempt, maxAttempts, reason) => {
+      aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt+1} dari ${maxAttempts})...`, "info");
+    };
+    result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
     
     hideGenOverlay();
     label.textContent = "Menuliskan hasil...";
@@ -2142,262 +2834,27 @@ document.querySelector('.editor').addEventListener('input', function(e){
 
 renderStepsEditor();
 renderDimGrid();
+renderMetodeSelect();
 updatePageStyle();
+initApiKey();
 renderPreview();
 
 ['geminiApiKey','aiCP','aiTP','aiKelas'].forEach(id=>{
   const el = document.getElementById(id);
-  if(el) el.addEventListener('input', () => el.classList.remove('field-error'));
+  if(el) el.addEventListener('input', () => {
+    el.classList.remove('field-error');
+    if (id === 'geminiApiKey') {
+      try {
+        localStorage.setItem('hdl_access_code', el.value.trim());
+      } catch(e) {}
+    }
+  });
 });
 
 function toggleInfoPanel() {
   const panel = document.getElementById('infoPanel');
   if(panel) panel.classList.toggle('show');
 }
-
-const themes = {
-  original: {
-    primary: '#6aa84f',
-    dark: '#588a41',
-    light: '#eaf3e5',
-    borderLight: '#cfe6c2',
-    bgLight: '#f6faf4',
-    text: '#ffffff',
-    navy: '#4a5b70',
-    navyDark: '#3b4a5c',
-    hue: 102
-  },
-  mint: {
-    primary: '#a2d7c7',
-    dark: '#5b8f80',
-    light: '#f0f9f6',
-    borderLight: '#ccebe1',
-    bgLight: '#fafdfc',
-    text: '#224037',
-    navy: '#2c5e43',
-    navyDark: '#1d422e',
-    hue: 162
-  },
-  sage: {
-    primary: '#c2d5a8',
-    dark: '#6b8a47',
-    light: '#f5f8f0',
-    borderLight: '#e1ecd3',
-    bgLight: '#fcfdfb',
-    text: '#344a1d',
-    navy: '#3e5828',
-    navyDark: '#293c18',
-    hue: 85
-  },
-  sky: {
-    primary: '#abc7e3',
-    dark: '#52759a',
-    light: '#f0f5fa',
-    borderLight: '#d0e0f0',
-    bgLight: '#fafcfd',
-    text: '#1b334a',
-    navy: '#2c3e50',
-    navyDark: '#1a252f',
-    hue: 210
-  },
-  lavender: {
-    primary: '#b3c5ff',
-    dark: '#4860b3',
-    light: '#f2f5ff',
-    borderLight: '#d9e2ff',
-    bgLight: '#fcfdff',
-    text: '#1a2b66',
-    navy: '#2b3b73',
-    navyDark: '#1a2652',
-    hue: 227
-  },
-  lilac: {
-    primary: '#d6c1e9',
-    dark: '#73568f',
-    light: '#faf6fc',
-    borderLight: '#ebdffd',
-    bgLight: '#fdfbfd',
-    text: '#3f2952',
-    navy: '#4a3b5c',
-    navyDark: '#342942',
-    hue: 270
-  },
-  rose: {
-    primary: '#ebb7b7',
-    dark: '#965b5b',
-    light: '#fdf6f6',
-    borderLight: '#f5dbdb',
-    bgLight: '#fffdfd',
-    text: '#5c2d2d',
-    navy: '#6e3b3b',
-    navyDark: '#4f2a2a',
-    hue: 350
-  },
-  sakura: {
-    primary: '#ffc2d1',
-    dark: '#ab4860',
-    light: '#fff5f7',
-    borderLight: '#ffe0e6',
-    bgLight: '#fffcfd',
-    text: '#661a2b',
-    navy: '#732033',
-    navyDark: '#521221',
-    hue: 345
-  },
-  coral: {
-    primary: '#f7b7a3',
-    dark: '#a85d43',
-    light: '#fef6f3',
-    borderLight: '#fcdcd1',
-    bgLight: '#fffdfd',
-    text: '#602e1c',
-    navy: '#703926',
-    navyDark: '#4c2417',
-    hue: 14
-  },
-  cream: {
-    primary: '#ebd2b0',
-    dark: '#8c6f46',
-    light: '#fcf7f0',
-    borderLight: '#f3e4d3',
-    bgLight: '#fdfdfb',
-    text: '#4a3820',
-    navy: '#5a4a3a',
-    navyDark: '#44372b',
-    hue: 34
-  },
-  butter: {
-    primary: '#fae8a4',
-    dark: '#8f7a2a',
-    light: '#fdfcf5',
-    borderLight: '#f7f1d3',
-    bgLight: '#fffefd',
-    text: '#4a3e10',
-    navy: '#5a4c14',
-    navyDark: '#3d330c',
-    hue: 48
-  },
-  ocean: {
-    primary: '#aedcd8',
-    dark: '#528c87',
-    light: '#f0f8f7',
-    borderLight: '#cceae7',
-    bgLight: '#fafdfd',
-    text: '#1f4845',
-    navy: '#214e4b',
-    navyDark: '#153331',
-    hue: 175
-  },
-  steel: {
-    primary: '#b8c5cd',
-    dark: '#5a6f7d',
-    light: '#f3f6f8',
-    borderLight: '#dae3e8',
-    bgLight: '#fafbfb',
-    text: '#233441',
-    navy: '#344855',
-    navyDark: '#23333d',
-    hue: 203
-  }
-};
-
-function applyPresetTheme(themeKey) {
-  const sliderGrp = document.getElementById('sliderGroup');
-  if (themeKey === 'custom') {
-    if (sliderGrp) sliderGrp.style.display = 'flex';
-    const sliderEl = document.getElementById('themeHue');
-    const currentHue = sliderEl ? sliderEl.value : 102;
-    applyHueTheme(currentHue);
-    return;
-  }
-  
-  if (sliderGrp) sliderGrp.style.display = 'none';
-  
-  const t = themes[themeKey] || themes.original;
-  const page = document.getElementById('page');
-  if (page) {
-    page.style.setProperty('--teal', t.primary);
-    page.style.setProperty('--teal-dark', t.dark);
-    page.style.setProperty('--teal-light', t.light);
-    page.style.setProperty('--teal-border-light', t.borderLight);
-    page.style.setProperty('--teal-bg-light', t.bgLight);
-    page.style.setProperty('--teal-text', t.text || '#ffffff');
-    page.style.setProperty('--navy', t.navy || '#4a5b70');
-    page.style.setProperty('--navy-dark', t.navyDark || '#3b4a5c');
-  }
-  
-  const themeSelect = document.getElementById('paperTheme');
-  if (themeSelect) {
-    themeSelect.value = themeKey;
-  }
-  
-  const sliderEl = document.getElementById('themeHue');
-  if (sliderEl && t.hue !== undefined) {
-    sliderEl.value = t.hue;
-    const valEl = document.getElementById('hueVal');
-    if (valEl) valEl.textContent = t.hue + '°';
-  }
-  
-  try {
-    localStorage.setItem('hdl_paper_theme_mode', themeKey);
-  } catch(e) {}
-}
-
-function applyHueTheme(hue) {
-  const h = parseInt(hue);
-  const sliderGrp = document.getElementById('sliderGroup');
-  if (sliderGrp) sliderGrp.style.display = 'flex';
-  
-  const primary = `hsl(${h}, 45%, 70%)`;
-  const dark = `hsl(${h}, 45%, 45%)`;
-  const light = `hsl(${h}, 45%, 96%)`;
-  const borderLight = `hsl(${h}, 45%, 88%)`;
-  const bgLight = `hsl(${h}, 45%, 98%)`;
-  const text = `hsl(${h}, 50%, 20%)`;
-  const navy = `hsl(${h}, 30%, 30%)`;
-  const navyDark = `hsl(${h}, 30%, 22%)`;
-  
-  const page = document.getElementById('page');
-  if (page) {
-    page.style.setProperty('--teal', primary);
-    page.style.setProperty('--teal-dark', dark);
-    page.style.setProperty('--teal-light', light);
-    page.style.setProperty('--teal-border-light', borderLight);
-    page.style.setProperty('--teal-bg-light', bgLight);
-    page.style.setProperty('--teal-text', text);
-    page.style.setProperty('--navy', navy);
-    page.style.setProperty('--navy-dark', navyDark);
-  }
-  
-  const valEl = document.getElementById('hueVal');
-  if (valEl) valEl.textContent = h + '°';
-  
-  const sliderEl = document.getElementById('themeHue');
-  if (sliderEl) sliderEl.value = h;
-  
-  const themeSelect = document.getElementById('paperTheme');
-  if (themeSelect) {
-    themeSelect.value = 'custom';
-  }
-  
-  try {
-    localStorage.setItem('hdl_paper_theme_mode', 'custom');
-    localStorage.setItem('hdl_paper_theme_hue', h);
-  } catch(e) {}
-}
-
-// Load saved theme on initialization
-(function initTheme(){
-  try {
-    const savedMode = localStorage.getItem('hdl_paper_theme_mode') || 'original';
-    if (savedMode === 'custom') {
-      const savedHue = localStorage.getItem('hdl_paper_theme_hue') || '102';
-      applyHueTheme(savedHue);
-    } else {
-      applyPresetTheme(savedMode);
-    }
-  } catch(e) {}
-})();
 </script>
 </body>
 </html>
