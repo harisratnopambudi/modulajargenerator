@@ -308,6 +308,87 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      position: relative;
+    }
+
+    .lkpd-float-card {
+      position: absolute;
+      top: 110px;
+      right: 25px;
+      width: 320px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+      padding: 12px;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+      display: none;
+    }
+    
+    .lkpd-float-card.show {
+      display: block;
+    }
+    
+    .lkpd-float-card.collapsed {
+      padding-bottom: 8px;
+    }
+
+    .lkpd-float-card.collapsed .lkpd-float-header {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .lkpd-float-card.collapsed .lkpd-float-body,
+    .lkpd-float-card.collapsed p,
+    .lkpd-float-card.collapsed .lkpd-btn-copy {
+      display: none !important;
+    }
+
+    .lkpd-float-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--navy-dark);
+      border-bottom: 1px solid var(--bg);
+      padding-bottom: 6px;
+    }
+
+    .lkpd-float-body {
+      font-size: 11px;
+      line-height: 1.4;
+      max-height: 150px;
+      overflow-y: auto;
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 6px;
+      margin-bottom: 8px;
+      font-family: 'Inter', sans-serif;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .lkpd-btn-copy {
+      width: 100%;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .lkpd-btn-copy:hover {
+      background: var(--teal-dark);
     }
 
     .canvas {
@@ -2058,6 +2139,16 @@ KELAS 5</textarea>
         </div>
       </details>
 
+      <details class="section" open>
+        <summary>Prompt LKPD Visual (Asisten AI)</summary>
+        <div class="body">
+          <div class="field">
+            <label>Salin prompt ini ke ChatGPT Image / DALL-E / Bing Image Creator untuk membuat LKPD visual:</label>
+            <textarea id="promptLKPD" rows="6" placeholder="Hasil prompt gambar LKPD akan muncul di sini..."></textarea>
+          </div>
+        </div>
+      </details>
+
       <details class="section">
         <summary>Tanda Tangan</summary>
         <div class="body">
@@ -2178,6 +2269,19 @@ KELAS 5</textarea>
           Qur'an & Hadits
         </label>
       </div>
+
+      <div class="lkpd-float-card no-print" id="lkpdFloatCard">
+        <div class="lkpd-float-header" onclick="toggleLKPDCollapse()" style="cursor: pointer; user-select: none;">
+          <span>🎨 Prompt Gambar LKPD (Asisten AI)</span>
+          <span id="lkpdToggleChevron" style="font-size: 10px; margin-left: 10px; color: var(--muted);">▲</span>
+        </div>
+        <div class="lkpd-float-body" id="lkpdFloatContent"></div>
+        <p style="font-size: 9px; color: var(--muted); margin: 0 0 8px 0; line-height: 1.3;">
+          *Petunjuk: Tempelkan (paste) teks prompt di atas ke <b>ChatGPT</b> untuk menghasilkan LKPD visual.
+        </p>
+        <button class="lkpd-btn-copy" id="lkpdCopyBtn" onclick="copyLKDPPrompt()">📋 Salin Prompt Gambar</button>
+      </div>
+
       <div class="canvas">
         <div id="page-container">
           <div id="page" class="sheet a4 portrait"></div>
@@ -2886,6 +2990,48 @@ KELAS 5</textarea>
   `;
       document.getElementById('page').innerHTML = html;
       updatePageStyle();
+
+      syncLKPDCard();
+    }
+
+    function syncLKPDCard() {
+      const promptVal = document.getElementById('promptLKPD')?.value || '';
+      const floatCard = document.getElementById('lkpdFloatCard');
+      const floatContent = document.getElementById('lkpdFloatContent');
+      if (floatCard && floatContent) {
+        if (promptVal.trim()) {
+          floatContent.innerText = promptVal;
+          floatCard.classList.add('show');
+        } else {
+          floatCard.classList.remove('show');
+        }
+      }
+    }
+
+    function toggleLKPDCollapse() {
+      const card = document.getElementById('lkpdFloatCard');
+      const chevron = document.getElementById('lkpdToggleChevron');
+      if (card && chevron) {
+        const isCollapsed = card.classList.toggle('collapsed');
+        chevron.textContent = isCollapsed ? '▼' : '▲';
+      }
+    }
+
+    function copyLKDPPrompt() {
+      const txt = document.getElementById('promptLKPD')?.value || '';
+      if (!txt) return;
+      navigator.clipboard.writeText(txt).then(() => {
+        const btn = document.getElementById('lkpdCopyBtn');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '✅ Berhasil Disalin!';
+        btn.style.background = '#4a7c36';
+        setTimeout(() => {
+          btn.innerHTML = origText;
+          btn.style.background = 'var(--teal)';
+        }, 1500);
+      }).catch(err => {
+        alert('Gagal menyalin teks: ' + err);
+      });
     }
 
     /* ---------- PAGE SIZE / PRINT ---------- */
@@ -3312,7 +3458,7 @@ KELAS 5</textarea>
           },
           asAwal: STR, asFormatif: STR, asSumatif: STR,
           rubrik1Judul: STR, rubrik1: STR, rubrik2Judul: STR, rubrik2: STR, skorMaks: STR, kkm: STR,
-          sarana: STR, sudahKKM: STR, belumKKM: STR, catatan: STR,
+          sarana: STR, sudahKKM: STR, belumKKM: STR, catatan: STR, promptLKPD: STR,
           sumberNilai: { type: "STRING", enum: ["Quran", "Hadits"] },
           quranArab: STR, quranTerjemah: STR, quranRef: STR,
           haditsArab: STR, haditsTerjemah: STR, haditsRef: STR, quranKait: STR
@@ -3321,7 +3467,7 @@ KELAS 5</textarea>
           "dimensiProfilLulusan", "prinsipMindful", "prinsipMeaningful", "prinsipJoyful", "teknologiDigital",
           "praktik", "kemitraan", "lingkungan", "langkahPembelajaran", "asAwal", "asFormatif", "asSumatif",
           "rubrik1Judul", "rubrik1", "rubrik2Judul", "rubrik2", "skorMaks", "kkm", "sarana", "sudahKKM", "belumKKM", "catatan",
-          "sumberNilai", "quranKait"]
+          "sumberNilai", "quranKait", "promptLKPD"]
       };
     }
 
@@ -3376,7 +3522,7 @@ Aturan wajib:
 - Landasan Nilai Qur'ani/Hadits: pilih HANYA SATU sumber yang paling relevan dan paling kuat kaitannya dengan tema/materi TP — JANGAN mengisi keduanya sekaligus. Tentukan lewat field "sumberNilai" ("Quran" atau "Hadits").
 - Jika "sumberNilai" = "Quran": isi "quranArab" (teks Arab lengkap dengan harakat, satu ayat yang relevan) dan "quranTerjemah" WAJIB diisi dengan terjemahan Bahasa Indonesia yang akurat dan dikenal luas (gunakan terjemahan Kemenag atau setara), diapit tanda kutip — jangan pernah mengutip ayat tanpa artinya. Isi "quranRef" format "QS. [Nama Surah]: [nomor ayat]". Kosongkan "haditsArab", "haditsTerjemah", "haditsRef" (string kosong).
 - Jika "sumberNilai" = "Hadits": isi "haditsArab" (teks Arab satu hadits pendek yang relevan dan masyhur/shahih) dan "haditsTerjemah" WAJIB diisi dengan terjemahan Indonesianya — jangan pernah mengutip teks hadits tanpa artinya. Isi "haditsRef" (perawi, mis. "HR. Bukhari"). Kosongkan "quranArab", "quranTerjemah", "quranRef" (string kosong).
-- "quranKait": 1-2 kalimat yang menjelaskan keterkaitan makna ayat/hadits terpilih tersebut dengan materi pembelajaran yang diajarkan.
+- "promptLKPD": Buatkan satu instruksi prompt bahasa Inggris/Indonesia yang sangat detail, kreatif, dan spesifik untuk dimasukkan ke pembuat gambar AI (seperti DALL-E, Midjourney, atau ChatGPT Image Generator) guna merancang Lembar Kerja Peserta Didik (LKPD/Worksheet) visual yang menarik. Sesuaikan dengan jenjang sekolah (SD: penuh ilustrasi lucu/kartun, SMP/SMA: infografis/diagram/desain modern clean) dan topik/TP pembelajaran ini. Prompt harus menjelaskan tata letak, elemen visual, ruang kosong untuk menulis, judul lembar kerja, dan aktivitas konkret yang sesuai dengan materi. Di bagian atas lembar kerja wajib disediakan kolom identitas: jika aktivitas LKPD berupa tugas kelompok, wajib sertakan kolom untuk "Nama Kelompok" dan "Kelas/Anggota"; jika berupa tugas individu, wajib sertakan kolom untuk "Nama" dan "Kelas".
 - JANGAN PERNAH menggunakan emoji atau simbol dekoratif sejenis di bagian mana pun dalam modul ajar.
 - Jangan menyertakan markdown atau teks di luar JSON.`;
 
@@ -3559,7 +3705,7 @@ Aturan wajib:
         'rubrik1Judul', 'rubrik1', 'rubrik2Judul', 'rubrik2',
         'skorMaks', 'kkm',
         'sudahKKM', 'belumKKM',
-        'catatan'
+        'catatan', 'promptLKPD'
       ];
       fieldsToClear.forEach(id => {
         const el = document.getElementById(id);
@@ -3645,9 +3791,12 @@ Aturan wajib:
         await typeInto(document.getElementById(id), val);
       }
 
-      // 9. Catatan
+      // 9. Catatan & Prompt LKPD
       if (r.catatan !== undefined && r.catatan !== null) {
         await typeInto(document.getElementById('catatan'), r.catatan);
+      }
+      if (r.promptLKPD !== undefined && r.promptLKPD !== null) {
+        await typeInto(document.getElementById('promptLKPD'), r.promptLKPD);
       }
 
       renderPreview();
@@ -3741,6 +3890,7 @@ Aturan wajib:
       setVal('skorMaks', r.skorMaks); setVal('kkm', r.kkm); setVal('sarana', r.sarana);
       setVal('sudahKKM', r.sudahKKM); setVal('belumKKM', r.belumKKM);
       if (r.catatan) setVal('catatan', r.catatan);
+      setVal('promptLKPD', r.promptLKPD);
       setVal('quranArab', r.quranArab || ''); setVal('quranTerjemah', r.quranTerjemah || ''); setVal('quranRef', r.quranRef || '');
       setVal('haditsArab', r.haditsArab || ''); setVal('haditsTerjemah', r.haditsTerjemah || ''); setVal('haditsRef', r.haditsRef || '');
       setVal('quranKait', r.quranKait);
