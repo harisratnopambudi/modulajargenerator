@@ -3989,7 +3989,12 @@ Aturan wajib:
         generationConfig: {
           responseMimeType: "application/json",
           responseSchema: geminiSchema(),
-          temperature: 0.6
+          temperature: 0.6,
+          // Thinking level diturunkan ke "low": tugas ini mengisi JSON terstruktur
+          // berdasarkan instruksi yang sudah sangat rinci, bukan penalaran berlapis,
+          // jadi thinking tinggi hanya menambah token output (biaya) tanpa banyak
+          // menambah kualitas. Token "thinking" ditagih dengan tarif output.
+          thinkingConfig: { thinkingLevel: "low" }
         }
       };
 
