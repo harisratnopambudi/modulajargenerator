@@ -4529,6 +4529,10 @@ Aturan wajib:
         editorPanel.removeEventListener('scroll', updateTourPosition);
       }
       window.removeEventListener('resize', updateTourPosition);
+
+      // Setelah tutorial selesai, tampilkan popup login jika pengguna belum login
+      // (sebelumnya popup ini baru muncul setelah halaman di-refresh)
+      checkAccessPopupOnLoad();
     }
 
     renderStepsEditor();
