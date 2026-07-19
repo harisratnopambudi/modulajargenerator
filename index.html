@@ -1836,7 +1836,7 @@
         <a href="index.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
           <span>📝</span> Modul Ajar
         </a>
-        <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+        <a id="tabAdministrasi" href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: none; align-items: center; gap: 6px; border: 1px solid var(--border);">
           <span>📂</span> Administrasi Kelas
         </a>
       </div>
@@ -3239,10 +3239,25 @@ KELAS 5</textarea>
 
         // Load saved profile data
         loadProfileFields();
+        checkAdminRole();
 
         onProviderChange();
         checkWelcomePopup();
       } catch (e) { /* localStorage tidak tersedia */ }
+    }
+
+    function checkAdminRole() {
+      try {
+        const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
+        const tabAdmin = document.getElementById('tabAdministrasi');
+        if (tabAdmin) {
+          if (userEmail === 'harisratnopambudi@gmail.com') {
+            tabAdmin.style.display = 'inline-flex';
+          } else {
+            tabAdmin.style.display = 'none';
+          }
+        }
+      } catch (e) { }
     }
 
     function checkAccessPopupOnLoad() {
@@ -3334,6 +3349,9 @@ KELAS 5</textarea>
           localStorage.setItem('hdl_access_code_time', Date.now().toString());
           localStorage.setItem('hdl_user_email', email);
           if (payload.name) localStorage.setItem('hdl_user_name', payload.name);
+
+          // Update tab visibilitas untuk admin secara dinamis
+          checkAdminRole();
 
           const keyInput = document.getElementById('geminiApiKey');
           if (keyInput) {
