@@ -763,6 +763,16 @@
   <style id="pageSizeStyle"></style>
 
   <script>
+    // Validasi role admin (hanya harisratnopambudi@gmail.com yang boleh mengakses)
+    try {
+      const email = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
+      if (email !== 'harisratnopambudi@gmail.com') {
+        window.location.href = 'index.html';
+      }
+    } catch (e) {
+      window.location.href = 'index.html';
+    }
+
     let logoDataUrl = "";
     let logoYayasanDataUrl = "";
     const DEFAULT_LOGO_SRC = "img/logosekolah.png";
