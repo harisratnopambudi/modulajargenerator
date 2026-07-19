@@ -1812,31 +1812,14 @@
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
       </svg>
       <h2>Akses Fitur Premium AI</h2>
-      <p style="margin-bottom: 12px;">Silakan login menggunakan Google/Gmail yang terdaftar:</p>
+      <p style="margin-bottom: 12px; font-size: 13px; text-align: center; line-height: 1.45;">Silakan login menggunakan Google/Gmail yang terdaftar saat pembelian di Lynk.id:</p>
       <div id="googleSignInButton" style="margin: 10px 0 15px; display: flex; justify-content: center; width: 100%;"></div>
       
-      <div style="display: flex; align-items: center; width: 100%; margin: 12px 0; font-size: 10px; color: var(--muted); font-weight: bold; letter-spacing: 0.5px;">
-        <hr style="flex: 1; border: 0; border-top: 1px solid var(--border); margin-right: 10px; margin-top: 0; margin-bottom: 0;">
-        ATAU MASUKKAN KODE AKSES
-        <hr style="flex: 1; border: 0; border-top: 1px solid var(--border); margin-left: 10px; margin-top: 0; margin-bottom: 0;">
-      </div>
-
-      <p style="font-size: 12.5px; margin: 0px 0 15px 0; color: var(--muted); text-align: center;">Belum memiliki kode
-        akses? <a href="http://lynk.id/harisratnopambudi/mnk9mwwpn9ke/checkout" target="_blank"
-          style="color: var(--teal); font-weight: bold; text-decoration: underline;">Dapatkan Kode Akses di Sini</a></p>
-      <div class="field" style="width: 100%; text-align: left; margin: 15px 0 5px;">
-        <label style="font-size: 12px; font-weight: bold;">Kode Akses Premium</label>
-        <input type="password" id="popupAccessCode" placeholder="Masukkan kode akses Anda..."
-          style="padding: 10px; font-size: 14px; width: 100%;">
-      </div>
       <div id="popupAccessError"
-        style="color: #c53030; font-size: 12px; margin-top: 5px; display: none; font-weight: 500;">Kode akses salah atau
-        not valid.</div>
-      <div style="display: flex; gap: 10px; width: 100%; margin-top: 15px;">
-        <button class="welcome-btn" style="margin-top: 0; background: #c9d3d6; color: var(--ink);"
+        style="color: #c53030; font-size: 12px; margin-top: 5px; display: none; font-weight: 500; text-align: center; max-width: 280px; line-height: 1.4;">Akses ditolak atau terjadi kesalahan.</div>
+      <div style="display: flex; gap: 10px; width: 100%; margin-top: 15px; justify-content: center;">
+        <button class="welcome-btn" style="margin-top: 0; background: #c9d3d6; color: var(--ink); width: 100%; max-width: 260px;"
           onclick="closeAccessPopup()">Batal</button>
-        <button class="welcome-btn" style="margin-top: 0;" id="btnSubmitAccessCode"
-          onclick="submitAccessCode()">Submit</button>
       </div>
     </div>
   </div>
@@ -3380,59 +3363,7 @@ KELAS 5</textarea>
       return trimmed;
     }
 
-    async function submitAccessCode() {
-      const codeEl = document.getElementById('popupAccessCode');
-      const errorEl = document.getElementById('popupAccessError');
-      const btnEl = document.getElementById('btnSubmitAccessCode');
-      if (!codeEl || !errorEl || !btnEl) return;
 
-      const code = codeEl.value.trim();
-      if (code.length === 0) {
-        errorEl.textContent = "Silakan masukkan kode akses.";
-        errorEl.style.display = 'block';
-        return;
-      }
-
-      btnEl.disabled = true;
-      btnEl.textContent = "Memeriksa...";
-      errorEl.style.display = 'none';
-
-      try {
-        const verifyCode = getEffectiveApiKey(code);
-        const deviceId = getOrCreateDeviceId();
-        const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
-          headers: { 
-            'Authorization': `Bearer ${verifyCode}`,
-            'X-Device-ID': deviceId
-          }
-        });
-
-        if (res.ok) {
-          try {
-            localStorage.setItem('hdl_access_code', code);
-            localStorage.setItem('hdl_access_code_time', Date.now().toString());
-          } catch (e) { }
-
-          const keyInput = document.getElementById('geminiApiKey');
-          if (keyInput) {
-            keyInput.value = code;
-            checkAPIKeyStatus();
-          }
-
-          closeAccessPopup();
-          generateWithAI();
-        } else {
-          errorEl.textContent = "Kode akses salah atau tidak valid.";
-          errorEl.style.display = 'block';
-        }
-      } catch (e) {
-        errorEl.textContent = "Gagal memverifikasi. Periksa koneksi internet Anda.";
-        errorEl.style.display = 'block';
-      } finally {
-        btnEl.disabled = false;
-        btnEl.textContent = "Submit";
-      }
-    }
 
     function toggleKeyVisibility() {
       const el = document.getElementById('geminiApiKey');
@@ -4001,8 +3932,6 @@ Aturan wajib:
         if (!savedCode) {
           document.getElementById('accessPopup').style.display = 'flex';
           initGoogleSignIn();
-          document.getElementById('popupAccessCode').value = '';
-          document.getElementById('popupAccessCode').focus();
           return;
         } else {
           apiKey = savedCode;
