@@ -1828,6 +1828,21 @@
 
     <!-- =============== EDITOR =============== -->
     <div class="editor no-print">
+      <div id="loginStatusBar" class="no-print"
+        style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; padding:8px 10px; border-radius:8px; background:#eef1f2; border:1px solid var(--border); transition:background .15s ease;">
+        <div style="display:flex; align-items:center; gap:7px; min-width:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span id="loginStatusName" title=""
+            style="font-size:12px; font-weight:700; color:var(--navy-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Belum
+            Login</span>
+        </div>
+        <button type="button" id="loginStatusBtn" onclick="handleLoginStatusClick()" data-mode="login"
+          style="flex-shrink:0; font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:6px; border:1px solid var(--navy); background:var(--navy); color:#fff; cursor:pointer;">Login</button>
+      </div>
       <h1>Generator Modul Ajar</h1>
       <div class="sub">Isi form di bawah — pratinjau otomatis diperbarui di kanan. Haris DevLab.</div>
 
@@ -3240,6 +3255,7 @@ KELAS 5</textarea>
         // Load saved profile data
         loadProfileFields();
         checkAdminRole();
+        updateLoginStatusUI();
 
         onProviderChange();
         checkWelcomePopup();
@@ -3294,6 +3310,75 @@ KELAS 5</textarea>
     function closeAccessPopup() {
       document.getElementById('accessPopup').style.display = 'none';
       document.getElementById('popupAccessError').style.display = 'none';
+    }
+
+    // Membuka kembali popup login secara manual, dipicu dari tombol Login di header
+    function openAccessPopup() {
+      const popup = document.getElementById('accessPopup');
+      if (!popup) return;
+      popup.style.display = 'flex';
+      const errorEl = document.getElementById('popupAccessError');
+      if (errorEl) errorEl.style.display = 'none';
+      initGoogleSignIn();
+    }
+
+    // Memperbarui tampilan status login (nama pengguna & tombol) di bagian atas panel editor
+    function updateLoginStatusUI() {
+      const nameEl = document.getElementById('loginStatusName');
+      const btn = document.getElementById('loginStatusBtn');
+      const bar = document.getElementById('loginStatusBar');
+      if (!nameEl || !btn || !bar) return;
+      try {
+        const savedCode = localStorage.getItem('hdl_access_code') || '';
+        const userName = localStorage.getItem('hdl_user_name') || '';
+        const userEmail = localStorage.getItem('hdl_user_email') || '';
+
+        if (savedCode && (userName || userEmail)) {
+          const displayName = userName || userEmail;
+          nameEl.textContent = displayName;
+          nameEl.title = userEmail || '';
+          btn.textContent = 'Logout';
+          btn.dataset.mode = 'logout';
+          btn.style.background = '#fff';
+          btn.style.color = '#c53030';
+          btn.style.borderColor = '#e2b8b8';
+          bar.style.background = 'var(--teal-light)';
+          bar.style.borderColor = 'var(--teal-border-light)';
+        } else {
+          nameEl.textContent = 'Belum Login';
+          nameEl.title = '';
+          btn.textContent = 'Login';
+          btn.dataset.mode = 'login';
+          btn.style.background = 'var(--navy)';
+          btn.style.color = '#fff';
+          btn.style.borderColor = 'var(--navy)';
+          bar.style.background = '#eef1f2';
+          bar.style.borderColor = 'var(--border)';
+        }
+      } catch (e) { }
+    }
+
+    // Aksi tombol status login: buka popup login, atau logout jika sudah login
+    function handleLoginStatusClick() {
+      const btn = document.getElementById('loginStatusBtn');
+      if (btn && btn.dataset.mode === 'logout') {
+        if (!confirm('Yakin ingin logout dari akun ini?')) return;
+        try {
+          localStorage.removeItem('hdl_access_code');
+          localStorage.removeItem('hdl_access_code_time');
+          localStorage.removeItem('hdl_user_email');
+          localStorage.removeItem('hdl_user_name');
+        } catch (e) { }
+        const keyInput = document.getElementById('geminiApiKey');
+        if (keyInput) {
+          keyInput.value = '';
+          checkAPIKeyStatus();
+        }
+        checkAdminRole();
+        updateLoginStatusUI();
+      } else {
+        openAccessPopup();
+      }
     }
 
     // Google Sign-In Configurations
@@ -3352,6 +3437,7 @@ KELAS 5</textarea>
 
           // Update tab visibilitas untuk admin secara dinamis
           checkAdminRole();
+          updateLoginStatusUI();
 
           const keyInput = document.getElementById('geminiApiKey');
           if (keyInput) {
@@ -3414,8 +3500,11 @@ KELAS 5</textarea>
           if (Date.now() - savedTime > fiveHoursMs) {
             localStorage.removeItem('hdl_access_code');
             localStorage.removeItem('hdl_access_code_time');
+            localStorage.removeItem('hdl_user_email');
+            localStorage.removeItem('hdl_user_name');
             const keyInput = document.getElementById('geminiApiKey');
             if (keyInput) keyInput.value = '';
+            updateLoginStatusUI();
           }
         }
       } catch (e) { }
@@ -3952,8 +4041,12 @@ Aturan wajib:
         if (res.status === 401 || res.status === 403) {
           try {
             localStorage.removeItem('hdl_access_code');
+            localStorage.removeItem('hdl_access_code_time');
+            localStorage.removeItem('hdl_user_email');
+            localStorage.removeItem('hdl_user_name');
             const keyInput = document.getElementById('geminiApiKey');
             if (keyInput) keyInput.value = '';
+            updateLoginStatusUI();
           } catch (e) { }
           throw new Error("Kode Akses Premium tidak valid atau kedaluwarsa. Silakan hubungi admin. " + detail);
         }
