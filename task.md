@@ -1,0 +1,15 @@
+- [x] Buat file baru `administrasi.html` dengan kerangka dasar, font, dan CSS style yang disalin dari `index.html`
+- [x] Buat panel editor kiri di `administrasi.html` untuk jenis dokumen, kelas, dan data identitas penandatanganan
+- [x] Buat area preview kanan di `administrasi.html` lengkap dengan toolbar opsi visual (paper size, orientation, pattern, zoom, print)
+- [x] Definisikan variabel data kurikulum Koding & Kecerdasan Artifisial (PROTA, PROSEM Semester 1 & 2, TP) untuk Kelas V & VI
+- [x] Implementasikan rendering HTML tabel-tabel secara dinamis berdasarkan jenis dokumen & kelas yang dipilih
+- [x] Terapkan sinkronisasi style (warna tema, pattern, orientasi, zoom) pada area preview administrasi
+- [x] Tambahkan tab navigasi di `administrasi.html` agar selaras dengan `index.html`
+- [x] Lakukan verifikasi manual dan pastikan file cetak PDF bersih dari panel input & toolbar
+- [x] Hubungkan input identitas di `administrasi.html` ke LocalStorage agar langsung sinkron dua arah dengan identitas Modul Ajar di `index.html`
+- [x] Terapkan format judul bersih terpusat (centered) berlatar putih dengan pembatas border bawah solid untuk tampilan judul PROTA/PROSEM/TP resmi
+- [x] Perbaiki kalkulasi applyZoom() dan matikan transform scaling sepenuhnya pada CSS @media print agar cetak PDF 100% rapi dan tidak terpotong
+- [x] Perkecil margin atas dan bawah cetak menjadi 8mm (dan padding preview pada screen) saat orientasi Landscape agar layout tabel program terkesan padat dan tidak terlalu ke bawah
+- [x] Perbesar font-size tabel PROTA & TP menjadi 12.5px dan tabel PROSEM menjadi 10px (beserta peningkatan padding sel) agar seluruh tulisan administrasi terlihat jelas dan kontras saat dilihat/dicetak
+- [x] Selaraskan struktur kolom dan penempatan jam pelajaran (JP) serta asesmen (AS) pada tabel PROSEM semester 1 & 2 dengan Kalender Pendidikan (Kaldik) SDS Plus 2 Al Muhajirin Purwakarta TP 2026/2027 secara presisi
+- [x] Tambahkan definisi dimensi CSS eksplisit untuk sheet A4/F4 landscape dan portrait pada administrasi.html untuk merapikan kalkulasi zoom layar preview

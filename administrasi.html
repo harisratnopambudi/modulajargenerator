@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrasi Kelas - Haris DevLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --navy: #4a5b70;
+      --navy-dark: #3b4a5c;
+      --teal: #6aa84f;
+      --teal-dark: #588a41;
+      --teal-light: #eaf3e5;
+      --teal-border-light: #cfe6c2;
+      --teal-bg-light: #f6faf4;
+      --teal-text: #ffffff;
+      --border: #c9d3d6;
+      --ink: #1f2a30;
+      --muted: #5c6b70;
+      --paper: #ffffff;
+      --bg: #eef1f2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Trebuchet MS', 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      height: 100vh;
+    }
+
+    /* ---------- EDITOR PANEL ---------- */
+    .editor {
+      overflow-y: auto;
+      background: var(--paper);
+      border-right: 1px solid var(--border);
+      padding: 18px 20px 60px;
+    }
+
+    .editor h1 {
+      font-size: 17px;
+      color: var(--navy);
+      margin: 0 0 2px;
+    }
+
+    .editor .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .section {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .section>summary {
+      background: var(--navy);
+      color: #fff;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .section>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .section>summary::before {
+      content: "▸ ";
+    }
+
+    .section[open]>summary::before {
+      content: "▾ ";
+    }
+
+    .section .body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--navy-dark);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    input[type=text],
+    input[type=number],
+    textarea,
+    select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 12.5px;
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: #fbfcfc;
+      color: var(--ink);
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .field {
+      margin-bottom: 2px;
+    }
+
+    /* ---------- PREVIEW PANEL ---------- */
+    .preview-wrap {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: relative;
+    }
+
+    .toolbar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .toolbar .grp {
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--navy-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toolbar select {
+      width: auto;
+      padding: 4px 8px;
+      font-size: 11.5px;
+    }
+
+    .toolbar .spacer {
+      flex: 1;
+    }
+
+    .btn-print {
+      background: var(--navy);
+      color: #fff;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      box-shadow: 0 2px 4px rgba(74, 91, 112, 0.2);
+      transition: background .2s;
+    }
+
+    .btn-print:hover {
+      background: var(--navy-dark);
+    }
+
+    .toggle-grp {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--navy-dark);
+      cursor: pointer;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 28px;
+      height: 16px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e0;
+      transition: .2s;
+      border-radius: 16px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked+.toggle-slider {
+      background-color: var(--teal);
+    }
+
+    .toggle-switch input:checked+.toggle-slider:before {
+      transform: translateX(12px);
+    }
+
+    .canvas {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+      text-align: center;
+      padding: 40px 20px;
+      background: #e4e8eb;
+      background-image: radial-gradient(#c4cbd0 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    #page-container {
+      display: inline-block;
+      position: relative;
+      text-align: left;
+      vertical-align: top;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      background: var(--paper);
+    }
+
+    .sheet {
+      background: var(--paper);
+      padding: 15mm;
+      font-size: 11px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .sheet.a4.portrait {
+      width: 210mm;
+      min-height: 297mm;
+    }
+
+    .sheet.a4.landscape {
+      width: 297mm;
+      min-height: 210mm;
+    }
+
+    .sheet.f4.portrait {
+      width: 215mm;
+      min-height: 330mm;
+    }
+
+    .sheet.f4.landscape {
+      width: 330mm;
+      min-height: 215mm;
+    }
+
+    /* ---- Paper Patterns ---- */
+    .sheet.pattern-y-so-serious {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/y-so-serious-white.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-double-bubble {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-papyrus {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/papyrus.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-leaves {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/leaves.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-hotel-wallpaper {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/hotel-wallpaper.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-full-bloom {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/full-bloom.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-grid {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/gridme.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-lined {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/linedpaper.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-waves {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/white-waves.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-ricepaper {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/ricepaper.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-linen {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/linen.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-graphy {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/graphy.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-subtle_dots {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/subtle_dots.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    /* ---------- LAYOUT CETAK / PREVIEW ---------- */
+    .m-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border: 2px solid var(--navy-dark);
+      background: var(--teal-bg-light);
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+
+    .m-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 55px;
+      height: 55px;
+    }
+
+    .m-logo svg,
+    .m-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .m-title {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--teal-text);
+      background: var(--navy);
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .m-badge {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-align: center;
+      border: 1px solid var(--navy);
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #fff;
+      line-height: 1.3;
+      min-width: 90px;
+    }
+
+    table.mtab {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+
+    table.mtab th,
+    table.mtab td {
+      border: 1px solid var(--border);
+      padding: 5px 8px;
+      font-size: 11px;
+    }
+
+    table.mtab td.key {
+      font-weight: 700;
+      width: 25%;
+      background: var(--teal-bg-light);
+      color: var(--navy-dark);
+    }
+
+    /* Styles for curriculum tables */
+    table.adm-tab {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 12.5px;
+    }
+
+    table.adm-tab th {
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    table.adm-tab td {
+      border: 1px solid var(--border);
+      padding: 7px 8px;
+      vertical-align: middle;
+      color: var(--ink);
+    }
+
+    table.adm-tab tr:nth-child(even) td {
+      background: #f8fafb;
+    }
+
+    table.prosem-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-top: 10px;
+    }
+
+    table.prosem-table th,
+    table.prosem-table td {
+      border: 1px solid var(--border);
+      padding: 4px 2px;
+      text-align: center;
+    }
+
+    table.prosem-table th {
+      background: var(--navy);
+      color: white;
+      font-weight: bold;
+    }
+
+    table.prosem-table td.materi-cell {
+      text-align: left;
+      padding-left: 6px;
+      font-weight: 500;
+    }
+
+    table.prosem-table .cell-as {
+      background: #e67e22 !important;
+      color: white !important;
+      font-weight: bold;
+    }
+
+    table.prosem-table .cell-jp {
+      font-weight: bold;
+    }
+
+    table.prosem-table tr.total-row td {
+      background: #eaf3e5;
+      font-weight: bold;
+      color: #3b4a5c;
+    }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+      font-size: 11px;
+      line-height: 1.4;
+      page-break-inside: avoid;
+    }
+
+    .sign-grid div {
+      text-align: center;
+    }
+
+    .sign-grid .gap {
+      height: 55px;
+    }
+
+    .sign-grid .name {
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .canvas {
+        padding: 0;
+        overflow: visible;
+        display: block;
+        background: transparent !important;
+        background-image: none !important;
+      }
+
+      .preview-wrap {
+        height: auto !important;
+        display: block !important;
+      }
+
+      #page-container {
+        display: block !important;
+        width: auto !important;
+        height: auto !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: none !important;
+      }
+
+      .app {
+        display: block;
+        height: auto;
+      }
+
+      .sheet {
+        box-shadow: none;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        min-height: 0 !important;
+        transform: none !important;
+        background: transparent !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- =============== EDITOR =============== -->
+    <div class="editor no-print">
+      <h1>Generator Modul Ajar</h1>
+      <div class="sub">Manajemen perangkat administrasi pembelajaran. Haris DevLab.</div>
+
+      <!-- Navigation Tabs -->
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 2px solid var(--bg); padding-bottom: 8px;" class="no-print">
+        <a href="index.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📝</span> Modul Ajar
+        </a>
+        <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
+          <span>📂</span> Administrasi Kelas
+        </a>
+      </div>
+
+      <details class="section" open>
+        <summary>Pilihan Administrasi</summary>
+        <div class="body">
+          <div class="field">
+            <label>Jenis Perangkat Administrasi</label>
+            <select id="docType" onchange="onDocTypeChange()">
+              <option value="prosem">Program Semester (PROSEM)</option>
+              <option value="prota">Program Tahunan (PROTA)</option>
+              <option value="tp">Tujuan Pembelajaran (TP)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tingkat Kelas</label>
+            <select id="docKelas" onchange="renderPreview()">
+              <option value="V">Kelas V (Lima)</option>
+              <option value="VI" selected>Kelas VI (Enam)</option>
+            </select>
+          </div>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>Identitas Lembaga & Guru</summary>
+        <div class="body">
+          <div class="field">
+            <label>Nama Lembaga/Sekolah</label>
+            <input type="text" id="instansi" value="SDS PLUS 2 ALMUHAJIRIN" oninput="saveProfileFields(); renderPreview()">
+          </div>
+          <div class="field">
+            <label>Mata Pelajaran</label>
+            <input type="text" id="mapel" value="Koding dan Kecerdasan Artifisial (KKA)" oninput="saveProfileFields(); renderPreview()">
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Tahun Pelajaran</label>
+              <input type="text" id="tahun" value="2026/2027" oninput="saveProfileFields(); renderPreview()">
+            </div>
+            <div class="field">
+              <label>Fase</label>
+              <input type="text" id="fase" value="Fase C" oninput="saveProfileFields(); renderPreview()">
+            </div>
+          </div>
+          <div class="field">
+            <label>Tempat &amp; Tanggal Dokumen</label>
+            <input type="text" id="tempatTgl" value="Purwakarta, 10 Juli 2026" oninput="saveProfileFields(); renderPreview()">
+          </div>
+        </div>
+      </details>
+
+      <details class="section">
+        <summary>Tanda Tangan</summary>
+        <div class="body">
+          <div class="row2">
+            <div class="field">
+              <label>Nama Kepala Sekolah</label>
+              <input type="text" id="kepsekNama" value="Hj. Lia Yulindaria, S.P.,S.Pd.,M.Pd." oninput="saveProfileFields(); renderPreview()">
+            </div>
+            <div class="field">
+              <label>NIY/NIP Kepala Sekolah</label>
+              <input type="text" id="kepsekNIY" value="07699114" oninput="saveProfileFields(); renderPreview()">
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Nama Guru Bidang Studi</label>
+              <input type="text" id="guruNama" value="Haris Ratno Pambudi, S.T." oninput="saveProfileFields(); renderPreview()">
+            </div>
+            <div class="field">
+              <label>NIY/NIP Guru</label>
+              <input type="text" id="guruNIY" value="236991324" oninput="saveProfileFields(); renderPreview()">
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- =============== PREVIEW =============== -->
+    <div class="preview-wrap">
+      <div class="toolbar no-print">
+        <div class="grp">Ukuran Kertas:
+          <select id="paperSize" onchange="updatePageStyle()">
+            <option value="a4">A4</option>
+            <option value="f4" selected>F4 / Folio</option>
+          </select>
+        </div>
+        <div class="grp">Orientasi:
+          <select id="orientation" onchange="updatePageStyle()">
+            <option value="portrait">Portrait</option>
+            <option value="landscape" selected>Landscape</option>
+          </select>
+        </div>
+        <div class="grp">Pattern Kertas:
+          <select id="paperPattern" onchange="onPatternChange()">
+            <option value="none">Polos (Putih)</option>
+            <optgroup label="Tekstur Kertas &amp; Serat">
+              <option value="y-so-serious">Y-So-Serious</option>
+              <option value="ricepaper">Rice Paper (Kertas Beras)</option>
+              <option value="linen" selected>White Linen (Serat Linen)</option>
+              <option value="papyrus">Papyrus (Serat Papirus)</option>
+              <option value="lined">Garis Buku (Lined)</option>
+            </optgroup>
+            <optgroup label="Geometris &amp; Struktur">
+              <option value="grid">Grid Kotak (Matematika)</option>
+              <option value="graphy">Graphy (Kertas Grafik)</option>
+              <option value="subtle_dots">Subtle Dots (Titik Halus)</option>
+              <option value="waves">Gelombang Halus</option>
+              <option value="double-bubble">Double Bubble</option>
+            </optgroup>
+            <optgroup label="Dekoratif &amp; Flora">
+              <option value="leaves">Leaves (Daun)</option>
+              <option value="hotel-wallpaper">Hotel Wallpaper (Klasik)</option>
+              <option value="full-bloom">Full Bloom (Bunga Mekar)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="grp">Tema Warna:
+          <select id="paperTheme" onchange="applyPresetTheme(this.value)">
+            <option value="original" selected>Hijau (Original)</option>
+            <option value="mint">Pastel Mint (Hijau)</option>
+            <option value="sage">Pastel Sage (Matcha)</option>
+            <option value="sky">Pastel Sky (Biru)</option>
+            <option value="lavender">Pastel Lavender (Ungu-Biru)</option>
+            <option value="lilac">Pastel Lilac (Ungu)</option>
+            <option value="rose">Pastel Rose (Pink)</option>
+            <option value="sakura">Pastel Sakura (Pink Cerah)</option>
+            <option value="coral">Pastel Coral (Peach)</option>
+            <option value="cream">Pastel Cream (Krim)</option>
+            <option value="butter">Pastel Butter (Kuning)</option>
+            <option value="ocean">Pastel Ocean (Teal)</option>
+            <option value="steel">Pastel Steel (Abu-abu)</option>
+            <option value="custom">Kustom (Slider)</option>
+          </select>
+        </div>
+        <div class="grp" id="sliderGroup" style="display: none; align-items: center; gap: 6px;">
+          Hue:
+          <input type="range" id="themeHue" min="0" max="360" value="102" oninput="applyHueTheme(this.value)" style="width: 100px; vertical-align: middle; accent-color: var(--teal);">
+          <span id="hueVal">102°</span>
+        </div>
+        <div class="grp">Zoom:
+          <select id="zoom" onchange="applyZoom()">
+            <option value="fit" selected>Sesuai Lebar</option>
+            <option value="0.55">55%</option>
+            <option value="0.7">70%</option>
+            <option value="0.85">85%</option>
+            <option value="1.0">100%</option>
+            <option value="1.15">115%</option>
+            <option value="1.3">130%</option>
+            <option value="1.5">150%</option>
+          </select>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn-print no-print" onclick="window.print()">Cetak / Simpan PDF</button>
+      </div>
+
+
+      <div class="canvas">
+        <div id="page-container">
+          <div id="page" class="sheet f4 landscape pattern-linen"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <style id="pageSizeStyle"></style>
+
+  <script>
+    let logoDataUrl = "";
+    let logoYayasanDataUrl = "";
+    const DEFAULT_LOGO_SRC = "img/logosekolah.png";
+    const YAYASAN_LOGO_SRC = "img/logoyayasan.png";
+    const BANNER_SRC = "img/banner.png";
+
+    // 1. Data PROTA
+    const PROTA_DATA = [
+      { no: 1, semester: "1 (Ganjil)", bab: "Bab 1", materi: "Berpikir Komputasional", jp: 16, ket: "" },
+      { no: 2, semester: "1 (Ganjil)", bab: "Bab 2", materi: "Literasi Digital", jp: 16, ket: "" },
+      { no: 3, semester: "2 (Genap)", bab: "Bab 3", materi: "Literasi dan Etika Kecerdasan Artifisial (KA)", jp: 12, ket: "" },
+      { no: 4, semester: "2 (Genap)", bab: "Bab 4", materi: "Pemanfaatan dan Pengembangan Kecerdasan Artifisial", jp: 10, ket: "" },
+      { no: 5, semester: "2 (Genap)", bab: "Bab 5", materi: "Praktik Lintas Bidang", jp: 8, ket: "" }
+    ];
+
+    // 2. Data PROSEM S1 (26 minggu: Juli W1-5 s/d Desember W1-4)
+    const PROSEM_S1_DATA = [
+      { no: 1, bab: "Bab 1 — Berpikir Komputasional", jp: 16, weeks: ["", "", "", 2, 2, 2, 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
+      { no: 2, bab: "Bab 2 — Literasi Digital", jp: 16, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, "", "", "", 2, 2, 2, 2, 2, 2, "", "", 2, "", ""] }
+    ];
+
+    // 3. Data PROSEM S2 (25 minggu: Januari W1-4 s/d Juni W1-4)
+    const PROSEM_S2_DATA = [
+      { no: 1, bab: "Bab 3 — Literasi dan Etika Kecerdasan Artifisial (KA)", jp: 12, weeks: ["", 2, 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
+      { no: 2, bab: "Bab 4 — Pemanfaatan dan Pengembangan Kecerdasan Artifisial", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, 2, "", 2, 2, "", 2, "", "", "", "", "", "", ""] },
+      { no: 3, bab: "Bab 5 — Praktik Lintas Bidang", jp: 8, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, "", "", 2, 2, ""] }
+    ];
+
+    // 4. Data TP
+    const TP_DATA = [
+      { no: 1, kode: "1.1", bab: "Bab 1. Berpikir Komputasional", tp: "Mengidentifikasi permasalahan sederhana dalam kehidupan sehari-hari.", jp: 2 },
+      { no: 2, kode: "1.2", bab: "Bab 1. Berpikir Komputasional", tp: "Menguraikan masalah menggunakan dekomposisi, pengenalan pola, dan abstraksi.", jp: 2 },
+      { no: 3, kode: "1.3", bab: "Bab 1. Berpikir Komputasional", tp: "Menyusun algoritma dan flowchart sebagai solusi suatu permasalahan.", jp: 3 },
+      { no: 4, kode: "1.4", bab: "Bab 1. Berpikir Komputasional", tp: "Mengembangkan program visual menggunakan Scratch.", jp: 3 },
+      { no: 5, kode: "1.5", bab: "Bab 1. Berpikir Komputasional", tp: "Menggunakan koordinat, variabel, dan logika dasar dalam membuat program Scratch.", jp: 3 },
+      { no: 6, kode: "1.6", bab: "Bab 1. Berpikir Komputasional", tp: "Menguji (debugging) dan menyempurnakan program yang telah dibuat.", jp: 3 },
+      { no: 7, kode: "2.1", bab: "Bab 2. Literasi Digital", tp: "Menjelaskan konsep teknologi digital beserta manfaat dan dampaknya dalam kehidupan sehari-hari.", jp: 3 },
+      { no: 8, kode: "2.2", bab: "Bab 2. Literasi Digital", tp: "Mengidentifikasi komponen dasar sistem komputer dan cara kerjanya.", jp: 3 },
+      { no: 9, kode: "2.3", bab: "Bab 2. Literasi Digital", tp: "Memanfaatkan internet secara bijak untuk mencari informasi dan referensi proyek.", jp: 3 },
+      { no: 10, kode: "2.4", bab: "Bab 2. Literasi Digital", tp: "Mengidentifikasi peran sistem komputer dan internet dalam Kecerdasan Artifisial (KA).", jp: 3 },
+      { no: 11, kode: "2.5", bab: "Bab 2. Literasi Digital", tp: "Membuat dan membagikan konten digital sederhana dengan memperhatikan etika digital.", jp: 4 },
+      { no: 12, kode: "3.1", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menjelaskan pengertian Kecerdasan Artifisial (KA).", jp: 2 },
+      { no: 13, kode: "3.2", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Mengidentifikasi manfaat dan dampak KA dalam kehidupan sehari-hari.", jp: 2 },
+      { no: 14, kode: "3.3", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menjelaskan bahwa KA dikembangkan untuk membantu manusia.", jp: 2 },
+      { no: 15, kode: "3.4", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menjelaskan perbedaan cara manusia dan komputer melakukan pengindraan.", jp: 2 },
+      { no: 16, kode: "3.5", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Membedakan mesin cerdas dan mesin noncerdas.", jp: 2 },
+      { no: 17, kode: "3.6", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menerapkan etika dasar dalam penggunaan Kecerdasan Artifisial.", jp: 2 },
+      { no: 18, kode: "4.1", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Menjelaskan cara kerja sederhana sistem KA dalam mengenali pola.", jp: 2 },
+      { no: 19, kode: "4.2", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Melakukan klasifikasi objek berdasarkan ciri atau karakteristik tertentu.", jp: 2 },
+      { no: 20, kode: "4.3", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Menjelaskan proses klasifikasi dan prediksi yang dilakukan oleh sistem KA.", jp: 2 },
+      { no: 21, kode: "4.4", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Mengamati perubahan hasil prediksi berdasarkan perubahan input.", jp: 2 },
+      { no: 22, kode: "4.5", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Menyimpulkan bahwa akurasi prediksi KA dipengaruhi oleh kualitas dan variasi input.", jp: 2 },
+      { no: 23, kode: "5.1", bab: "Bab 5. Praktik Lintas Bidang", tp: "Merancang solusi menggunakan proses desain rekayasa.", jp: 1 },
+      { no: 24, kode: "5.2", bab: "Bab 5. Praktik Lintas Bidang", tp: "Mengembangkan proyek interaktif berbasis Scratch untuk menyelesaikan permasalahan sederhana.", jp: 2 },
+      { no: 25, kode: "5.3", bab: "Bab 5. Praktik Lintas Bidang", tp: "Mengintegrasikan konsep matematika atau mata pelajaran lain ke dalam proyek Scratch.", jp: 2 },
+      { no: 26, kode: "5.4", bab: "Bab 5. Praktik Lintas Bidang", tp: "Menguji, memperbaiki, dan menyempurnakan proyek yang dibuat.", jp: 2 },
+      { no: 27, kode: "5.5", bab: "Bab 5. Praktik Lintas Bidang", tp: "Menyajikan dan mempresentasikan hasil karya digital secara percaya diri.", jp: 1 }
+    ];
+
+    function v(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
+    }
+
+    function esc(text) {
+      if (!text) return "";
+      return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function onDocTypeChange() {
+      const docType = v('docType');
+      const orientSelect = document.getElementById('orientation');
+      if (orientSelect) {
+        if (docType === 'prosem') {
+          orientSelect.value = 'landscape';
+        } else {
+          orientSelect.value = 'portrait';
+        }
+      }
+      updatePageStyle();
+    }
+
+    function renderPreview() {
+      const docType = v('docType');
+      const kelas = v('docKelas');
+      const instansi = v('instansi');
+      const mapel = v('mapel');
+      const tahun = v('tahun');
+      const fase = v('fase');
+      const tempatTgl = v('tempatTgl');
+      const kepsekNama = v('kepsekNama');
+      const kepsekNIY = v('kepsekNIY');
+      const guruNama = v('guruNama');
+      const guruNIY = v('guruNIY');
+
+      const logoHTML = `<img src="${DEFAULT_LOGO_SRC}" alt="Logo Sekolah" onerror="this.style.display='none';">`;
+      const yayasanLogoSrc = YAYASAN_LOGO_SRC;
+
+      let docTypeName = "";
+      let tableHTML = "";
+      let kelasText = "";
+      if (kelas === "V") kelasText = "KELAS V (LIMA)";
+      else if (kelas === "VI") kelasText = "KELAS VI (ENAM)";
+      else kelasText = `KELAS ${kelas}`;
+
+      if (docType === 'prota') {
+        docTypeName = `PROGRAM TAHUNAN (PROTA)`;
+        tableHTML = renderProtaTable();
+      } else if (docType === 'prosem') {
+        docTypeName = `PROGRAM SEMESTER (PROSEM)`;
+        tableHTML = renderProsemTable();
+      } else if (docType === 'tp') {
+        docTypeName = `TUJUAN PEMBELAJARAN (TP)`;
+        tableHTML = renderTPTable();
+      }
+
+      const html = `
+        <!-- JUDUL DOKUMEN -->
+        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px; margin-bottom: 20px; border-bottom: 2px solid #3b4a5c; padding-bottom: 10px;">
+          <img src="${yayasanLogoSrc}" alt="Logo Yayasan" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none';">
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 17px; font-weight: 800; color: #3b4a5c; text-transform: uppercase; letter-spacing: 1px;">${docTypeName}</div>
+            <div style="font-size: 15px; font-weight: 800; color: #3b4a5c; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px;">${instansi.toUpperCase()}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${kelasText} — MATA PELAJARAN ${mapel.toUpperCase()}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">TAHUN AJARAN ${tahun}</div>
+          </div>
+          ${logoHTML.replace('<img', '<img style="width: 60px; height: 60px; object-fit: contain;"')}
+        </div>
+
+        ${tableHTML}
+
+        <div class="sign-grid">
+          <div>
+            Mengetahui<br>Kepala Sekolah ${esc(instansi)}
+            <div class="gap"></div>
+            <div class="name">${esc(kepsekNama)}</div>
+            NIY. ${esc(kepsekNIY)}
+          </div>
+          <div>
+            ${esc(tempatTgl)}<br>Guru Bidang Studi
+            <div class="gap"></div>
+            <div class="name">${esc(guruNama)}</div>
+            NIY. ${esc(guruNIY)}
+          </div>
+        </div>
+      `;
+
+      const page = document.getElementById('page');
+      if (page) page.innerHTML = html;
+    }
+
+    function renderProtaTable() {
+      let rows = "";
+      PROTA_DATA.forEach(r => {
+        rows += `
+          <tr>
+            <td style="text-align: center; width: 5%;">${r.no}</td>
+            <td style="text-align: center; width: 15%;">${r.semester}</td>
+            <td style="text-align: center; width: 10%; font-weight: bold;">${r.bab}</td>
+            <td style="padding-left: 10px;">${r.materi}</td>
+            <td style="text-align: center; width: 15%; font-weight: bold;">${r.jp} JP</td>
+            <td style="width: 15%;">${r.ket}</td>
+          </tr>
+        `;
+      });
+
+      return `
+        <table class="adm-tab">
+          <thead>
+            <tr>
+              <th style="width: 5%;">No</th>
+              <th style="width: 15%;">Semester</th>
+              <th style="width: 10%;">Bab</th>
+              <th>Materi Pokok</th>
+              <th style="width: 15%;">Alokasi Waktu (JP)</th>
+              <th style="width: 15%;">Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            <tr style="font-weight: bold; background: #eaf3e5 !important;">
+              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah JP Semester 1 (Ganjil)</td>
+              <td style="text-align: center; font-weight: bold;">32 JP</td>
+              <td></td>
+            </tr>
+            <tr style="font-weight: bold; background: #eaf3e5 !important;">
+              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah JP Semester 2 (Genap)</td>
+              <td style="text-align: center; font-weight: bold;">30 JP</td>
+              <td></td>
+            </tr>
+            <tr style="font-weight: 800; background: #e8f0e3 !important; color: #3b4a5c;">
+              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">JUMLAH TOTAL JP — 1 TAHUN AJARAN</td>
+              <td style="text-align: center; font-weight: bold;">62 JP</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="font-size: 10.5px; font-style: italic; margin-top: 8px; color: #7a8a90;">
+          Catatan: 1 JP = 35 menit. Estimasi 2 JP/minggu, 16 minggu efektif semester 1 dan 15 minggu efektif semester 2.
+        </div>
+      `;
+    }
+
+    function renderProsemTable() {
+      const S1_NON_EFFECTIVE = {
+        0: "LIBUR SEMESTER 1",
+        1: "LIBUR SEKOLAH",
+        2: "MPLS",
+        12: "FIELD TRIP",
+        13: "FIELD TRIP",
+        14: "STS 1",
+        21: "SAS MULOK",
+        22: "SAS DINAS",
+        24: "PEMBAGIAN RAPOR",
+        25: "LIBUR SEMESTER 1"
+      };
+
+      const S2_NON_EFFECTIVE = {
+        0: "LIBUR SEMESTER 1",
+        7: "LIBUR RAMADHAN",
+        8: "PESANTREN RAMADHAN",
+        9: "LIBUR IDUL FITRI",
+        10: "LIBUR IDUL FITRI",
+        13: "STS 2",
+        16: "TRY OUT TKA",
+        20: "SAT MULOK",
+        21: "SAT DINAS",
+        24: "LIBUR AKHIR SEMESTER"
+      };
+
+      function getNonEffectiveCell(label, rowspan) {
+        let bgColor = "#f0f3f4";
+        let textColor = "#7f8c8d";
+        
+        const upper = label.toUpperCase();
+        if (upper.includes("LIBUR") || upper.includes("RAPOR") || upper.includes("SEKOLAH")) {
+          bgColor = "#fce4e4";
+          textColor = "#c0392b";
+        } else if (upper.includes("PSTS") || upper.includes("SAS") || upper.includes("SAT")) {
+          bgColor = "#fef5e7";
+          textColor = "#d35400";
+        } else if (upper.includes("MPLS") || upper.includes("TRIP") || upper.includes("RAMADHAN") || upper.includes("PEKERTI")) {
+          bgColor = "#eaf2f8";
+          textColor = "#2980b9";
+        }
+        
+        return `<td rowspan="${rowspan}" style="background: ${bgColor} !important; color: ${textColor} !important; font-size: 8px; font-weight: 800; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; padding: 6px 1px; letter-spacing: 0.5px; vertical-align: middle; line-height: 1.1;">${esc(label)}</td>`;
+      }
+
+      // Semester 1 table
+      let s1Rows = "";
+      for (let rIdx = 0; rIdx < 3; rIdx++) {
+        let cellsHTML = "";
+        
+        if (rIdx < 2) {
+          const r = PROSEM_S1_DATA[rIdx];
+          cellsHTML += `<td>${r.no}</td>`;
+          cellsHTML += `<td class="materi-cell">${r.bab}</td>`;
+          cellsHTML += `<td class="cell-jp">${r.jp}</td>`;
+          
+          for (let colIdx = 0; colIdx < 26; colIdx++) {
+            if (colIdx in S1_NON_EFFECTIVE) {
+              if (rIdx === 0) {
+                cellsHTML += getNonEffectiveCell(S1_NON_EFFECTIVE[colIdx], 3);
+              }
+            } else {
+              cellsHTML += `<td>${r.weeks[colIdx]}</td>`;
+            }
+          }
+          s1Rows += `<tr>${cellsHTML}</tr>`;
+        } else {
+          cellsHTML += `<td colspan="2" class="materi-cell" style="font-weight: bold; background: #fafafa;">Penilaian / Asesmen</td>`;
+          cellsHTML += `<td class="cell-jp" style="background: #fafafa;"></td>`;
+          
+          for (let colIdx = 0; colIdx < 26; colIdx++) {
+            if (!(colIdx in S1_NON_EFFECTIVE)) {
+              cellsHTML += `<td></td>`;
+            }
+          }
+          s1Rows += `<tr>${cellsHTML}</tr>`;
+        }
+      }
+
+      // Semester 2 table
+      let s2Rows = "";
+      for (let rIdx = 0; rIdx < 4; rIdx++) {
+        let cellsHTML = "";
+        
+        if (rIdx < 3) {
+          const r = PROSEM_S2_DATA[rIdx];
+          cellsHTML += `<td>${r.no}</td>`;
+          cellsHTML += `<td class="materi-cell">${r.bab}</td>`;
+          cellsHTML += `<td class="cell-jp">${r.jp}</td>`;
+          
+          for (let colIdx = 0; colIdx < 25; colIdx++) {
+            if (colIdx in S2_NON_EFFECTIVE) {
+              if (rIdx === 0) {
+                cellsHTML += getNonEffectiveCell(S2_NON_EFFECTIVE[colIdx], 4);
+              }
+            } else {
+              cellsHTML += `<td>${r.weeks[colIdx]}</td>`;
+            }
+          }
+          s2Rows += `<tr>${cellsHTML}</tr>`;
+        } else {
+          cellsHTML += `<td colspan="2" class="materi-cell" style="font-weight: bold; background: #fafafa;">Penilaian / Asesmen</td>`;
+          cellsHTML += `<td class="cell-jp" style="background: #fafafa;"></td>`;
+          
+          for (let colIdx = 0; colIdx < 25; colIdx++) {
+            if (!(colIdx in S2_NON_EFFECTIVE)) {
+              cellsHTML += `<td></td>`;
+            }
+          }
+          s2Rows += `<tr>${cellsHTML}</tr>`;
+        }
+      }
+
+      return `
+        <div style="font-weight: bold; margin-top: 15px; font-size: 11px; background: var(--navy); color: white; padding: 4px 10px; border-radius: 4px;">SEMESTER 1 (GANJIL)</div>
+        <table class="prosem-table">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 3.5%;">No</th>
+              <th rowspan="2">Bab / Materi Pokok</th>
+              <th rowspan="2" style="width: 5%;">JP</th>
+              <th colspan="5">Juli</th>
+              <th colspan="4">Agustus</th>
+              <th colspan="4">September</th>
+              <th colspan="5">Oktober</th>
+              <th colspan="4">November</th>
+              <th colspan="4">Desember</th>
+            </tr>
+            <tr>
+              <!-- Juli -->
+              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th><th style="width: 2.1%;">5</th>
+              <!-- Agustus -->
+              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
+              <!-- September -->
+              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
+              <!-- Oktober -->
+              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th><th style="width: 2.1%;">5</th>
+              <!-- November -->
+              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
+              <!-- Desember -->
+              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${s1Rows}
+            <tr class="total-row">
+              <td colspan="2" style="text-align: right; padding-right: 15px;">Jumlah JP</td>
+              <td>32</td>
+              <td colspan="26" style="text-align: left; padding-left: 10px; font-size: 8.5px; font-weight: normal; font-style: italic; background: #fafafa; color: var(--muted);">
+                Keterangan Kaldik Smt I: Okt Mgu 2 = Sumatif Tengah Semester I (STS 1); Nov Mgu 4 = SAS Mulok; Des Mgu 1 = SAS Dinas
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="font-weight: bold; margin-top: 25px; font-size: 11px; background: var(--navy); color: white; padding: 4px 10px; border-radius: 4px;">SEMESTER 2 (GENAP)</div>
+        <table class="prosem-table">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width: 3.5%;">No</th>
+              <th rowspan="2">Bab / Materi Pokok</th>
+              <th rowspan="2" style="width: 5%;">JP</th>
+              <th colspan="4">Januari</th>
+              <th colspan="4">Februari</th>
+              <th colspan="5">Maret</th>
+              <th colspan="4">April</th>
+              <th colspan="4">Mei</th>
+              <th colspan="4">Juni</th>
+            </tr>
+            <tr>
+              <!-- Januari -->
+              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
+              <!-- Februari -->
+              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
+              <!-- Maret -->
+              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th><th style="width: 2.2%;">5</th>
+              <!-- April -->
+              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
+              <!-- Mei -->
+              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
+              <!-- Juni -->
+              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${s2Rows}
+            <tr class="total-row">
+              <td colspan="2" style="text-align: right; padding-right: 15px;">Jumlah JP</td>
+              <td>30</td>
+              <td colspan="25" style="text-align: left; padding-left: 10px; font-size: 8.5px; font-weight: normal; font-style: italic; background: #fafafa; color: var(--muted);">
+                Keterangan Kaldik Smt II: Apr Mgu 1 = Sumatif Tengah Semester II (STS 2); Mei Mgu 4 = SAT Mulok; Jun Mgu 1 = SAT Dinas
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div style="font-size: 10px; font-style: italic; margin-top: 10px; color: var(--muted); line-height: 1.3;">
+          Catatan: Pembagian minggu disesuaikan dengan Kalender Pendidikan (Kaldik) SDS Plus 2 Al Muhajirin Purwakarta Tahun Pelajaran 2026/2027. (1 JP = 35 Menit).
+        </div>
+      `;
+    }
+
+    function renderTPTable() {
+      let rows = "";
+      let lastBab = "";
+      TP_DATA.forEach(r => {
+        let babCell = "";
+        if (r.bab !== lastBab) {
+          // Count rows with this bab
+          const groupCount = TP_DATA.filter(x => x.bab === r.bab).length;
+          babCell = `<td rowspan="${groupCount}" style="font-weight: bold; font-size: 10.5px; width: 25%; background: #f6faf4; color: #3b4a5c; border-right: 1px solid #cfe6c2;">${r.bab}</td>`;
+          lastBab = r.bab;
+        }
+
+        rows += `
+          <tr>
+            <td style="text-align: center; width: 5%;">${r.no}</td>
+            <td style="text-align: center; width: 10%; font-weight: bold; color: #3b4a5c;">${r.kode}</td>
+            ${babCell}
+            <td style="padding-left: 8px;">${r.tp}</td>
+            <td style="text-align: center; width: 10%; font-weight: bold;">${r.jp} JP</td>
+          </tr>
+        `;
+      });
+
+      return `
+        <table class="adm-tab">
+          <thead>
+            <tr>
+              <th style="width: 5%;">No</th>
+              <th style="width: 10%;">Kode TP</th>
+              <th style="width: 25%;">Bab / Elemen</th>
+              <th>Tujuan Pembelajaran (TP)</th>
+              <th style="width: 10%;">JP</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            <tr style="font-weight: bold; background: #e8f0e3 !important; color: #3b4a5c;">
+              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah Alokasi Waktu (JP) — 1 Tahun Ajaran</td>
+              <td style="text-align: center; font-weight: bold;">62 JP</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    /* ---------- PAGE SIZE / PRINT ---------- */
+    const sizes = {
+      a4: { portrait: [210, 297], landscape: [297, 210] },
+      f4: { portrait: [215, 330], landscape: [330, 215] }
+    };
+
+    function updatePageStyle() {
+      const size = document.getElementById('paperSize').value;
+      const orient = document.getElementById('orientation').value;
+      const pattern = document.getElementById('paperPattern') ? document.getElementById('paperPattern').value : 'none';
+      const page = document.getElementById('page');
+      if (!page) return;
+
+      let patternClass = "";
+      if (pattern !== 'none') {
+        patternClass = " pattern-" + pattern;
+      }
+      page.className = "sheet " + size + " " + orient + patternClass;
+      const [w, h] = sizes[size][orient];
+
+      // Adjust padding dynamically for screen preview
+      page.style.padding = orient === 'landscape' ? '8mm 10mm' : '15mm';
+
+      document.getElementById('pageSizeStyle').innerHTML = `
+        @page {
+          size: ${w}mm ${h}mm;
+          margin: ${orient === 'landscape' ? '8mm 10mm' : '15mm'};
+        }
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          body {
+            background: #fff;
+            width: auto !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          .canvas {
+            padding: 0 !important;
+            background: transparent !important;
+            background-image: none !important;
+            overflow: visible !important;
+            display: block !important;
+          }
+          #page-container {
+            display: block !important;
+            width: auto !important;
+            height: auto !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: none !important;
+            transform: none !important;
+          }
+          .sheet {
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: auto !important;
+            min-height: 0 !important;
+            transform: none !important;
+            background: transparent !important;
+            page-break-after: always;
+          }
+        }
+      `;
+      applyZoom();
+      renderPreview();
+    }
+
+    function onPatternChange() {
+      const pattern = document.getElementById('paperPattern').value;
+      try {
+        localStorage.setItem('hdl_paper_pattern', pattern);
+      } catch (e) {}
+      updatePageStyle();
+    }
+
+    function applyZoom() {
+      const z = document.getElementById('zoom').value;
+      const page = document.getElementById('page');
+      const container = document.getElementById('page-container');
+      const canvas = document.querySelector('.canvas');
+      if (!page || !container || !canvas) return;
+
+      const size = document.getElementById('paperSize').value;
+      const orient = document.getElementById('orientation').value;
+      const [w, h] = sizes[size][orient];
+
+      const pagePxWidth = w * 3.7795;
+      const pagePxHeight = h * 3.7795;
+
+      let scale = 1;
+      if (z === "fit") {
+        const canvasWidth = canvas.clientWidth - 40;
+        scale = canvasWidth / pagePxWidth;
+        scale = Math.min(Math.max(scale, 0.4), 1.2);
+      } else {
+        scale = parseFloat(z);
+      }
+
+      page.style.transform = `scale(${scale})`;
+      page.style.transformOrigin = "top left";
+
+      container.style.width = `${pagePxWidth * scale}px`;
+      container.style.height = `${page.offsetHeight * scale}px`;
+    }
+
+    /* ---------- COLOR THEME PRESETS ---------- */
+    const themes = {
+      original: { primary: '#6aa84f', dark: '#588a41', light: '#eaf3e5', borderLight: '#cfe6c2', bgLight: '#f6faf4', text: '#ffffff', navy: '#4a5b70', navyDark: '#3b4a5c', hue: 102 },
+      mint: { primary: '#a8e6cf', dark: '#5eb393', light: '#f2fcf9', borderLight: '#ccefed', bgLight: '#fafdfd', text: '#1e523f', navy: '#2c5e4b', navyDark: '#1c3e30', hue: 159 },
+      sage: { primary: '#87a987', dark: '#5b7d5b', light: '#f4f7f4', borderLight: '#d2dfd2', bgLight: '#fbfcfb', text: '#2d4c2d', navy: '#3a593a', navyDark: '#263b26', hue: 120 },
+      sky: { primary: '#9dd3e8', dark: '#569fbd', light: '#f2f9fc', borderLight: '#cce6f2', bgLight: '#fafcfd', text: '#1b334a', navy: '#2c3e50', navyDark: '#1a252f', hue: 210 },
+      lavender: { primary: '#b3c5ff', dark: '#4860b3', light: '#f2f5ff', borderLight: '#d9e2ff', bgLight: '#fcfdff', text: '#1a2b66', navy: '#2b3b73', navyDark: '#1a2652', hue: 227 },
+      lilac: { primary: '#d6c1e9', dark: '#73568f', light: '#faf6fc', borderLight: '#ebdffd', bgLight: '#fdfbfd', text: '#3f2952', navy: '#4a3b5c', navyDark: '#342942', hue: 270 },
+      rose: { primary: '#ebb7b7', dark: '#965b5b', light: '#fdf6f6', borderLight: '#f5dbdb', bgLight: '#fffdfd', text: '#5c2d2d', navy: '#6e3b3b', navyDark: '#4f2a2a', hue: 350 },
+      sakura: { primary: '#ffc2d1', dark: '#ab4860', light: '#fff5f7', borderLight: '#ffe0e6', bgLight: '#fffcfd', text: '#661a2b', navy: '#732033', navyDark: '#521221', hue: 345 },
+      coral: { primary: '#f7b7a3', dark: '#a85d43', light: '#fef6f3', borderLight: '#fcdcd1', bgLight: '#fffdfd', text: '#602e1c', navy: '#703926', navyDark: '#4c2417', hue: 14 },
+      cream: { primary: '#ebd2b0', dark: '#8c6f46', light: '#fcf7f0', borderLight: '#f3e4d3', bgLight: '#fdfdfb', text: '#4a3820', navy: '#5a4a3a', navyDark: '#44372b', hue: 34 },
+      butter: { primary: '#fae8a4', dark: '#8f7a2a', light: '#fdfcf5', borderLight: '#f7f1d3', bgLight: '#fffefd', text: '#4a3e10', navy: '#5a4c14', navyDark: '#3d330c', hue: 48 },
+      ocean: { primary: '#aedcd8', dark: '#528c87', light: '#f0f8f7', borderLight: '#cceae7', bgLight: '#fafdfd', text: '#1f4845', navy: '#214e4b', navyDark: '#153331', hue: 175 },
+      steel: { primary: '#b8c5cd', dark: '#5a6f7d', light: '#f3f6f8', borderLight: '#dae3e8', bgLight: '#fafbfb', text: '#233441', navy: '#344855', navyDark: '#23333d', hue: 203 }
+    };
+
+    function applyPresetTheme(themeKey) {
+      const sliderGrp = document.getElementById('sliderGroup');
+      if (themeKey === 'custom') {
+        if (sliderGrp) sliderGrp.style.display = 'flex';
+        const sliderEl = document.getElementById('themeHue');
+        const currentHue = sliderEl ? sliderEl.value : 102;
+        applyHueTheme(currentHue);
+        return;
+      }
+      if (sliderGrp) sliderGrp.style.display = 'none';
+
+      const t = themes[themeKey] || themes.original;
+      const page = document.getElementById('page');
+      if (page) {
+        page.style.setProperty('--teal', t.primary);
+        page.style.setProperty('--teal-dark', t.dark);
+        page.style.setProperty('--teal-light', t.light);
+        page.style.setProperty('--teal-border-light', t.borderLight);
+        page.style.setProperty('--teal-bg-light', t.bgLight);
+        page.style.setProperty('--teal-text', t.text || '#ffffff');
+        page.style.setProperty('--navy', t.navy || '#4a5b70');
+        page.style.setProperty('--navy-dark', t.navyDark || '#3b4a5c');
+      }
+
+      const themeSelect = document.getElementById('paperTheme');
+      if (themeSelect) themeSelect.value = themeKey;
+
+      const sliderEl = document.getElementById('themeHue');
+      if (sliderEl && t.hue !== undefined) {
+        sliderEl.value = t.hue;
+        const valEl = document.getElementById('hueVal');
+        if (valEl) valEl.textContent = t.hue + '°';
+      }
+
+      try {
+        localStorage.setItem('hdl_paper_theme_mode', themeKey);
+      } catch (e) {}
+    }
+
+    function applyHueTheme(hue) {
+      const h = parseInt(hue);
+      const sliderGrp = document.getElementById('sliderGroup');
+      if (sliderGrp) sliderGrp.style.display = 'flex';
+
+      const primary = `hsl(${h}, 45%, 70%)`;
+      const dark = `hsl(${h}, 45%, 45%)`;
+      const light = `hsl(${h}, 45%, 96%)`;
+      const borderLight = `hsl(${h}, 45%, 88%)`;
+      const bgLight = `hsl(${h}, 45%, 98%)`;
+      const text = `hsl(${h}, 50%, 20%)`;
+      const navy = `hsl(${h}, 30%, 30%)`;
+      const navyDark = `hsl(${h}, 30%, 22%)`;
+
+      const page = document.getElementById('page');
+      if (page) {
+        page.style.setProperty('--teal', primary);
+        page.style.setProperty('--teal-dark', dark);
+        page.style.setProperty('--teal-light', light);
+        page.style.setProperty('--teal-border-light', borderLight);
+        page.style.setProperty('--teal-bg-light', bgLight);
+        page.style.setProperty('--teal-text', text);
+        page.style.setProperty('--navy', navy);
+        page.style.setProperty('--navy-dark', navyDark);
+      }
+
+      const valEl = document.getElementById('hueVal');
+      if (valEl) valEl.textContent = h + '°';
+
+      const sliderEl = document.getElementById('themeHue');
+      if (sliderEl) sliderEl.value = h;
+
+      const themeSelect = document.getElementById('paperTheme');
+      if (themeSelect) themeSelect.value = 'custom';
+
+      try {
+        localStorage.setItem('hdl_paper_theme_mode', 'custom');
+        localStorage.setItem('hdl_paper_theme_hue', h);
+      } catch (e) {}
+    }
+
+    const PERSIST_PROFILE_FIELDS = [
+      'penyusun', 'instansi', 'tahun', 'jenjang', 'mapel', 'fase',
+      'tempatTgl', 'kepsekNama', 'kepsekNIY', 'guruNama', 'guruNIY'
+    ];
+    const PERSIST_PROFILE_CHECKBOXES = [
+      'toggleBanner', 'toggleLogoYayasan'
+    ];
+
+    function saveProfileFields() {
+      try {
+        PERSIST_PROFILE_FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            localStorage.setItem(`hdl_persisted_${id}`, el.value);
+          }
+        });
+        PERSIST_PROFILE_CHECKBOXES.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            localStorage.setItem(`hdl_persisted_${id}`, el.checked ? 'true' : 'false');
+          }
+        });
+      } catch (e) { }
+    }
+
+    function loadProfileFields() {
+      try {
+        PERSIST_PROFILE_FIELDS.forEach(id => {
+          const val = localStorage.getItem(`hdl_persisted_${id}`);
+          const el = document.getElementById(id);
+          if (val !== null && el) {
+            el.value = val;
+          }
+        });
+        PERSIST_PROFILE_CHECKBOXES.forEach(id => {
+          const val = localStorage.getItem(`hdl_persisted_${id}`);
+          const el = document.getElementById(id);
+          if (val !== null && el) {
+            el.checked = (val === 'true');
+          }
+        });
+      } catch (e) { }
+    }
+
+    // Window load initialization
+    window.addEventListener('load', () => {
+      // Load saved identity fields
+      loadProfileFields();
+
+      // Retrieve themes or styles from localStorage if any, to align with index page
+      try {
+        const savedPattern = localStorage.getItem('hdl_paper_pattern');
+        if (savedPattern) {
+          const patSelect = document.getElementById('paperPattern');
+          if (patSelect) patSelect.value = savedPattern;
+        }
+        const savedTheme = localStorage.getItem('hdl_paper_theme_mode') || 'original';
+        applyPresetTheme(savedTheme);
+      } catch (e) {
+        applyPresetTheme('original');
+      }
+
+      updatePageStyle();
+      applyZoom();
+      window.addEventListener('resize', applyZoom);
+    });
+  </script>
+</body>
+
+</html>

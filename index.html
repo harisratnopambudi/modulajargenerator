@@ -10,6 +10,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap"
     rel="stylesheet">
+  <!-- Google Identity Services (Google Sign-In) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
       --navy: #4a5b70;
@@ -1810,8 +1812,16 @@
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
       </svg>
       <h2>Akses Fitur Premium AI</h2>
-      <p>Fitur penyusunan otomatis menggunakan AI memerlukan Kode Akses Premium.</p>
-      <p style="font-size: 12.5px; margin: -5px 0 15px 0; color: var(--muted); text-align: center;">Belum memiliki kode
+      <p style="margin-bottom: 12px;">Silakan login menggunakan Google/Gmail yang terdaftar:</p>
+      <div id="googleSignInButton" style="margin: 10px 0 15px; display: flex; justify-content: center; width: 100%;"></div>
+      
+      <div style="display: flex; align-items: center; width: 100%; margin: 12px 0; font-size: 10px; color: var(--muted); font-weight: bold; letter-spacing: 0.5px;">
+        <hr style="flex: 1; border: 0; border-top: 1px solid var(--border); margin-right: 10px; margin-top: 0; margin-bottom: 0;">
+        ATAU MASUKKAN KODE AKSES
+        <hr style="flex: 1; border: 0; border-top: 1px solid var(--border); margin-left: 10px; margin-top: 0; margin-bottom: 0;">
+      </div>
+
+      <p style="font-size: 12.5px; margin: 0px 0 15px 0; color: var(--muted); text-align: center;">Belum memiliki kode
         akses? <a href="http://lynk.id/harisratnopambudi/mnk9mwwpn9ke/checkout" target="_blank"
           style="color: var(--teal); font-weight: bold; text-decoration: underline;">Dapatkan Kode Akses di Sini</a></p>
       <div class="field" style="width: 100%; text-align: left; margin: 15px 0 5px;">
@@ -1821,7 +1831,7 @@
       </div>
       <div id="popupAccessError"
         style="color: #c53030; font-size: 12px; margin-top: 5px; display: none; font-weight: 500;">Kode akses salah atau
-        tidak valid.</div>
+        not valid.</div>
       <div style="display: flex; gap: 10px; width: 100%; margin-top: 15px;">
         <button class="welcome-btn" style="margin-top: 0; background: #c9d3d6; color: var(--ink);"
           onclick="closeAccessPopup()">Batal</button>
@@ -1837,6 +1847,16 @@
     <div class="editor no-print">
       <h1>Generator Modul Ajar</h1>
       <div class="sub">Isi form di bawah — pratinjau otomatis diperbarui di kanan. Haris DevLab.</div>
+
+      <!-- Navigation Tabs -->
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 2px solid var(--bg); padding-bottom: 8px;" class="no-print">
+        <a href="index.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
+          <span>📝</span> Modul Ajar
+        </a>
+        <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📂</span> Administrasi Kelas
+        </a>
+      </div>
 
       <details class="section ai-panel" open>
         <summary>Generate Modul</summary>
@@ -3263,6 +3283,66 @@ KELAS 5</textarea>
       document.getElementById('popupAccessError').style.display = 'none';
     }
 
+    // Google Sign-In Configurations
+    const GOOGLE_CLIENT_ID = "635273386003-qaac81cg1uqth3c7kvfdobrsa8ldi391.apps.googleusercontent.com"; // Silakan ganti dengan Client ID Google Cloud Anda
+
+    function initGoogleSignIn() {
+      if (typeof google === 'undefined' || !google.accounts) {
+        setTimeout(initGoogleSignIn, 300);
+        return;
+      }
+      try {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleLogin
+        });
+        google.accounts.id.renderButton(
+          document.getElementById("googleSignInButton"),
+          { theme: "outline", size: "large", width: "260" }
+        );
+      } catch (err) {
+        console.error("Gagal memuat tombol Google Sign-In:", err);
+      }
+    }
+
+    function handleGoogleLogin(response) {
+      if (!response.credential) return;
+      try {
+        const payload = decodeJwtResponse(response.credential);
+        const email = payload.email || '';
+        
+        // Simpan token ke localStorage dengan format khusus agar dikenali oleh Worker
+        const token = 'google_jwt_token:' + response.credential;
+        localStorage.setItem('hdl_access_code', token);
+        localStorage.setItem('hdl_access_code_time', Date.now().toString());
+
+        const keyInput = document.getElementById('geminiApiKey');
+        if (keyInput) {
+          keyInput.value = token;
+          checkAPIKeyStatus();
+        }
+
+        // Simpan profil singkat user
+        localStorage.setItem('hdl_user_email', email);
+        if (payload.name) localStorage.setItem('hdl_user_name', payload.name);
+
+        closeAccessPopup();
+        generateWithAI();
+      } catch (e) {
+        document.getElementById('popupAccessError').textContent = "Login gagal: " + e.message;
+        document.getElementById('popupAccessError').style.display = 'block';
+      }
+    }
+
+    function decodeJwtResponse(token) {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    }
+
     function checkAccessCodeSession() {
       try {
         const savedTimeStr = localStorage.getItem('hdl_access_code_time');
@@ -3920,6 +4000,7 @@ Aturan wajib:
         const savedCode = localStorage.getItem('hdl_access_code') || '';
         if (!savedCode) {
           document.getElementById('accessPopup').style.display = 'flex';
+          initGoogleSignIn();
           document.getElementById('popupAccessCode').value = '';
           document.getElementById('popupAccessCode').focus();
           return;

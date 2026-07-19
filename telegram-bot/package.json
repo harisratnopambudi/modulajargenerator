@@ -1,0 +1,15 @@
+{
+  "name": "modul-ajar-telegram-bot",
+  "version": "1.0.0",
+  "description": "Conversational Telegram Bot for generating Modul Ajar Kurikulum Merdeka",
+  "main": "bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-telegram-bot-api": "^0.66.0",
+    "puppeteer": "^25.3.0"
+  }
+}
