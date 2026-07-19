@@ -3245,11 +3245,24 @@ KELAS 5</textarea>
       } catch (e) { /* localStorage tidak tersedia */ }
     }
 
+    function checkAccessPopupOnLoad() {
+      try {
+        const savedCode = localStorage.getItem('hdl_access_code') || '';
+        if (!savedCode) {
+          document.getElementById('accessPopup').style.display = 'flex';
+          initGoogleSignIn();
+        }
+      } catch (e) { }
+    }
+
     function checkWelcomePopup() {
       try {
         const shown = localStorage.getItem('hdl_welcome_shown');
         if (!shown) {
           document.getElementById('welcomePopup').style.display = 'flex';
+        } else {
+          // Jika tutorial/welcome popup sudah pernah ditampilkan sebelumnya, langsung cek login
+          checkAccessPopupOnLoad();
         }
       } catch (e) { }
     }
@@ -3258,6 +3271,8 @@ KELAS 5</textarea>
       document.getElementById('welcomePopup').style.display = 'none';
       try {
         localStorage.setItem('hdl_welcome_shown', 'true');
+        // Tampilkan pop-up login setelah tutorial ditutup (jika belum login)
+        checkAccessPopupOnLoad();
       } catch (e) { }
     }
 
