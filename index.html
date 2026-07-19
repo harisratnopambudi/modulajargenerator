@@ -3288,32 +3288,72 @@ KELAS 5</textarea>
       }
     }
 
-    function handleGoogleLogin(response) {
+    async function handleGoogleLogin(response) {
       if (!response.credential) return;
+      
+      const errorEl = document.getElementById('popupAccessError');
+      if (!errorEl) return;
+
+      // Tampilkan status memverifikasi di dalam pop-up
+      errorEl.style.color = "#4a5b70"; // Navy color
+      errorEl.textContent = "Memverifikasi akun Google...";
+      errorEl.style.display = 'block';
+
       try {
         const payload = decodeJwtResponse(response.credential);
         const email = payload.email || '';
-        
-        // Simpan token ke localStorage dengan format khusus agar dikenali oleh Worker
         const token = 'google_jwt_token:' + response.credential;
-        localStorage.setItem('hdl_access_code', token);
-        localStorage.setItem('hdl_access_code_time', Date.now().toString());
+        const deviceId = getOrCreateDeviceId();
 
-        const keyInput = document.getElementById('geminiApiKey');
-        if (keyInput) {
-          keyInput.value = token;
-          checkAPIKeyStatus();
+        // Kirim permintaan tes ke Worker untuk memvalidasi whitelist secara instan
+        const res = await fetch(`https://bold-block-f2cd.harisratnopambudi.workers.dev/v1beta/models`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'X-Device-ID': deviceId
+          }
+        });
+
+        if (res.ok) {
+          // Sukses: Simpan token & data profil ke localStorage
+          localStorage.setItem('hdl_access_code', token);
+          localStorage.setItem('hdl_access_code_time', Date.now().toString());
+          localStorage.setItem('hdl_user_email', email);
+          if (payload.name) localStorage.setItem('hdl_user_name', payload.name);
+
+          const keyInput = document.getElementById('geminiApiKey');
+          if (keyInput) {
+            keyInput.value = token;
+            checkAPIKeyStatus();
+          }
+
+          // Tampilkan pesan sukses warna hijau
+          errorEl.style.color = "#27ae60"; // Green color
+          errorEl.textContent = "Login Sukses! Membuka akses AI...";
+
+          // Beri jeda 1 detik agar pengguna sempat melihat notifikasi suksesnya
+          setTimeout(() => {
+            closeAccessPopup();
+            generateWithAI();
+          }, 1000);
+        } else {
+          // Gagal: Email tidak ada di database pembeli
+          let errMsg = `Akses Ditolak: Email ${email} belum terdaftar sebagai pembeli premium.`;
+          try {
+            const errJson = await res.json();
+            if (errJson?.error?.message) {
+              errMsg = errJson.error.message;
+            }
+          } catch (e) {}
+
+          // Tampilkan pesan error warna merah
+          errorEl.style.color = "#c53030"; // Red color
+          errorEl.textContent = errMsg;
+          errorEl.style.display = 'block';
         }
-
-        // Simpan profil singkat user
-        localStorage.setItem('hdl_user_email', email);
-        if (payload.name) localStorage.setItem('hdl_user_name', payload.name);
-
-        closeAccessPopup();
-        generateWithAI();
       } catch (e) {
-        document.getElementById('popupAccessError').textContent = "Login gagal: " + e.message;
-        document.getElementById('popupAccessError').style.display = 'block';
+        errorEl.style.color = "#c53030"; // Red color
+        errorEl.textContent = "Koneksi bermasalah: " + e.message;
+        errorEl.style.display = 'block';
       }
     }
 
