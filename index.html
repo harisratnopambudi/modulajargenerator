@@ -3359,15 +3359,21 @@ KELAS 5</textarea>
             checkAPIKeyStatus();
           }
 
+          // Cek apakah akun ini akun trial (dibatasi harian) berdasarkan header dari Worker
+          const isTrialAccount = res.headers.get('X-Trial-Account') === 'true';
+          const trialLimit = res.headers.get('X-Trial-Daily-Limit') || '3';
+
           // Tampilkan pesan sukses warna hijau
           errorEl.style.color = "#27ae60"; // Green color
-          errorEl.textContent = "Login Sukses! Membuka akses AI...";
+          errorEl.textContent = isTrialAccount
+            ? `Login Sukses! Anda menggunakan akun Trial dengan batas ${trialLimit}x generate/hari.`
+            : "Login Sukses! Membuka akses AI...";
 
-          // Beri jeda 1 detik agar pengguna sempat melihat notifikasi suksesnya
+          // Beri jeda agar pengguna sempat melihat notifikasinya (lebih lama untuk notif trial)
           setTimeout(() => {
             closeAccessPopup();
             generateWithAI();
-          }, 1000);
+          }, isTrialAccount ? 2200 : 1000);
         } else {
           // Gagal: Email tidak ada di database pembeli
           let errMsg = `Akses Ditolak: Email ${email} belum terdaftar sebagai pembeli premium.`;
