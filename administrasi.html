@@ -1180,6 +1180,9 @@
     }
 
     function renderTPTable() {
+      const kelasVal = document.getElementById('docKelas').value;
+      const kelasDigit = kelasVal === 'V' ? '5' : (kelasVal === 'VI' ? '6' : kelasVal);
+
       let rows = "";
       let lastBab = "";
       TP_DATA.forEach(r => {
@@ -1191,10 +1194,12 @@
           lastBab = r.bab;
         }
 
+        const kodeTP = `${kelasDigit}.${r.no}`;
+
         rows += `
           <tr>
             <td style="text-align: center; width: 5%;">${r.no}</td>
-            <td style="text-align: center; width: 10%; font-weight: bold; color: #3b4a5c;">${r.kode}</td>
+            <td style="text-align: center; width: 10%; font-weight: bold; color: #3b4a5c;">${kodeTP}</td>
             ${babCell}
             <td style="padding-left: 8px;">${r.tp}</td>
             <td style="text-align: center; width: 10%; font-weight: bold;">${r.jp} JP</td>
