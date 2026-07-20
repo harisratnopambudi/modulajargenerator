@@ -34,9 +34,9 @@ export default {
           return new Response('Email not found in payload', { status: 400, headers: corsHeaders });
         }
 
-        // Store in KV namespace (bound as WHITELIST_KV)
-        if (env.WHITELIST_KV) {
-          await env.WHITELIST_KV.put(email, JSON.stringify({
+        // Store in KV namespace (bound as TRIAL_STORE)
+        if (env.TRIAL_STORE) {
+          await env.TRIAL_STORE.put(email, JSON.stringify({
             status: 'active',
             addedAt: Date.now(),
             source: 'lynk-webhook'
@@ -71,24 +71,31 @@ export default {
       const googleVerifyUrl = `https://oauth2.googleapis.com/tokeninfo?id_token=${jwtToken}`;
       try {
         const verifyRes = await fetch(googleVerifyUrl);
+        console.log("DEBUG: Google Verify Response Status:", verifyRes.status);
         if (verifyRes.ok) {
           const payload = await verifyRes.json();
+          console.log("DEBUG: Token Payload Aud:", payload.aud);
+          console.log("DEBUG: Env Google Client ID:", env.GOOGLE_CLIENT_ID);
           // Check Google Client ID
           if (payload.aud === env.GOOGLE_CLIENT_ID) {
             userEmail = payload.email.trim().toLowerCase();
+            console.log("DEBUG: Extracted Email:", userEmail);
             // Verify email against KV
-            if (env.WHITELIST_KV) {
-              const entry = await env.WHITELIST_KV.get(userEmail);
+            if (env.TRIAL_STORE) {
+              const entry = await env.TRIAL_STORE.get(userEmail);
+              console.log("DEBUG: KV Whitelist Entry for email:", entry);
               if (entry) {
                 isAuthorized = true;
               }
             } else {
-              // Fallback if KV is not bound (allow for testing)
-              isAuthorized = true;
+              console.log("DEBUG: env.TRIAL_STORE is UNDEFINED!");
             }
+          } else {
+            console.log("DEBUG: Client ID Mismatch!");
           }
         }
       } catch (e) {
+        console.log("DEBUG: Verification Exception:", e.message);
         return new Response(JSON.stringify({ error: { message: 'Google Token validation failed: ' + e.message } }), {
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -96,6 +103,7 @@ export default {
       }
     } else {
       // Fallback: Old access code logic
+      console.log("DEBUG: Using manual access code logic, token:", token);
       const TRIAL_CODES = ['COBAGRATIS', 'TRIALGURU', 'COBADULU'];
       if (TRIAL_CODES.includes(token)) {
         isAuthorized = true;
@@ -104,17 +112,45 @@ export default {
         if (allowedCodes.includes(token)) {
           isAuthorized = true;
         }
-      } else {
-        // Fallback for direct Gemini keys
-        isAuthorized = true;
       }
     }
 
+    console.log("DEBUG: Final isAuthorized status:", isAuthorized);
+
     if (!isAuthorized) {
-      return new Response(JSON.stringify({ error: { message: `Akses ditolak. Email ${userEmail || 'Anda'} tidak terdaftar di whitelist.` } }), {
+      return new Response(JSON.stringify({ error: { message: `Akses ditolak. Email ${userEmail || 'Anda'} belum terdaftar sebagai pembeli premium.` } }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
+    }
+
+    // 3. Profile sync endpoint
+    if (url.pathname === '/profile') {
+      if (!userEmail) {
+         return new Response(JSON.stringify({ error: { message: 'Email required for profile access (please login with Google).' } }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+         });
+      }
+      
+      const profileKey = `profile_${userEmail}`;
+      
+      if (request.method === 'GET') {
+         const profileData = await env.TRIAL_STORE.get(profileKey);
+         return new Response(profileData || "{}", {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+         });
+      } else if (request.method === 'POST') {
+         const bodyText = await request.text();
+         await env.TRIAL_STORE.put(profileKey, bodyText);
+         return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+         });
+      } else {
+         return new Response('Method not allowed', { status: 405, headers: corsHeaders });
+      }
     }
 
     // Proxy request to Gemini API
