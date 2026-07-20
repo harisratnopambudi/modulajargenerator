@@ -1828,6 +1828,17 @@
 
     <!-- =============== EDITOR =============== -->
     <div class="editor no-print">
+      <div id="accountBadge" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px 12px; background: #eaf3e5; border: 1px solid #cfe6c2; border-radius: 6px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;" id="accountBadgeAvatar">U</div>
+          <div>
+            <div style="font-size: 10px; color: var(--muted); font-weight: 600; line-height: 1;">Akun Google Aktif:</div>
+            <div id="accountBadgeName" style="font-size: 13px; font-weight: bold; color: var(--navy-dark); line-height: 1.4;"></div>
+            <div id="accountBadgeEmail" style="font-size: 11px; color: var(--navy); line-height: 1;"></div>
+          </div>
+        </div>
+        <button onclick="logoutGoogle()" style="background: #fff; border: 1px solid #e0e0e0; color: #c53030; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Logout</button>
+      </div>
       <h1>Generator Modul Ajar</h1>
       <div class="sub">Isi form di bawah — pratinjau otomatis diperbarui di kanan. Haris DevLab.</div>
 
@@ -3263,11 +3274,30 @@ KELAS 5</textarea>
     function checkAccessPopupOnLoad() {
       try {
         const savedCode = localStorage.getItem('hdl_access_code') || '';
+        const badge = document.getElementById('accountBadge');
         if (!savedCode) {
           document.getElementById('accessPopup').style.display = 'flex';
           initGoogleSignIn();
+          if (badge) badge.style.display = 'none';
+        } else {
+          if (badge) {
+            badge.style.display = 'flex';
+            const uName = localStorage.getItem('hdl_user_name') || 'Pengguna';
+            const uEmail = localStorage.getItem('hdl_user_email') || '';
+            document.getElementById('accountBadgeName').textContent = uName;
+            document.getElementById('accountBadgeEmail').textContent = uEmail;
+            document.getElementById('accountBadgeAvatar').textContent = uName.charAt(0).toUpperCase();
+          }
         }
       } catch (e) { }
+    }
+
+    function logoutGoogle() {
+      localStorage.removeItem('hdl_access_code');
+      localStorage.removeItem('hdl_access_code_time');
+      localStorage.removeItem('hdl_user_email');
+      localStorage.removeItem('hdl_user_name');
+      location.reload();
     }
 
     function checkWelcomePopup() {
@@ -3362,6 +3392,8 @@ KELAS 5</textarea>
           // Tampilkan pesan sukses warna hijau
           errorEl.style.color = "#27ae60"; // Green color
           errorEl.textContent = "Login Sukses! Membuka akses AI...";
+
+          checkAccessPopupOnLoad();
 
           // Beri jeda 1 detik agar pengguna sempat melihat notifikasi suksesnya
           setTimeout(() => {
