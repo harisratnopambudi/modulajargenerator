@@ -4327,6 +4327,8 @@ Aturan wajib:
       'toggleBanner', 'toggleLogoYayasan', 'toggleQuran'
     ];
 
+    let cloudSyncTimeout = null;
+
     function saveProfileFields() {
       try {
         let profileData = { fields: {}, checkboxes: {} };
@@ -4346,14 +4348,17 @@ Aturan wajib:
           }
         });
 
-        // Sync to cloud if logged in
+        // Sync to cloud if logged in, debounced (wait 2 seconds after last typing)
         const token = localStorage.getItem('hdl_access_code');
         if (token && token.startsWith('google_jwt_token:')) {
-           fetch('https://bold-block-f2cd.harisratnopambudi.workers.dev/profile', {
-              method: 'POST',
-              headers: { 'Authorization': 'Bearer ' + token },
-              body: JSON.stringify(profileData)
-           }).catch(e => console.error("Cloud sync failed", e));
+           clearTimeout(cloudSyncTimeout);
+           cloudSyncTimeout = setTimeout(() => {
+              fetch('https://bold-block-f2cd.harisratnopambudi.workers.dev/profile', {
+                 method: 'POST',
+                 headers: { 'Authorization': 'Bearer ' + token },
+                 body: JSON.stringify(profileData)
+              }).catch(e => console.error("Cloud sync failed", e));
+           }, 2000);
         }
       } catch (e) { }
     }
@@ -4391,12 +4396,22 @@ Aturan wajib:
           if (val !== null && el) {
             el.value = val;
           }
+          // Attach auto-save listener
+          if (el && !el.dataset.autosaveAttached) {
+             el.addEventListener('input', saveProfileFields);
+             el.dataset.autosaveAttached = 'true';
+          }
         });
         PERSIST_PROFILE_CHECKBOXES.forEach(id => {
           const val = localStorage.getItem(`hdl_persisted_${id}`);
           const el = document.getElementById(id);
           if (val !== null && el) {
             el.checked = (val === 'true');
+          }
+          // Attach auto-save listener
+          if (el && !el.dataset.autosaveAttached) {
+             el.addEventListener('change', saveProfileFields);
+             el.dataset.autosaveAttached = 'true';
           }
         });
       } catch (e) { }
