@@ -1837,7 +1837,17 @@
             <div id="accountBadgeEmail" style="font-size: 11px; color: var(--navy); line-height: 1;"></div>
           </div>
         </div>
-        <button onclick="logoutGoogle()" style="background: #fff; border: 1px solid #e0e0e0; color: #c53030; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Logout</button>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div id="cloudSyncStatus" style="display: none; align-items: center; gap: 4px; font-size: 11px; color: var(--navy); opacity: 0.8;" title="Tersimpan di Cloud">
+            <svg id="cloudSyncIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Default: Saved -->
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+              <polyline points="9 14 11 16 15 11"></polyline>
+            </svg>
+            <span id="cloudSyncText" style="display:none; font-weight:600;">Tersimpan</span>
+          </div>
+          <button onclick="logoutGoogle()" style="background: #fff; border: 1px solid #e0e0e0; color: #c53030; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Logout</button>
+        </div>
       </div>
       <h1>Generator Modul Ajar</h1>
       <div class="sub">Isi form di bawah — pratinjau otomatis diperbarui di kanan. Haris DevLab.</div>
@@ -3286,6 +3296,7 @@ KELAS 5</textarea>
             document.getElementById('accountBadgeName').textContent = uName;
             document.getElementById('accountBadgeEmail').textContent = uEmail;
             document.getElementById('accountBadgeAvatar').textContent = uName.charAt(0).toUpperCase();
+            updateCloudSyncStatus('saved');
           }
         }
       } catch (e) { }
@@ -4360,6 +4371,40 @@ Aturan wajib:
 
     let cloudSyncTimeout = null;
 
+    function updateCloudSyncStatus(state) {
+      const icon = document.getElementById('cloudSyncIcon');
+      const text = document.getElementById('cloudSyncText');
+      const statusDiv = document.getElementById('cloudSyncStatus');
+      if (!icon || !text || !statusDiv) return;
+      
+      const isLogged = localStorage.getItem('hdl_access_code') && localStorage.getItem('hdl_access_code').startsWith('google_jwt_token:');
+      if (!isLogged) {
+        statusDiv.style.display = 'none';
+        return;
+      }
+      statusDiv.style.display = 'flex';
+
+      if (state === 'syncing') {
+        icon.innerHTML = '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><polyline points="12 11 12 16"></polyline><polyline points="9 13 12 11 15 13"></polyline>';
+        icon.style.color = 'var(--navy)';
+        text.textContent = 'Menyimpan...';
+        text.style.display = 'inline';
+        statusDiv.title = 'Menyimpan ke Cloud...';
+      } else if (state === 'saved') {
+        icon.innerHTML = '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><polyline points="9 14 11 16 15 11"></polyline>';
+        icon.style.color = '#38a169'; // green
+        text.textContent = 'Tersimpan';
+        text.style.display = 'none';
+        statusDiv.title = 'Tersimpan di Cloud';
+      } else if (state === 'error') {
+        icon.innerHTML = '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><line x1="12" y1="12" x2="12" y2="16"></line><line x1="12" y1="18" x2="12.01" y2="18"></line>';
+        icon.style.color = '#e53e3e'; // red
+        text.textContent = 'Gagal Simpan';
+        text.style.display = 'inline';
+        statusDiv.title = 'Gagal menyimpan ke Cloud';
+      }
+    }
+
     function getProfileStorageKey(id) {
        const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
        return userEmail ? `hdl_persisted_${userEmail}_${id}` : `hdl_persisted_${id}`;
@@ -4387,6 +4432,7 @@ Aturan wajib:
         // Sync to cloud if logged in, debounced (wait 2 seconds after last typing)
         const token = localStorage.getItem('hdl_access_code');
         if (token && token.startsWith('google_jwt_token:')) {
+           updateCloudSyncStatus('syncing');
            clearTimeout(cloudSyncTimeout);
            cloudSyncTimeout = setTimeout(() => {
               // Re-read latest profile fields for cloud sync to avoid closure capturing old/default values
@@ -4404,7 +4450,13 @@ Aturan wajib:
                  method: 'POST',
                  headers: { 'Authorization': 'Bearer ' + token },
                  body: JSON.stringify(latestProfileData)
-              }).catch(e => console.error("Cloud sync failed", e));
+              }).then(res => {
+                 if (res.ok) updateCloudSyncStatus('saved');
+                 else updateCloudSyncStatus('error');
+              }).catch(e => {
+                 console.error("Cloud sync failed", e);
+                 updateCloudSyncStatus('error');
+              });
            }, 2000);
         }
       } catch (e) { }
@@ -4461,6 +4513,10 @@ Aturan wajib:
              el.dataset.autosaveAttached = 'true';
           }
         });
+        
+        if (typeof renderPreview === 'function') {
+           renderPreview();
+        }
       } catch (e) { }
     }
 
