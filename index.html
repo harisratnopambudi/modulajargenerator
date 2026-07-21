@@ -62,41 +62,72 @@
         border-right: none;
         border-bottom: 1px solid var(--border);
         max-height: none;
+        overflow-y: visible;
         padding: 14px 14px 40px;
       }
       .preview-wrap {
         height: auto;
-        min-height: 60vh;
+        min-height: auto;
       }
       .canvas {
-        padding: 20px 8px;
+        padding: 16px 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      #page-container {
+        transform-origin: top left;
+        max-width: 100%;
       }
       .toolbar {
-        padding: 8px 12px;
-        padding-right: 100px;
+        padding: 8px 10px;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 6px;
+        position: relative;
+      }
+      .toolbar .grp {
+        font-size: 11px;
+        gap: 4px;
+      }
+      .toolbar select {
+        font-size: 11px;
+        padding: 4px 6px;
       }
       .btn-print {
+        position: fixed;
         top: auto;
-        bottom: 12px;
-        right: 12px;
+        bottom: 16px;
+        right: 16px;
         font-size: 12px;
-        padding: 8px 14px;
-        border-radius: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        padding: 10px 16px;
+        border-radius: 24px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        z-index: 9999;
       }
       #accountBadge {
         flex-wrap: wrap;
         gap: 8px;
+        padding: 8px 10px;
+      }
+      .row2 {
+        grid-template-columns: 1fr;
       }
       .lkpd-float-card {
         position: fixed;
         top: auto;
-        bottom: 60px;
+        bottom: 70px;
         right: 10px;
         left: 10px;
         width: auto;
+      }
+      .section > summary {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+      .section .body {
+        padding: 10px;
+      }
+      .toggle-grp {
+        font-size: 10px;
       }
     }
 
