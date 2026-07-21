@@ -1457,13 +1457,18 @@
 
     let cloudSyncTimeout = null;
 
+    function getProfileStorageKey(id) {
+       const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
+       return userEmail ? `hdl_persisted_${userEmail}_${id}` : `hdl_persisted_${id}`;
+    }
+
     function saveProfileFields() {
       try {
         let profileData = { fields: {}, checkboxes: {} };
         PERSIST_PROFILE_FIELDS.forEach(id => {
           const el = document.getElementById(id);
           if (el) {
-            localStorage.setItem(`hdl_persisted_${id}`, el.value);
+            localStorage.setItem(getProfileStorageKey(id), el.value);
             profileData.fields[id] = el.value;
           }
         });
@@ -1471,7 +1476,7 @@
           const el = document.getElementById(id);
           if (el) {
             const val = el.checked ? 'true' : 'false';
-            localStorage.setItem(`hdl_persisted_${id}`, val);
+            localStorage.setItem(getProfileStorageKey(id), val);
             profileData.checkboxes[id] = val;
           }
         });
@@ -1505,10 +1510,10 @@
                  if (cloudData && cloudData.fields) {
                     // Save to local storage and update UI
                     for (const id in cloudData.fields) {
-                       localStorage.setItem(`hdl_persisted_${id}`, cloudData.fields[id]);
+                       localStorage.setItem(getProfileStorageKey(id), cloudData.fields[id]);
                     }
                     for (const id in cloudData.checkboxes) {
-                       localStorage.setItem(`hdl_persisted_${id}`, cloudData.checkboxes[id]);
+                       localStorage.setItem(getProfileStorageKey(id), cloudData.checkboxes[id]);
                     }
                  }
               }
@@ -1519,7 +1524,7 @@
 
         // Load from local storage
         PERSIST_PROFILE_FIELDS.forEach(id => {
-          const val = localStorage.getItem(`hdl_persisted_${id}`);
+          const val = localStorage.getItem(getProfileStorageKey(id));
           const el = document.getElementById(id);
           if (val !== null && el) {
             el.value = val;
@@ -1531,7 +1536,7 @@
           }
         });
         PERSIST_PROFILE_CHECKBOXES.forEach(id => {
-          const val = localStorage.getItem(`hdl_persisted_${id}`);
+          const val = localStorage.getItem(getProfileStorageKey(id));
           const el = document.getElementById(id);
           if (val !== null && el) {
             el.checked = (val === 'true');
