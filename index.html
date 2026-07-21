@@ -2750,7 +2750,6 @@ KELAS 5</textarea>
     function v(id) { return document.getElementById(id).value; }
 
     function renderPreview() {
-      saveProfileFields();
       const rubrik1Rows = pipeRows(v('rubrik1'));
       const rubrik2Rows = pipeRows(v('rubrik2'));
       const saranaRows = pipeRows(v('sarana'));
@@ -4390,10 +4389,21 @@ Aturan wajib:
         if (token && token.startsWith('google_jwt_token:')) {
            clearTimeout(cloudSyncTimeout);
            cloudSyncTimeout = setTimeout(() => {
+              // Re-read latest profile fields for cloud sync to avoid closure capturing old/default values
+              let latestProfileData = { fields: {}, checkboxes: {} };
+              PERSIST_PROFILE_FIELDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) latestProfileData.fields[id] = el.value;
+              });
+              PERSIST_PROFILE_CHECKBOXES.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) latestProfileData.checkboxes[id] = el.checked ? 'true' : 'false';
+              });
+
               fetch('https://bold-block-f2cd.harisratnopambudi.workers.dev/profile', {
                  method: 'POST',
                  headers: { 'Authorization': 'Bearer ' + token },
-                 body: JSON.stringify(profileData)
+                 body: JSON.stringify(latestProfileData)
               }).catch(e => console.error("Cloud sync failed", e));
            }, 2000);
         }
