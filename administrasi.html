@@ -1548,7 +1548,14 @@
                  body: JSON.stringify(latestProfileData)
               }).then(res => {
                  if (res.ok) updateCloudSyncStatus('saved');
-                 else updateCloudSyncStatus('error');
+                 else {
+                     res.text().then(txt => {
+                         console.error("Cloud sync err:", res.status, txt);
+                         const statusDiv = document.getElementById('cloudSyncStatus');
+                         if(statusDiv) statusDiv.title = `Gagal (Kode: ${res.status}). Tunggu atau relogin.`;
+                     }).catch(e=>{});
+                     updateCloudSyncStatus('error');
+                 }
               }).catch(e => {
                  console.error("Cloud sync failed", e);
                  updateCloudSyncStatus('error');
