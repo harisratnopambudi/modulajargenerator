@@ -658,7 +658,9 @@
     <div class="editor no-print">
       <div id="accountBadge" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px 12px; background: #eaf3e5; border: 1px solid #cfe6c2; border-radius: 6px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;" id="accountBadgeAvatar">U</div>
+          <div id="accountBadgeAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: conic-gradient(#ff0000, #ff8000, #ffff00, #00ff00, #00bfff, #8000ff, #ff00ff, #ff0000); padding: 2.5px; flex-shrink: 0;">
+            <div style="width: 100%; height: 100%; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; overflow: hidden;" id="accountBadgeAvatarInner">U</div>
+          </div>
           <div>
             <div style="font-size: 10px; color: var(--muted); font-weight: 600; line-height: 1;">Akun Google Aktif:</div>
             <div id="accountBadgeName" style="font-size: 13px; font-weight: bold; color: var(--navy-dark); line-height: 1.4;"></div>
@@ -704,6 +706,7 @@
           <div class="field">
             <label>Tingkat Kelas</label>
             <select id="docKelas" onchange="renderPreview()">
+              <option value="IV">Kelas IV (Empat)</option>
               <option value="V">Kelas V (Lima)</option>
               <option value="VI" selected>Kelas VI (Enam)</option>
             </select>
@@ -875,7 +878,7 @@
     const YAYASAN_LOGO_SRC = "img/logoyayasan.png";
     const BANNER_SRC = "img/banner.png";
 
-    // 1. Data PROTA
+    // 1. Data PROTA — Kelas V/VI (Fase C)
     const PROTA_DATA = [
       { no: 1, semester: "1 (Ganjil)", bab: "Bab 1", materi: "Berpikir Komputasional", jp: 16, ket: "" },
       { no: 2, semester: "1 (Ganjil)", bab: "Bab 2", materi: "Literasi Digital", jp: 16, ket: "" },
@@ -884,20 +887,44 @@
       { no: 5, semester: "2 (Genap)", bab: "Bab 5", materi: "Praktik Lintas Bidang", jp: 8, ket: "" }
     ];
 
-    // 2. Data PROSEM S1 (26 minggu: Juli W1-5 s/d Desember W1-4)
+    // 1b. Data PROTA — Kelas IV (Fase B)
+    const PROTA_DATA_IV = [
+      { no: 1, semester: "1 (Ganjil)", bab: "Bab 1", materi: "Mengenal Sistem Komputer", jp: 10, ket: "" },
+      { no: 2, semester: "1 (Ganjil)", bab: "Bab 2", materi: "Berpikir Komputasional", jp: 10, ket: "" },
+      { no: 3, semester: "1 (Ganjil)", bab: "Bab 3", materi: "Memberi Perintah Seperti Programmer", jp: 12, ket: "" },
+      { no: 4, semester: "2 (Genap)", bab: "Bab 4", materi: "Robot Mengambil Keputusan", jp: 10, ket: "" },
+      { no: 5, semester: "2 (Genap)", bab: "Bab 5", materi: "Melakukan Perintah dalam Permainan (Unplugged Coding)", jp: 10, ket: "" },
+      { no: 6, semester: "2 (Genap)", bab: "Bab 6", materi: "Bijak dengan Teknologi dan KA", jp: 10, ket: "" }
+    ];
+
+    // 2. Data PROSEM S1 — Kelas V/VI (26 minggu: Juli W1-5 s/d Desember W1-4)
     const PROSEM_S1_DATA = [
       { no: 1, bab: "Bab 1 — Berpikir Komputasional", jp: 16, weeks: ["", "", "", 2, 2, 2, 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
       { no: 2, bab: "Bab 2 — Literasi Digital", jp: 16, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, "", "", "", 2, 2, 2, 2, 2, 2, "", "", 2, "", ""] }
     ];
 
-    // 3. Data PROSEM S2 (25 minggu: Januari W1-4 s/d Juni W1-4)
+    // 2b. Data PROSEM S1 — Kelas IV (26 minggu: Juli W1-5 s/d Desember W1-4)
+    const PROSEM_S1_DATA_IV = [
+      { no: 1, bab: "Bab 1 — Mengenal Sistem Komputer", jp: 10, weeks: ["", "", "", 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
+      { no: 2, bab: "Bab 2 — Berpikir Komputasional", jp: 10, weeks: ["", "", "", "", "", "", "", "", 2, 2, 2, "", "", "", "", 2, 2, "", "", "", "", "", "", "", "", ""] },
+      { no: 3, bab: "Bab 3 — Memberi Perintah Seperti Programmer", jp: 12, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, 2, 2, "", "", 2, "", ""] }
+    ];
+
+    // 3. Data PROSEM S2 — Kelas V/VI (25 minggu: Januari W1-4 s/d Juni W1-4)
     const PROSEM_S2_DATA = [
       { no: 1, bab: "Bab 3 — Literasi dan Etika Kecerdasan Artifisial (KA)", jp: 12, weeks: ["", 2, 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
       { no: 2, bab: "Bab 4 — Pemanfaatan dan Pengembangan Kecerdasan Artifisial", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, 2, "", 2, 2, "", 2, "", "", "", "", "", "", ""] },
       { no: 3, bab: "Bab 5 — Praktik Lintas Bidang", jp: 8, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, "", "", 2, 2, ""] }
     ];
 
-    // 4. Data TP
+    // 3b. Data PROSEM S2 — Kelas IV (25 minggu: Januari W1-4 s/d Juni W1-4)
+    const PROSEM_S2_DATA_IV = [
+      { no: 1, bab: "Bab 4 — Robot Mengambil Keputusan", jp: 10, weeks: ["", 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
+      { no: 2, bab: "Bab 5 — Melakukan Perintah dalam Permainan (Unplugged Coding)", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, 2, "", 2, 2, "", 2, "", "", "", "", "", "", ""] },
+      { no: 3, bab: "Bab 6 — Bijak dengan Teknologi dan KA", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, "", "", 2, 2, ""] }
+    ];
+
+    // 4. Data TP — Kelas V/VI (Fase C)
     const TP_DATA = [
       { no: 1, kode: "1.1", bab: "Bab 1. Berpikir Komputasional", tp: "Mengidentifikasi permasalahan sederhana dalam kehidupan sehari-hari.", jp: 2 },
       { no: 2, kode: "1.2", bab: "Bab 1. Berpikir Komputasional", tp: "Menguraikan masalah menggunakan dekomposisi, pengenalan pola, dan abstraksi.", jp: 2 },
@@ -927,6 +954,45 @@
       { no: 26, kode: "5.4", bab: "Bab 5. Praktik Lintas Bidang", tp: "Menguji, memperbaiki, dan menyempurnakan proyek yang dibuat.", jp: 2 },
       { no: 27, kode: "5.5", bab: "Bab 5. Praktik Lintas Bidang", tp: "Menyajikan dan mempresentasikan hasil karya digital secara percaya diri.", jp: 1 }
     ];
+
+    // 4b. Data TP — Kelas IV (Fase B)
+    const TP_DATA_IV = [
+      { no: 1, kode: "1.1", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Mengidentifikasi berbagai jenis komputer yang digunakan di rumah dan sekolah.", jp: 2 },
+      { no: 2, kode: "1.2", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Menjelaskan proses input, proses, dan output pada sistem komputer secara sederhana.", jp: 2 },
+      { no: 3, kode: "1.3", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Mengidentifikasi contoh penerapan robot dan Kecerdasan Artifisial (KA) dalam kehidupan sehari-hari.", jp: 2 },
+      { no: 4, kode: "1.4", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Melaksanakan projek kolaboratif mengenai komputer di sekolahku.", jp: 4 },
+      { no: 5, kode: "2.1", bab: "Bab 2. Berpikir Komputasional", tp: "Mengenali pola dari sekumpulan data atau informasi.", jp: 2 },
+      { no: 6, kode: "2.2", bab: "Bab 2. Berpikir Komputasional", tp: "Membagi tugas besar menjadi bagian-bagian yang lebih kecil dan mudah diselesaikan (dekomposisi).", jp: 2 },
+      { no: 7, kode: "2.3", bab: "Bab 2. Berpikir Komputasional", tp: "Menyusun langkah-langkah penyelesaian masalah secara berurutan (algoritma).", jp: 2 },
+      { no: 8, kode: "2.4", bab: "Bab 2. Berpikir Komputasional", tp: "Melaksanakan projek kolaboratif merancang rencana kelas yang teratur.", jp: 4 },
+      { no: 9, kode: "3.1", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Memahami dan mempraktikkan konsep urutan (sequence) dalam memberikan perintah.", jp: 2 },
+      { no: 10, kode: "3.2", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Memahami dan menggunakan perintah berulang (looping) untuk menyederhanakan instruksi.", jp: 2 },
+      { no: 11, kode: "3.3", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Mengidentifikasi dan memperbaiki kesalahan (debugging) pada serangkaian perintah.", jp: 4 },
+      { no: 12, kode: "3.4", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Melaksanakan projek kolaboratif membuat perintah untuk robot kaki.", jp: 4 },
+      { no: 13, kode: "4.1", bab: "Bab 4. Robot Mengambil Keputusan", tp: "Memahami logika kondisi Jika-Maka untuk pengambilan keputusan sederhana.", jp: 2 },
+      { no: 14, kode: "4.2", bab: "Bab 4. Robot Mengambil Keputusan", tp: "Memahami logika kondisi Jika-Maka-Selain itu untuk keputusan bercabang.", jp: 4 },
+      { no: 15, kode: "4.3", bab: "Bab 4. Robot Mengambil Keputusan", tp: "Melaksanakan projek kolaboratif membuat aturan keputusan untuk robot menuju sekolah.", jp: 4 },
+      { no: 16, kode: "5.1", bab: "Bab 5. Melakukan Perintah dalam Permainan (Unplugged Coding)", tp: "Mempraktikkan unplugged coding menggunakan simbol.", jp: 2 },
+      { no: 17, kode: "5.2", bab: "Bab 5. Melakukan Perintah dalam Permainan (Unplugged Coding)", tp: "Mempraktikkan unplugged coding menggunakan koordinat.", jp: 4 },
+      { no: 18, kode: "5.3", bab: "Bab 5. Melakukan Perintah dalam Permainan (Unplugged Coding)", tp: "Melaksanakan projek kolaboratif membuat perintah untuk robot bijak menuju sekolah.", jp: 4 },
+      { no: 19, kode: "6.1", bab: "Bab 6. Bijak dengan Teknologi dan KA", tp: "Menjelaskan konsep literasi digital dalam konteks Kecerdasan Artifisial.", jp: 2 },
+      { no: 20, kode: "6.2", bab: "Bab 6. Bijak dengan Teknologi dan KA", tp: "Menunjukkan sikap bijak dalam menggunakan Kecerdasan Artifisial.", jp: 4 },
+      { no: 21, kode: "6.3", bab: "Bab 6. Bijak dengan Teknologi dan KA", tp: "Melaksanakan projek kolaboratif bermain peran pengguna bijak teknologi dan KA.", jp: 4 }
+    ];
+
+    // Fungsi pemilih data berdasarkan kelas
+    function getProtaData() {
+      return v('docKelas') === 'IV' ? PROTA_DATA_IV : PROTA_DATA;
+    }
+    function getProsemS1Data() {
+      return v('docKelas') === 'IV' ? PROSEM_S1_DATA_IV : PROSEM_S1_DATA;
+    }
+    function getProsemS2Data() {
+      return v('docKelas') === 'IV' ? PROSEM_S2_DATA_IV : PROSEM_S2_DATA;
+    }
+    function getTpData() {
+      return v('docKelas') === 'IV' ? TP_DATA_IV : TP_DATA;
+    }
 
     function v(id) {
       const el = document.getElementById(id);
@@ -970,7 +1036,8 @@
       let docTypeName = "";
       let tableHTML = "";
       let kelasText = "";
-      if (kelas === "V") kelasText = "KELAS V (LIMA)";
+      if (kelas === "IV") kelasText = "KELAS IV (EMPAT)";
+      else if (kelas === "V") kelasText = "KELAS V (LIMA)";
       else if (kelas === "VI") kelasText = "KELAS VI (ENAM)";
       else kelasText = `KELAS ${kelas}`;
 
@@ -1021,8 +1088,12 @@
     }
 
     function renderProtaTable() {
+      const protaData = getProtaData();
+      let jpS1 = 0, jpS2 = 0;
       let rows = "";
-      PROTA_DATA.forEach(r => {
+      protaData.forEach(r => {
+        if (r.semester.includes('1')) jpS1 += r.jp;
+        else jpS2 += r.jp;
         rows += `
           <tr>
             <td style="text-align: center; width: 5%;">${r.no}</td>
@@ -1051,17 +1122,17 @@
             ${rows}
             <tr style="font-weight: bold; background: #eaf3e5 !important;">
               <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah JP Semester 1 (Ganjil)</td>
-              <td style="text-align: center; font-weight: bold;">32 JP</td>
+              <td style="text-align: center; font-weight: bold;">${jpS1} JP</td>
               <td></td>
             </tr>
             <tr style="font-weight: bold; background: #eaf3e5 !important;">
               <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah JP Semester 2 (Genap)</td>
-              <td style="text-align: center; font-weight: bold;">30 JP</td>
+              <td style="text-align: center; font-weight: bold;">${jpS2} JP</td>
               <td></td>
             </tr>
             <tr style="font-weight: 800; background: #e8f0e3 !important; color: #3b4a5c;">
               <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">JUMLAH TOTAL JP — 1 TAHUN AJARAN</td>
-              <td style="text-align: center; font-weight: bold;">62 JP</td>
+              <td style="text-align: center; font-weight: bold;">${jpS1 + jpS2} JP</td>
               <td></td>
             </tr>
           </tbody>
@@ -1119,12 +1190,16 @@
       }
 
       // Semester 1 table
+      const s1Data = getProsemS1Data();
+      const s1TotalRows = s1Data.length + 1; // data rows + asesmen row
       let s1Rows = "";
-      for (let rIdx = 0; rIdx < 3; rIdx++) {
+      let jpS1Total = 0;
+      for (let rIdx = 0; rIdx < s1TotalRows; rIdx++) {
         let cellsHTML = "";
         
-        if (rIdx < 2) {
-          const r = PROSEM_S1_DATA[rIdx];
+        if (rIdx < s1Data.length) {
+          const r = s1Data[rIdx];
+          jpS1Total += r.jp;
           cellsHTML += `<td>${r.no}</td>`;
           cellsHTML += `<td class="materi-cell">${r.bab}</td>`;
           cellsHTML += `<td class="cell-jp">${r.jp}</td>`;
@@ -1132,7 +1207,7 @@
           for (let colIdx = 0; colIdx < 26; colIdx++) {
             if (colIdx in S1_NON_EFFECTIVE) {
               if (rIdx === 0) {
-                cellsHTML += getNonEffectiveCell(S1_NON_EFFECTIVE[colIdx], 3);
+                cellsHTML += getNonEffectiveCell(S1_NON_EFFECTIVE[colIdx], s1TotalRows);
               }
             } else {
               cellsHTML += `<td>${r.weeks[colIdx]}</td>`;
@@ -1153,12 +1228,16 @@
       }
 
       // Semester 2 table
+      const s2Data = getProsemS2Data();
+      const s2TotalRows = s2Data.length + 1;
       let s2Rows = "";
-      for (let rIdx = 0; rIdx < 4; rIdx++) {
+      let jpS2Total = 0;
+      for (let rIdx = 0; rIdx < s2TotalRows; rIdx++) {
         let cellsHTML = "";
         
-        if (rIdx < 3) {
-          const r = PROSEM_S2_DATA[rIdx];
+        if (rIdx < s2Data.length) {
+          const r = s2Data[rIdx];
+          jpS2Total += r.jp;
           cellsHTML += `<td>${r.no}</td>`;
           cellsHTML += `<td class="materi-cell">${r.bab}</td>`;
           cellsHTML += `<td class="cell-jp">${r.jp}</td>`;
@@ -1166,7 +1245,7 @@
           for (let colIdx = 0; colIdx < 25; colIdx++) {
             if (colIdx in S2_NON_EFFECTIVE) {
               if (rIdx === 0) {
-                cellsHTML += getNonEffectiveCell(S2_NON_EFFECTIVE[colIdx], 4);
+                cellsHTML += getNonEffectiveCell(S2_NON_EFFECTIVE[colIdx], s2TotalRows);
               }
             } else {
               cellsHTML += `<td>${r.weeks[colIdx]}</td>`;
@@ -1220,7 +1299,7 @@
             ${s1Rows}
             <tr class="total-row">
               <td colspan="2" style="text-align: right; padding-right: 15px;">Jumlah JP</td>
-              <td>32</td>
+              <td>${jpS1Total}</td>
               <td colspan="26" style="text-align: left; padding-left: 10px; font-size: 8.5px; font-weight: normal; font-style: italic; background: #fafafa; color: var(--muted);">
                 Keterangan Kaldik Smt I: Okt Mgu 2 = Sumatif Tengah Semester I (STS 1); Nov Mgu 4 = SAS Mulok; Des Mgu 1 = SAS Dinas
               </td>
@@ -1261,7 +1340,7 @@
             ${s2Rows}
             <tr class="total-row">
               <td colspan="2" style="text-align: right; padding-right: 15px;">Jumlah JP</td>
-              <td>30</td>
+              <td>${jpS2Total}</td>
               <td colspan="25" style="text-align: left; padding-left: 10px; font-size: 8.5px; font-weight: normal; font-style: italic; background: #fafafa; color: var(--muted);">
                 Keterangan Kaldik Smt II: Apr Mgu 1 = Sumatif Tengah Semester II (STS 2); Mei Mgu 4 = SAT Mulok; Jun Mgu 1 = SAT Dinas
               </td>
@@ -1277,15 +1356,18 @@
 
     function renderTPTable() {
       const kelasVal = document.getElementById('docKelas').value;
-      const kelasDigit = kelasVal === 'V' ? '5' : (kelasVal === 'VI' ? '6' : kelasVal);
+      const kelasDigit = kelasVal === 'IV' ? '4' : (kelasVal === 'V' ? '5' : (kelasVal === 'VI' ? '6' : kelasVal));
+      const tpData = getTpData();
 
       let rows = "";
       let lastBab = "";
-      TP_DATA.forEach(r => {
+      let totalJP = 0;
+      tpData.forEach(r => {
+        totalJP += r.jp;
         let babCell = "";
         if (r.bab !== lastBab) {
           // Count rows with this bab
-          const groupCount = TP_DATA.filter(x => x.bab === r.bab).length;
+          const groupCount = tpData.filter(x => x.bab === r.bab).length;
           babCell = `<td rowspan="${groupCount}" style="font-weight: bold; font-size: 10.5px; width: 25%; background: #f6faf4; color: #3b4a5c; border-right: 1px solid #cfe6c2;">${r.bab}</td>`;
           lastBab = r.bab;
         }
@@ -1318,7 +1400,7 @@
             ${rows}
             <tr style="font-weight: bold; background: #e8f0e3 !important; color: #3b4a5c;">
               <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah Alokasi Waktu (JP) — 1 Tahun Ajaran</td>
-              <td style="text-align: center; font-weight: bold;">62 JP</td>
+              <td style="text-align: center; font-weight: bold;">${totalJP} JP</td>
             </tr>
           </tbody>
         </table>
@@ -1709,12 +1791,17 @@
             badge.style.display = 'flex';
             const uName = localStorage.getItem('hdl_user_name') || 'Pengguna';
             const uEmail = localStorage.getItem('hdl_user_email') || '';
+            const uPhoto = localStorage.getItem('hdl_user_photo') || '';
             const nameEl = document.getElementById('accountBadgeName');
             const emailEl = document.getElementById('accountBadgeEmail');
-            const avatarEl = document.getElementById('accountBadgeAvatar');
+            const avatarInner = document.getElementById('accountBadgeAvatarInner');
             if (nameEl) nameEl.textContent = uName;
-            document.getElementById('accountBadgeEmail').textContent = uEmail;
-            document.getElementById('accountBadgeAvatar').textContent = uName.charAt(0).toUpperCase();
+            if (emailEl) emailEl.textContent = uEmail;
+            if (uPhoto && avatarInner) {
+              avatarInner.innerHTML = '<img src="' + uPhoto + '" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent=\'' + uName.charAt(0).toUpperCase() + '\'">'; 
+            } else if (avatarInner) {
+              avatarInner.textContent = uName.charAt(0).toUpperCase();
+            }
             updateCloudSyncStatus('saved');
           }
         }
@@ -1726,6 +1813,7 @@
       localStorage.removeItem('hdl_access_code_time');
       localStorage.removeItem('hdl_user_email');
       localStorage.removeItem('hdl_user_name');
+      localStorage.removeItem('hdl_user_photo');
       window.location.href = 'index.html';
     }
 
