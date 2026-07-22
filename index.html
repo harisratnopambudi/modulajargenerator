@@ -1913,7 +1913,9 @@
     <div class="editor no-print">
       <div id="accountBadge" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px 12px; background: #eaf3e5; border: 1px solid #cfe6c2; border-radius: 6px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;" id="accountBadgeAvatar">U</div>
+          <div id="accountBadgeAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: conic-gradient(#DB4437 0deg 90deg, #F4B400 90deg 180deg, #0F9D58 180deg 270deg, #4285F4 270deg 360deg); padding: 2.5px; flex-shrink: 0;">
+            <div style="width: 100%; height: 100%; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; overflow: hidden;" id="accountBadgeAvatarInner">U</div>
+          </div>
           <div>
             <div style="font-size: 10px; color: var(--muted); font-weight: 600; line-height: 1;">Akun Google Aktif:</div>
             <div id="accountBadgeName" style="font-size: 13px; font-weight: bold; color: var(--navy-dark); line-height: 1.4;"></div>
@@ -3376,9 +3378,15 @@ KELAS 5</textarea>
             badge.style.display = 'flex';
             const uName = localStorage.getItem('hdl_user_name') || 'Pengguna';
             const uEmail = localStorage.getItem('hdl_user_email') || '';
+            const uPhoto = localStorage.getItem('hdl_user_photo') || '';
             document.getElementById('accountBadgeName').textContent = uName;
             document.getElementById('accountBadgeEmail').textContent = uEmail;
-            document.getElementById('accountBadgeAvatar').textContent = uName.charAt(0).toUpperCase();
+            const avatarInner = document.getElementById('accountBadgeAvatarInner');
+            if (uPhoto && avatarInner) {
+              avatarInner.innerHTML = '<img src="' + uPhoto + '" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent=\'' + uName.charAt(0).toUpperCase() + '\'">';
+            } else if (avatarInner) {
+              avatarInner.textContent = uName.charAt(0).toUpperCase();
+            }
             updateCloudSyncStatus('saved');
           }
         }
@@ -3390,6 +3398,7 @@ KELAS 5</textarea>
       localStorage.removeItem('hdl_access_code_time');
       localStorage.removeItem('hdl_user_email');
       localStorage.removeItem('hdl_user_name');
+      localStorage.removeItem('hdl_user_photo');
       location.reload();
     }
 
@@ -3472,6 +3481,7 @@ KELAS 5</textarea>
           localStorage.setItem('hdl_access_code_time', Date.now().toString());
           localStorage.setItem('hdl_user_email', email);
           if (payload.name) localStorage.setItem('hdl_user_name', payload.name);
+          if (payload.picture) localStorage.setItem('hdl_user_photo', payload.picture);
 
           // Update tab visibilitas untuk admin secara dinamis
           checkAdminRole();
