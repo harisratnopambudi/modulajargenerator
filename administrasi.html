@@ -704,7 +704,7 @@
               <option value="jadwal">Jadwal Jam Mengajar</option>
             </select>
           </div>
-          <div class="field">
+          <div class="field" id="fieldKelas">
             <label>Tingkat Kelas</label>
             <select id="docKelas" onchange="renderPreview()">
               <option value="IV">Kelas IV (Empat)</option>
@@ -1014,6 +1014,11 @@
         } else {
           orientSelect.value = 'portrait';
         }
+      }
+      // Sembunyikan dropdown kelas untuk jadwal (karena gabungan semua kelas)
+      const kelasField = document.getElementById('fieldKelas');
+      if (kelasField) {
+        kelasField.style.display = docType === 'jadwal' ? 'none' : '';
       }
       updatePageStyle();
     }
@@ -1483,7 +1488,7 @@
               bgColor = 'background: var(--teal); color: var(--teal-text);';
               textColor = 'var(--teal-text)';
             } else if (lvl === 6) {
-              bgColor = 'background: var(--navy); color: #fff;';
+              bgColor = 'background: #c17f3e; color: #fff;';
               textColor = '#fff';
             }
             rows += `<td style="text-align: center; font-weight: 700; ${bgColor}">${esc(cell)}</td>`;
@@ -1530,12 +1535,12 @@
               <span style="color: var(--muted); font-weight: 600;">Kelas V</span>
             </span>
             <span style="display: inline-flex; align-items: center; gap: 5px;">
-              <span style="display: inline-block; width: 16px; height: 16px; background: var(--navy); border: 1px solid var(--navy-dark); border-radius: 3px;"></span>
+              <span style="display: inline-block; width: 16px; height: 16px; background: #c17f3e; border: 1px solid #a56830; border-radius: 3px;"></span>
               <span style="color: var(--muted); font-weight: 600;">Kelas VI</span>
             </span>
           </div>
           <div style="margin-top: 8px; font-style: italic; color: var(--muted);">
-            Catatan: 1 JP = 35 menit. Jadwal mengikuti Kalender Pendidikan ${esc(v('instansi') || 'SDS Plus 2 Al Muhajirin')} Tahun Pelajaran ${esc(tahun)}.
+            Catatan: 1 JP = 35 menit. Jadwal mengajar ${esc(v('instansi') || 'SDS Plus 2 Al Muhajirin')} Tahun Pelajaran ${esc(tahun)}.
           </div>
         </div>
       `;
