@@ -1411,290 +1411,134 @@
       `;
     }
 
-    // ===== JADWAL JAM MENGAJAR DATA =====
+    // ===== JADWAL JAM MENGAJAR DATA (hanya jam mengajar) =====
     const JADWAL_DATA = [
-      // period 1: 06.45 - 06.50
-      { time: '06.45 - 06.50', period: 1, type: 'ceremony',
-        merged: 'Ceremony', mergedSpan: 5, mergedNote: '' },
-      // period 2: 06.50 - 07.05
-      { time: '06.50 - 07.05', period: 2, type: 'ceremony',
-        merged: 'Classical and Pray of Dhuha', mergedSpan: 5, mergedNote: '' },
-      // period 3: 07.05 - 07.20
-      { time: '07.05 - 07.20', period: 3, type: 'ceremony',
-        merged: '', mergedSpan: 0, mergedNote: '' },
-      // period 4: 07.20 - 07.30
-      { time: '07.20 - 07.30', period: 4, type: 'literasi',
-        mon: '', tue: 'Literasi "Mapag Buana"', wed: 'Literasi "Maneuh di Sunda"/Senam Sehat Ceria', thu: 'Literasi "Nyanding Wawangi"', fri: '' },
-      // period 5: 07.30 - 08.05
-      { time: '07.30 - 08.05', period: 5, type: 'normal',
-        mon: '', tue: '', wed: '', thu: '', fri: { text: '4 Najaf', bg: '#ff9900' } },
-      // period 6: 08.05 - 08.40
-      { time: '08.05 - 08.40', period: 6, type: 'normal',
-        mon: { text: "4 Sana'a", bg: '#ff9900' }, tue: { text: '4 Muskat', bg: '#ff9900' }, wed: { text: '6 Granada', bg: '#c9daf8' }, thu: '', fri: { text: '4 Najaf', bg: '#ff9900' } },
-      // period 7: 08.40 - 09.15
-      { time: '08.40 - 09.15', period: 7, type: 'normal',
-        mon: { text: "4 Sana'a", bg: '#ff9900' }, tue: { text: '4 Muskat', bg: '#ff9900' }, wed: { text: '6 Granada', bg: '#c9daf8' }, thu: '', fri: '' },
-      // period 8: 09.15 - 09.40
-      { time: '09.15 - 09.40', period: 8, type: 'break',
-        merged: 'Break', mergedSpan: 5 },
-      // period 9: 09.40 - 10.15
-      { time: '09.40 - 10.15', period: 9, type: 'normal',
-        mon: { text: '4 Yaman', bg: '#ff9900' }, tue: { text: '6 Kuffah', bg: '#c9daf8' }, wed: { text: '4 Abu Dhabi', bg: '#ff9900' }, thu: '', fri: '' },
-      // period 10: 10.15 - 10.50
-      { time: '10.15 - 10.50', period: 10, type: 'normal',
-        mon: { text: '4 Yaman', bg: '#ff9900' }, tue: { text: '6 Kuffah', bg: '#c9daf8' }, wed: { text: '4 Abu Dhabi', bg: '#ff9900' }, thu: { text: '6 Madrid', bg: '#e06666' }, fri: { text: '6 Almeria', bg: '#c9daf8' } },
-      // period 11: 10.50 - 11.25
-      { time: '10.50 - 11.25', period: 11, type: 'normal',
-        mon: '', tue: '', wed: '', thu: { text: '6 Madrid', bg: '#e06666' }, fri: { text: '6 Almeria', bg: '#c9daf8' } },
-      // period 13: 11.25 - 11.40
-      { time: '11.25 - 11.40', period: 13, type: 'break',
-        merged: 'Qailulah (Take a Nap)', mergedSpan: 5 },
-      // period 14: 11.40 - 12.05
-      { time: '11.40 - 12.05', period: 14, type: 'break',
-        merged: 'Pray of Dzuhur', mergedSpan: 5 },
-      // period 15: 12.05 - 12.20
-      { time: '12.05 - 12.20', period: 15, type: 'break',
-        merged: 'Lunch', mergedSpan: 5 },
-      // period 16: 12.20 - 12.55
-      { time: '12.20 - 12.55', period: 16, type: 'normal',
-        mon: { text: '5 Cordoba', bg: '#6aa84f', color: '#fff' }, tue: '', wed: { text: '5 Istanbul', bg: '#6aa84f', color: '#fff' }, thu: '', fri: '' },
-      // period 17: 12.55 - 13.30
-      { time: '12.55 - 13.30', period: 17, type: 'normal',
-        mon: { text: '5 Cordoba', bg: '#6aa84f', color: '#fff' }, tue: { text: '5 Damaskus', bg: '#b6d7a8' }, wed: { text: '5 Istanbul', bg: '#6aa84f', color: '#fff' }, thu: { text: '5 Amman', bg: '#b6d7a8' }, fri: '' },
-      // period 18: 13.30 - 14.05
-      { time: '13.30 - 14.05', period: 18, type: 'normal',
-        mon: '', tue: { text: '5 Damaskus', bg: '#b6d7a8' }, wed: '', thu: { text: '5 Amman', bg: '#b6d7a8' }, fri: '' },
-      // period 19: 14.05 - 14.20
-      { time: '14.05 - 14.20', period: 19, type: 'normal',
-        mon: '', tue: '', wed: '', thu: '', fri: '' },
-      // period 20: 14.20 - 14.30
-      { time: '14.20 - 14.30', period: 20, type: 'closing',
-        merged: 'Reflection, Tidy up the classroom, tidy up clothes, to use parfume and closing du\'a', mergedSpan: 5 }
+      // Hanya menampilkan jam pelajaran yang diajar oleh guru
+      { time: '07.30 - 08.05', period: 5,
+        mon: '', tue: '', wed: '', thu: '', fri: '4 Najaf' },
+      { time: '08.05 - 08.40', period: 6,
+        mon: "4 Sana'a", tue: '4 Muskat', wed: '6 Granada', thu: '', fri: '4 Najaf' },
+      { time: '08.40 - 09.15', period: 7,
+        mon: "4 Sana'a", tue: '4 Muskat', wed: '6 Granada', thu: '', fri: '' },
+      { time: '09.40 - 10.15', period: 9,
+        mon: '4 Yaman', tue: '6 Kuffah', wed: '4 Abu Dhabi', thu: '', fri: '' },
+      { time: '10.15 - 10.50', period: 10,
+        mon: '4 Yaman', tue: '6 Kuffah', wed: '4 Abu Dhabi', thu: '6 Madrid', fri: '6 Almeria' },
+      { time: '10.50 - 11.25', period: 11,
+        mon: '', tue: '', wed: '', thu: '6 Madrid', fri: '6 Almeria' },
+      { time: '12.20 - 12.55', period: 16,
+        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '', fri: '' },
+      { time: '12.55 - 13.30', period: 17,
+        mon: '5 Cordoba', tue: '5 Damaskus', wed: '5 Istanbul', thu: '5 Amman', fri: '' },
+      { time: '13.30 - 14.05', period: 18,
+        mon: '', tue: '5 Damaskus', wed: '', thu: '5 Amman', fri: '' }
     ];
 
+    function getKelasLevel(text) {
+      if (!text) return 0;
+      if (text.startsWith('4')) return 4;
+      if (text.startsWith('5')) return 5;
+      if (text.startsWith('6')) return 6;
+      return 0;
+    }
+
     function renderJadwalTable() {
-      const guruNama = v('guruNama') || 'Pak Haris';
       const tahun = v('tahun') || '2026/2027';
+      const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
+      const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
 
-      // Build header rows
-      let html = `
-        <style>
-          table.jadwal-tab {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10px;
-            margin-top: 10px;
+      // Count total JP per kelas
+      let jpKelas4 = 0, jpKelas5 = 0, jpKelas6 = 0;
+      const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
+      JADWAL_DATA.forEach(row => {
+        days.forEach(day => {
+          const cell = row[day];
+          if (cell) {
+            const lvl = getKelasLevel(cell);
+            if (lvl === 4) jpKelas4++;
+            else if (lvl === 5) jpKelas5++;
+            else if (lvl === 6) jpKelas6++;
           }
-          table.jadwal-tab th, table.jadwal-tab td {
-            border: 1px solid #999;
-            padding: 3px 5px;
-            text-align: center;
-            vertical-align: middle;
-          }
-          table.jadwal-tab thead th {
-            background: #d9a648;
-            color: #fff;
-            font-weight: 700;
-            font-size: 9.5px;
-          }
-          table.jadwal-tab thead th.day-header {
-            background: #d9a648;
-            min-width: 90px;
-          }
-          table.jadwal-tab .cell-class {
-            font-weight: 700;
-            font-size: 10px;
-            min-width: 80px;
-          }
-          table.jadwal-tab .cell-break {
-            background: #f0f0f0 !important;
-            font-weight: 700;
-            font-style: italic;
-            color: #555;
-            font-size: 9.5px;
-          }
-          table.jadwal-tab .cell-ceremony {
-            background: #fff2cc !important;
-            font-weight: 600;
-            font-size: 9px;
-            color: #7f6000;
-          }
-          table.jadwal-tab .cell-literasi {
-            background: #d9ead3 !important;
-            font-weight: 600;
-            font-size: 8.5px;
-            color: #274e13;
-          }
-          table.jadwal-tab .cell-closing {
-            background: #cfe2f3 !important;
-            font-weight: 500;
-            font-size: 8.5px;
-            color: #1155cc;
-            font-style: italic;
-          }
-          table.jadwal-tab .period-col {
-            width: 35px;
-            background: #f9f0db !important;
-            font-weight: 700;
-            color: #7f6000;
-          }
-          table.jadwal-tab .time-col {
-            width: 80px;
-            font-weight: 600;
-            font-size: 9px;
-            white-space: nowrap;
-            background: #fef9ef !important;
-            color: #3b3b3b;
-          }
-          table.jadwal-tab .code-col {
-            width: 35px;
-            font-weight: 700;
-          }
-          table.jadwal-tab .teacher-col {
-            width: 70px;
-            font-size: 9px;
-            font-weight: 700;
-            color: #cc4125;
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-          }
-          table.jadwal-tab .highlight-yellow {
-            background: #ffff00 !important;
-            font-weight: 800;
-          }
-          table.jadwal-tab .highlight-green {
-            background: #00ff00 !important;
-            font-weight: 800;
-          }
-        </style>
-
-        <table class="jadwal-tab">
-          <thead>
-            <tr>
-              <th rowspan="2" style="width:55px; vertical-align:middle;">CLASS</th>
-              <th rowspan="2" style="width:80px; vertical-align:middle;">TIME</th>
-              <th rowspan="2" style="width:40px; vertical-align:middle;">PERIOD</th>
-              <th colspan="5" style="background: #c27c0e; color: #fff;">DAY / LESSON</th>
-              <th rowspan="2" style="width:35px; vertical-align:middle;">CODE</th>
-              <th rowspan="2" style="width:70px; vertical-align:middle; background: #e69138; color: #fff;">TEACHER'S NAME</th>
-            </tr>
-            <tr>
-              <th class="day-header">MONDAY</th>
-              <th class="day-header">TUESDAY</th>
-              <th class="day-header">WEDNESDAY</th>
-              <th class="day-header">THURSDAY</th>
-              <th class="day-header">FRIDAY</th>
-            </tr>
-          </thead>
-          <tbody>`;
-
-      // Code counter
-      let codeNum = 1;
-      // Teacher name span count
-      const totalRows = JADWAL_DATA.length;
-
-      JADWAL_DATA.forEach((row, idx) => {
-        html += '<tr>';
-
-        // CLASS column (merged for teacher name on first row)
-        if (idx === 0) {
-          html += `<td rowspan="${totalRows}" class="teacher-col" style="writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: 800; color: #cc4125; background: #fff2cc !important; letter-spacing: 2px;">${esc(guruNama.toUpperCase().replace(/,.*$/, ''))}</td>`;
-        }
-
-        // TIME column
-        html += `<td class="time-col">${row.time}</td>`;
-
-        // PERIOD column
-        html += `<td class="period-col">${row.period}</td>`;
-
-        if (row.type === 'ceremony') {
-          if (row.period === 1) {
-            // "Make a Line (Pledge & Motivation)" spans mon-thu, Friday separate
-            html += `<td colspan="4" class="cell-ceremony">Make a Line (Pledge &amp; Motivation)</td>`;
-            html += `<td rowspan="3" class="cell-ceremony" style="font-size: 7.5px; line-height: 1.3;">ek (minggu ke-1),<br>Nyucikeun Diri (Dhuha, Al Kahfi, Asmaul Husna)<br>(minggu ke-2),<br>Pembinaan Akhlak<br>(minggu ke-3)</td>`;
-            html += `<td class="code-col">${codeNum}</td>`;
-          } else if (row.period === 2) {
-            html += `<td colspan="4" class="cell-ceremony">Classical and Pray of Dhuha</td>`;
-            html += `<td class="code-col">${codeNum}</td>`;
-          } else if (row.period === 3) {
-            // Character Building / Ceremony block spans Mon
-            html += `<td rowspan="1" class="cell-ceremony" style="font-size: 7.5px; line-height: 1.3;">Character Building<br>(minggu ke-2),<br>Literasi "Ajeg Nusantara"(minggu ke-3),<br>Student's Appreciation<br>(minggu ke-4)</td>`;
-            html += `<td colspan="3" class="cell-ceremony" style="font-size: 8px;">&nbsp;</td>`;
-            html += `<td class="code-col">${codeNum}</td>`;
-          }
-          codeNum++;
-        } else if (row.type === 'literasi') {
-          // Period 4: Literasi row
-          html += `<td class="cell-literasi" style="font-size: 8px;">&nbsp;</td>`;
-          html += `<td class="cell-literasi" style="font-size: 8px;">${row.tue}</td>`;
-          html += `<td class="cell-literasi" style="font-size: 8px;">${row.wed}</td>`;
-          html += `<td class="cell-literasi" style="font-size: 8px;">${row.thu}</td>`;
-          html += `<td class="cell-literasi" style="font-size: 8px;">&nbsp;</td>`;
-          html += `<td class="code-col">${codeNum}</td>`;
-          codeNum++;
-        } else if (row.type === 'break') {
-          html += `<td colspan="5" class="cell-break">${row.merged}</td>`;
-          html += `<td class="code-col">${codeNum}</td>`;
-          codeNum++;
-        } else if (row.type === 'closing') {
-          html += `<td colspan="5" class="cell-closing">${row.merged}</td>`;
-          html += `<td class="code-col">${codeNum}</td>`;
-          codeNum++;
-        } else {
-          // Normal class rows
-          const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
-          days.forEach(day => {
-            const cell = row[day];
-            if (!cell) {
-              html += '<td class="cell-class"></td>';
-            } else if (typeof cell === 'object') {
-              const textColor = cell.color || '#000';
-              html += `<td class="cell-class" style="background: ${cell.bg} !important; color: ${textColor};">${esc(cell.text)}</td>`;
-            } else {
-              html += `<td class="cell-class">${esc(cell)}</td>`;
-            }
-          });
-
-          // CODE column — highlight period 9 and 18
-          let codeStyle = '';
-          if (row.period === 9) {
-            codeStyle = ' class="code-col highlight-yellow"';
-          } else if (row.period === 18) {
-            // no highlight for 18 based on image, but keep code
-            codeStyle = ' class="code-col"';
-          } else {
-            codeStyle = ' class="code-col"';
-          }
-          html += `<td${codeStyle}>${codeNum}</td>`;
-          codeNum++;
-        }
-
-        // TEACHER'S NAME column (merged, first row only)
-        if (idx === 0) {
-          html += `<td rowspan="${totalRows}" style="writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; font-weight: 800; color: #e69138; background: #fff2cc !important; letter-spacing: 2px;">${esc(guruNama.toUpperCase().replace(/,.*$/, ''))}</td>`;
-        }
-
-        html += '</tr>';
+        });
       });
 
-      html += `
+      let rows = '';
+      JADWAL_DATA.forEach((row, idx) => {
+        rows += '<tr>';
+        rows += `<td style="text-align: center; font-weight: bold; width: 5%;">${idx + 1}</td>`;
+        rows += `<td style="text-align: center; font-weight: 600; width: 8%; white-space: nowrap;">${row.period}</td>`;
+        rows += `<td style="text-align: center; font-weight: 600; width: 12%; white-space: nowrap;">${row.time}</td>`;
+
+        days.forEach(day => {
+          const cell = row[day];
+          if (!cell) {
+            rows += '<td style="text-align: center;"></td>';
+          } else {
+            const lvl = getKelasLevel(cell);
+            let bgColor = '';
+            let textColor = 'var(--ink)';
+            if (lvl === 4) {
+              bgColor = 'background: var(--teal-light);';
+            } else if (lvl === 5) {
+              bgColor = 'background: var(--teal); color: var(--teal-text);';
+              textColor = 'var(--teal-text)';
+            } else if (lvl === 6) {
+              bgColor = 'background: var(--navy); color: #fff;';
+              textColor = '#fff';
+            }
+            rows += `<td style="text-align: center; font-weight: 700; ${bgColor}">${esc(cell)}</td>`;
+          }
+        });
+
+        rows += '</tr>';
+      });
+
+      return `
+        <table class="adm-tab">
+          <thead>
+            <tr>
+              <th style="width: 5%;">No</th>
+              <th style="width: 8%;">Jam Ke-</th>
+              <th style="width: 12%;">Waktu</th>
+              <th>Senin</th>
+              <th>Selasa</th>
+              <th>Rabu</th>
+              <th>Kamis</th>
+              <th>Jumat</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            <tr style="font-weight: 800; background: #eaf3e5 !important; color: #3b4a5c;">
+              <td colspan="3" style="text-align: right; padding-right: 15px; font-weight: bold;">Total JP Mengajar per Minggu</td>
+              <td colspan="5" style="text-align: center; font-weight: bold;">
+                Kelas IV: ${jpKelas4} JP &nbsp;&bull;&nbsp; Kelas V: ${jpKelas5} JP &nbsp;&bull;&nbsp; Kelas VI: ${jpKelas6} JP &nbsp;&bull;&nbsp; <strong>Total: ${jpKelas4 + jpKelas5 + jpKelas6} JP</strong>
+              </td>
+            </tr>
           </tbody>
         </table>
-        <div style="font-size: 10px; margin-top: 10px; color: var(--muted); line-height: 1.5;">
-          <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 6px;">
-            <span><span style="display: inline-block; width: 14px; height: 14px; background: #ff9900; border: 1px solid #ccc; vertical-align: middle; margin-right: 3px; border-radius: 2px;"></span> Kelas 4</span>
-            <span><span style="display: inline-block; width: 14px; height: 14px; background: #6aa84f; border: 1px solid #ccc; vertical-align: middle; margin-right: 3px; border-radius: 2px;"></span> Kelas 5 (Hijau Tua)</span>
-            <span><span style="display: inline-block; width: 14px; height: 14px; background: #b6d7a8; border: 1px solid #ccc; vertical-align: middle; margin-right: 3px; border-radius: 2px;"></span> Kelas 5 (Hijau Muda)</span>
-            <span><span style="display: inline-block; width: 14px; height: 14px; background: #c9daf8; border: 1px solid #ccc; vertical-align: middle; margin-right: 3px; border-radius: 2px;"></span> Kelas 6 (Biru)</span>
-            <span><span style="display: inline-block; width: 14px; height: 14px; background: #e06666; border: 1px solid #ccc; vertical-align: middle; margin-right: 3px; border-radius: 2px;"></span> Kelas 6 (Merah)</span>
+
+        <div style="font-size: 10.5px; margin-top: 12px; line-height: 1.6;">
+          <div style="font-weight: 700; color: var(--navy-dark); margin-bottom: 4px;">Keterangan Warna:</div>
+          <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="display: inline-block; width: 16px; height: 16px; background: var(--teal-light); border: 1px solid var(--teal-border-light); border-radius: 3px;"></span>
+              <span style="color: var(--muted); font-weight: 600;">Kelas IV</span>
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="display: inline-block; width: 16px; height: 16px; background: var(--teal); border: 1px solid var(--teal-dark); border-radius: 3px;"></span>
+              <span style="color: var(--muted); font-weight: 600;">Kelas V</span>
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <span style="display: inline-block; width: 16px; height: 16px; background: var(--navy); border: 1px solid var(--navy-dark); border-radius: 3px;"></span>
+              <span style="color: var(--muted); font-weight: 600;">Kelas VI</span>
+            </span>
           </div>
-          <div style="margin-top: 6px; font-style: italic;">
-            Catatan: 1 JP = 35 menit. Jadwal mengikuti Kalender Pendidikan SDS Plus 2 Al Muhajirin Purwakarta TA ${esc(tahun)}.
+          <div style="margin-top: 8px; font-style: italic; color: var(--muted);">
+            Catatan: 1 JP = 35 menit. Jadwal mengikuti Kalender Pendidikan ${esc(v('instansi') || 'SDS Plus 2 Al Muhajirin')} Tahun Pelajaran ${esc(tahun)}.
           </div>
         </div>
       `;
-
-      return html;
     }
 
     /* ---------- PAGE SIZE / PRINT ---------- */
