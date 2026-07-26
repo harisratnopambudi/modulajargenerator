@@ -3247,18 +3247,10 @@ KELAS 5</textarea>
       }
     });
 
-    /* ---------- AI GENERATOR (GEMINI & BLUEPACK) ---------- */
+    /* ---------- AI GENERATOR (GEMINI) ---------- */
     const modelsByProvider = {
       gemini: [
         { value: "gemini-3.5-flash", label: "Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)" }
-      ],
-      bluepack: [
-        { value: "bluepack-coding", label: "BluePack Coding Pro (Model Resmi Dokumentasi - Direkomendasikan)" },
-        { value: "claude-code", label: "Claude Code Pro (Paling Cerdas)" },
-        { value: "claude-3-7-sonnet", label: "Claude 3.7 Sonnet (Thinking Mode)" },
-        { value: "claude-3-5-sonnet", label: "Claude 3.5 Sonnet" },
-        { value: "claude-code-pro", label: "Claude Code Pro (Alias)" },
-        { value: "gpt-4o", label: "GPT-4o (BluePack Compatible)" }
       ]
     };
 
@@ -4132,89 +4124,7 @@ Aturan wajib:
       }
     }
 
-    async function callBluepack(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey) {
-      const url = 'https://bold-block-f2cd.harisratnopambudi.workers.dev/bluepack/v1/chat/completions';
-      const authHeader = `Bearer ${getEffectiveApiKey(apiKey)}`;
 
-      const body = {
-        model: model,
-        messages: [
-          { role: "system", content: AI_SYSTEM_INSTRUCTION },
-          { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }
-        ],
-        temperature: 0.3
-      };
-
-      const maxAttempts = 3;
-      const delays = [2000, 4000];
-
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        let res;
-        try {
-          const deviceId = getOrCreateDeviceId();
-          res = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": authHeader,
-              "X-Device-ID": deviceId
-            },
-            body: JSON.stringify(body)
-          });
-        } catch (networkErr) {
-          if (attempt < maxAttempts) {
-            if (onRetry) onRetry(attempt, maxAttempts, "Koneksi ke Bluepack bermasalah");
-            await sleep(delays[attempt - 1]);
-            continue;
-          }
-          throw new Error("Gagal terhubung ke API Bluepack. Periksa koneksi internet Anda.");
-        }
-
-        if (res.ok) {
-          const data = await res.json();
-          let rawText = "";
-          if (data.choices && data.choices[0]?.message?.content) {
-            rawText = data.choices[0].message.content;
-          } else if (Array.isArray(data.content)) {
-            const textParts = data.content
-              .filter(item => item.type === "text" || item.text)
-              .map(item => item.text);
-            rawText = textParts.join("");
-          }
-
-          if (!rawText) throw new Error("Respons AI kosong dari Bluepack. Coba klik generate lagi.");
-
-          let cleaned = rawText.trim();
-          if (cleaned.startsWith('```')) {
-            cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
-          }
-          try {
-            return JSON.parse(cleaned);
-          } catch (parseErr) {
-            console.error("JSON Parse Error:", parseErr, rawText);
-            throw new Error("Format respons AI dari Bluepack bukan JSON valid. Coba klik generate lagi.");
-          }
-        }
-
-        let detail = "";
-        try { const errJson = await res.json(); detail = errJson?.error?.message || errJson?.message || ""; } catch (e) { }
-
-        const isRetryable = (res.status === 503 || res.status === 429 || res.status >= 500);
-        if (isRetryable && attempt < maxAttempts) {
-          const label = `Server Bluepack bermasalah (${res.status})`;
-          if (onRetry) onRetry(attempt, maxAttempts, label);
-          await sleep(delays[attempt - 1]);
-          continue;
-        }
-
-        if (res.status === 401 || res.status === 403) {
-          throw new Error("Akses ditolak atau API Key Bluepack tidak valid. " + detail);
-        }
-        if (res.status === 400) throw new Error("Format permintaan salah. " + detail);
-        if (res.status === 404) throw new Error(`Model '${model}' tidak ditemukan di Bluepack API. ${detail}`);
-        throw new Error(`Gagal memanggil AI Bluepack (HTTP ${res.status}). ${detail}`);
-      }
-    }
 
     function applyAIResult(r) {
       const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
