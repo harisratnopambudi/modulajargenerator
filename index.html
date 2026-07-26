@@ -1965,11 +1965,10 @@
             model tertentu (mis. PBL, PjBL, Discovery Learning) — AI akan menyusun tahapan sesuai sintaks resmi model
             tersebut, dan Praktik Pedagogis (Model, Metode, Pendekatan) akan terisi otomatis.
           </div>
-          <div class="field" id="providerField">
+          <div class="field" id="providerField" style="display: none;">
             <label>Provider AI</label>
             <select id="aiProvider" onchange="onProviderChange()">
-              <option value="gemini">Google Gemini (Default)</option>
-              <option value="bluepack">Claude Code Pro (Bluepack AI)</option>
+              <option value="gemini">Google Gemini</option>
             </select>
           </div>
           <div class="field" id="apiKeyField" style="display: none;">
@@ -1988,10 +1987,10 @@
               <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
             </div>
           </div>
-          <div class="field" id="modelField">
+          <div class="field" id="modelField" style="display: none;">
             <label>Model AI</label>
             <select id="aiModel">
-              <option value="gemini-3.5-flash">Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)</option>
+              <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
             </select>
           </div>
           <div class="field">
