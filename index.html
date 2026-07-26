@@ -1965,10 +1965,11 @@
             model tertentu (mis. PBL, PjBL, Discovery Learning) — AI akan menyusun tahapan sesuai sintaks resmi model
             tersebut, dan Praktik Pedagogis (Model, Metode, Pendekatan) akan terisi otomatis.
           </div>
-          <div class="field" style="display: none;">
+          <div class="field" id="providerField">
             <label>Provider AI</label>
             <select id="aiProvider" onchange="onProviderChange()">
-              <option value="gemini">Google Gemini</option>
+              <option value="gemini">Google Gemini (Default)</option>
+              <option value="bluepack">Claude Code Pro (Bluepack AI)</option>
             </select>
           </div>
           <div class="field" id="apiKeyField" style="display: none;">
@@ -1987,11 +1988,10 @@
               <button type="button" onclick="toggleKeyVisibility()" id="toggleKeyBtn">Lihat</button>
             </div>
           </div>
-          <div class="field" style="display: none;">
-            <label>Model</label>
+          <div class="field" id="modelField">
+            <label>Model AI</label>
             <select id="aiModel">
-              <option value="gemini-3.5-flash">Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)
-              </option>
+              <option value="gemini-3.5-flash">Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)</option>
             </select>
           </div>
           <div class="field">
@@ -3247,10 +3247,17 @@ KELAS 5</textarea>
       }
     });
 
-    /* ---------- AI GENERATOR (GEMINI) ---------- */
+    /* ---------- AI GENERATOR (GEMINI & BLUEPACK) ---------- */
     const modelsByProvider = {
       gemini: [
         { value: "gemini-3.5-flash", label: "Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)" }
+      ],
+      bluepack: [
+        { value: "claude-code", label: "Claude Code Pro (Paling Cerdas - Direkomendasikan)" },
+        { value: "claude-3-7-sonnet", label: "Claude 3.7 Sonnet (Thinking Mode)" },
+        { value: "claude-3-5-sonnet", label: "Claude 3.5 Sonnet" },
+        { value: "claude-code-pro", label: "Claude Code Pro (Alias)" },
+        { value: "gpt-4o", label: "GPT-4o (Bluepack Compatible)" }
       ]
     };
 
@@ -3283,6 +3290,21 @@ KELAS 5</textarea>
         try {
           const savedCode = localStorage.getItem('hdl_access_code') || '';
           inputEl.value = savedCode;
+        } catch (e) { }
+      } else if (provider === 'bluepack') {
+        labelEl.textContent = 'API Key Bluepack (Claude Code Pro)';
+        inputEl.placeholder = 'bluepack_...';
+        if (linkEl) {
+          linkEl.href = 'https://ai.bluepack.my.id';
+          linkEl.target = '_blank';
+          linkEl.textContent = 'Dashboard Bluepack';
+        }
+        if (fieldEl) {
+          fieldEl.style.display = 'block';
+        }
+        try {
+          const savedKey = localStorage.getItem('hdl_bluepack_key') || 'bluepack_1ee2284eef3c65d72a70c1d02c4bde7e849f7a37937bc1ba';
+          inputEl.value = savedKey;
         } catch (e) { }
       }
 
@@ -3633,6 +3655,19 @@ KELAS 5</textarea>
                 'Authorization': `Bearer ${verifyKey}`,
                 'X-Device-ID': deviceId
               }
+            });
+            isValid = res.ok;
+          } else if (provider === 'bluepack') {
+            const res = await fetch(`https://ai.bluepack.my.id/v1/chat/completions`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+              },
+              body: JSON.stringify({
+                model: 'claude-code',
+                messages: [{ role: 'user', content: 'ping' }]
+              })
             });
             isValid = res.ok;
           }
@@ -4110,6 +4145,86 @@ Aturan wajib:
       }
     }
 
+    async function callBluepack(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey) {
+      const url = 'https://ai.bluepack.my.id/v1/chat/completions';
+      const body = {
+        model: model,
+        messages: [
+          { role: "system", content: AI_SYSTEM_INSTRUCTION },
+          { role: "user", content: buildAIPrompt(cp, tp, kelas, keyword, metodeKey) }
+        ],
+        temperature: 0.3
+      };
+
+      const maxAttempts = 3;
+      const delays = [2000, 4000];
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        let res;
+        try {
+          res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${apiKey.trim()}`
+            },
+            body: JSON.stringify(body)
+          });
+        } catch (networkErr) {
+          if (attempt < maxAttempts) {
+            if (onRetry) onRetry(attempt, maxAttempts, "Koneksi ke Bluepack bermasalah");
+            await sleep(delays[attempt - 1]);
+            continue;
+          }
+          throw new Error("Gagal terhubung ke API Bluepack. Periksa koneksi internet Anda.");
+        }
+
+        if (res.ok) {
+          const data = await res.json();
+          let rawText = "";
+          if (data.choices && data.choices[0]?.message?.content) {
+            rawText = data.choices[0].message.content;
+          } else if (Array.isArray(data.content)) {
+            const textParts = data.content
+              .filter(item => item.type === "text" || item.text)
+              .map(item => item.text);
+            rawText = textParts.join("");
+          }
+
+          if (!rawText) throw new Error("Respons AI kosong dari Bluepack. Coba klik generate lagi.");
+
+          let cleaned = rawText.trim();
+          if (cleaned.startsWith('```')) {
+            cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+          }
+          try {
+            return JSON.parse(cleaned);
+          } catch (parseErr) {
+            console.error("JSON Parse Error:", parseErr, rawText);
+            throw new Error("Format respons AI dari Bluepack bukan JSON valid. Coba klik generate lagi.");
+          }
+        }
+
+        let detail = "";
+        try { const errJson = await res.json(); detail = errJson?.error?.message || errJson?.message || ""; } catch (e) { }
+
+        const isRetryable = (res.status === 503 || res.status === 429 || res.status >= 500);
+        if (isRetryable && attempt < maxAttempts) {
+          const label = `Server Bluepack bermasalah (${res.status})`;
+          if (onRetry) onRetry(attempt, maxAttempts, label);
+          await sleep(delays[attempt - 1]);
+          continue;
+        }
+
+        if (res.status === 401 || res.status === 403) {
+          throw new Error("API Key Bluepack tidak valid atau tidak memiliki akses. " + detail);
+        }
+        if (res.status === 400) throw new Error("Format permintaan salah. " + detail);
+        if (res.status === 404) throw new Error("Model tidak ditemukan di Bluepack API. " + detail);
+        throw new Error(`Gagal memanggil AI Bluepack (HTTP ${res.status}). ${detail}`);
+      }
+    }
+
     function applyAIResult(r) {
       const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
 
@@ -4169,7 +4284,12 @@ Aturan wajib:
           apiKey = savedCode;
           document.getElementById('geminiApiKey').value = savedCode;
         }
+      } else if (provider === 'bluepack') {
+        if (apiKey) {
+          try { localStorage.setItem('hdl_bluepack_key', apiKey); } catch(e){}
+        }
       }
+
       const model = document.getElementById('aiModel').value;
       const cp = document.getElementById('aiCP').value.trim();
       const tp = document.getElementById('aiTP').value.trim();
@@ -4179,7 +4299,7 @@ Aturan wajib:
       const btn = document.getElementById('btnGenerateAI');
       const label = document.getElementById('btnAILabel');
 
-      const providerLabel = provider === 'gemini' ? 'Gemini' : provider === 'openai' ? 'OpenAI' : 'Groq';
+      const providerLabel = provider === 'gemini' ? 'Gemini' : provider === 'bluepack' ? 'Claude Code Pro (Bluepack)' : provider;
 
       // Reset highlight merah dari validasi sebelumnya
       ['geminiApiKey', 'aiCP', 'aiTP', 'aiKelas'].forEach(id => {
@@ -4211,7 +4331,7 @@ Aturan wajib:
 
       btn.disabled = true; btn.classList.add('loading');
       label.textContent = "Sedang menyusun modul ajar...";
-      aiStatus("Proses: AI sedang menyusun seluruh komponen modul ajar, mohon tunggu (biasanya 10–30 detik)...", "info");
+      aiStatus(`Proses: ${providerLabel} sedang menyusun seluruh komponen modul ajar, mohon tunggu (biasanya 10–30 detik)...`, "info");
       showGenOverlay();
 
       try {
@@ -4219,7 +4339,11 @@ Aturan wajib:
         const onRetry = (attempt, maxAttempts, reason) => {
           aiStatus(`Proses: ${reason}, mencoba ulang otomatis (percobaan ${attempt + 1} dari ${maxAttempts})...`, "info");
         };
-        result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
+        if (provider === 'bluepack') {
+          result = await callBluepack(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
+        } else {
+          result = await callGemini(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey);
+        }
 
         hideGenOverlay();
         label.textContent = "Menuliskan hasil...";
