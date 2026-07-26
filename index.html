@@ -3253,11 +3253,12 @@ KELAS 5</textarea>
         { value: "gemini-3.5-flash", label: "Gemini 3.5 Flash (Sangat Hemat + Paling Cerdas - Direkomendasikan)" }
       ],
       bluepack: [
-        { value: "claude-code", label: "Claude Code Pro (Paling Cerdas - Direkomendasikan)" },
+        { value: "bluepack-coding", label: "BluePack Coding Pro (Model Resmi Dokumentasi - Direkomendasikan)" },
+        { value: "claude-code", label: "Claude Code Pro (Paling Cerdas)" },
         { value: "claude-3-7-sonnet", label: "Claude 3.7 Sonnet (Thinking Mode)" },
         { value: "claude-3-5-sonnet", label: "Claude 3.5 Sonnet" },
         { value: "claude-code-pro", label: "Claude Code Pro (Alias)" },
-        { value: "gpt-4o", label: "GPT-4o (Bluepack Compatible)" }
+        { value: "gpt-4o", label: "GPT-4o (BluePack Compatible)" }
       ]
     };
 
@@ -3277,7 +3278,7 @@ KELAS 5</textarea>
       const fieldEl = document.getElementById('apiKeyField');
       if (!labelEl || !inputEl || !modelEl) return;
 
-      if (provider === 'gemini') {
+      if (provider === 'gemini' || provider === 'bluepack') {
         labelEl.textContent = 'Kode Akses Premium';
         inputEl.placeholder = 'Masukkan kode akses Anda...';
         if (linkEl) {
@@ -3290,21 +3291,6 @@ KELAS 5</textarea>
         try {
           const savedCode = localStorage.getItem('hdl_access_code') || '';
           inputEl.value = savedCode;
-        } catch (e) { }
-      } else if (provider === 'bluepack') {
-        labelEl.textContent = 'API Key Bluepack (Claude Code Pro)';
-        inputEl.placeholder = 'bluepack_...';
-        if (linkEl) {
-          linkEl.href = 'https://ai.bluepack.my.id';
-          linkEl.target = '_blank';
-          linkEl.textContent = 'Dashboard Bluepack';
-        }
-        if (fieldEl) {
-          fieldEl.style.display = 'block';
-        }
-        try {
-          const savedKey = localStorage.getItem('hdl_bluepack_key') || 'bluepack_1ee2284eef3c65d72a70c1d02c4bde7e849f7a37937bc1ba';
-          inputEl.value = savedKey;
         } catch (e) { }
       }
 
@@ -3658,12 +3644,18 @@ KELAS 5</textarea>
             });
             isValid = res.ok;
           } else if (provider === 'bluepack') {
-            const res = await fetch(`https://ai.bluepack.my.id/v1/chat/completions`, {
+            const verifyKey = getEffectiveApiKey(apiKey);
+            const deviceId = getOrCreateDeviceId();
+            const url = apiKey.startsWith('bluepack_')
+              ? `https://ai.bluepack.my.id/v1/chat/completions`
+              : `https://bold-block-f2cd.harisratnopambudi.workers.dev/bluepack/v1/chat/completions`;
+            const headers = apiKey.startsWith('bluepack_')
+              ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` }
+              : { 'Content-Type': 'application/json', 'Authorization': `Bearer ${verifyKey}`, 'X-Device-ID': deviceId };
+            
+            const res = await fetch(url, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-              },
+              headers: headers,
               body: JSON.stringify({
                 model: 'claude-code',
                 messages: [{ role: 'user', content: 'ping' }]
@@ -4146,7 +4138,14 @@ Aturan wajib:
     }
 
     async function callBluepack(apiKey, model, cp, tp, kelas, keyword, onRetry, metodeKey) {
-      const url = 'https://ai.bluepack.my.id/v1/chat/completions';
+      let url = 'https://bold-block-f2cd.harisratnopambudi.workers.dev/bluepack/v1/chat/completions';
+      let authHeader = `Bearer ${getEffectiveApiKey(apiKey)}`;
+      
+      if (apiKey.startsWith('bluepack_')) {
+        url = 'https://ai.bluepack.my.id/v1/chat/completions';
+        authHeader = `Bearer ${apiKey.trim()}`;
+      }
+
       const body = {
         model: model,
         messages: [
@@ -4162,12 +4161,17 @@ Aturan wajib:
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         let res;
         try {
+          const deviceId = getOrCreateDeviceId();
+          const headers = {
+            "Content-Type": "application/json",
+            "Authorization": authHeader
+          };
+          if (!apiKey.startsWith('bluepack_')) {
+            headers["X-Device-ID"] = deviceId;
+          }
           res = await fetch(url, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${apiKey.trim()}`
-            },
+            headers: headers,
             body: JSON.stringify(body)
           });
         } catch (networkErr) {
@@ -4266,9 +4270,9 @@ Aturan wajib:
       const provider = document.getElementById('aiProvider').value;
       let apiKey = document.getElementById('geminiApiKey').value.trim();
 
-      if (provider === 'gemini') {
+      if (provider === 'gemini' || provider === 'bluepack') {
         const savedCode = localStorage.getItem('hdl_access_code') || '';
-        if (!savedCode) {
+        if (!savedCode && !apiKey.startsWith('bluepack_')) {
           // Scroll ke atas agar login badge terlihat dan highlight
           const loginBadge = document.getElementById('loginBadge');
           if (loginBadge) {
@@ -4280,13 +4284,9 @@ Aturan wajib:
           }
           initGoogleSignIn();
           return;
-        } else {
+        } else if (savedCode && !apiKey) {
           apiKey = savedCode;
           document.getElementById('geminiApiKey').value = savedCode;
-        }
-      } else if (provider === 'bluepack') {
-        if (apiKey) {
-          try { localStorage.setItem('hdl_bluepack_key', apiKey); } catch(e){}
         }
       }
 
