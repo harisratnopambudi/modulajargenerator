@@ -1900,7 +1900,7 @@
     <!-- =============== EDITOR =============== -->
     <div class="editor no-print">
       <!-- ===== LOGIN BADGE (inline, selalu tampil jika belum login) ===== -->
-      <div id="loginBadge" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px 12px; background: #fff8e1; border: 1px solid #ffe0b2; border-radius: 6px;">
+      <div id="loginBadge" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px 12px; background: #fff8e1; border: 1px solid #ffe0b2; border-radius: 6px; flex-wrap: wrap; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -1911,10 +1911,9 @@
             <div style="font-size: 10px; color: #bf360c; line-height: 1.3; margin-top: 1px;">Login Google untuk akses AI</div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <div id="popupAccessError" style="color: #c53030; font-size: 10px; display: none; font-weight: 500; text-align: right; max-width: 160px; line-height: 1.3;">Akses ditolak.</div>
-          <div id="googleSignInButton" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden;"></div>
-          <button onclick="triggerGoogleLogin()" style="background: #fff; border: 1px solid #e0e0e0; color: #e65100; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Login</button>
+          <div id="googleSignInButton"></div>
         </div>
       </div>
 
@@ -3454,37 +3453,16 @@ KELAS 5</textarea>
           client_id: GOOGLE_CLIENT_ID,
           callback: handleGoogleLogin
         });
-        google.accounts.id.renderButton(
-          document.getElementById("googleSignInButton"),
-          { theme: "outline", size: "small", width: "120" }
-        );
+        const btnContainer = document.getElementById("googleSignInButton");
+        if (btnContainer) {
+          btnContainer.innerHTML = '';
+          google.accounts.id.renderButton(
+            btnContainer,
+            { theme: "outline", size: "medium", shape: "rectangular" }
+          );
+        }
       } catch (err) {
         console.error("Gagal memuat tombol Google Sign-In:", err);
-      }
-    }
-
-    function triggerGoogleLogin() {
-      if (typeof google === 'undefined' || !google.accounts) {
-        initGoogleSignIn();
-        return;
-      }
-      try {
-        // Coba prompt One Tap terlebih dahulu
-        google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // Fallback: klik tombol Google yang tersembunyi
-            const hiddenBtn = document.querySelector('#googleSignInButton div[role="button"]');
-            if (hiddenBtn) {
-              hiddenBtn.click();
-            }
-          }
-        });
-      } catch (e) {
-        // Fallback: klik tombol Google yang tersembunyi
-        const hiddenBtn = document.querySelector('#googleSignInButton div[role="button"]');
-        if (hiddenBtn) {
-          hiddenBtn.click();
-        }
       }
     }
 
