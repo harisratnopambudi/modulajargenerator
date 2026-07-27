@@ -273,10 +273,119 @@
       padding: 15mm;
     }
 
+    /* ---- Paper Patterns ---- */
+    .sheet.pattern-y-so-serious {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/y-so-serious-white.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-double-bubble {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/double-bubble-outline.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-papyrus {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/papyrus.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-leaves {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/leaves.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-hotel-wallpaper {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/hotel-wallpaper.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-full-bloom {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/full-bloom.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-grid {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/gridme.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-lined {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/linedpaper.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-waves {
+      background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/white-waves.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-ricepaper {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/ricepaper.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-linen {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/linen.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-graphy {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/graphy.png') !important;
+      background-repeat: repeat !important;
+    }
+
+    .sheet.pattern-subtle_dots {
+      background-image: url('https://raw.githubusercontent.com/atlemo/SubtlePatterns/master/subtle_dots.png') !important;
+      background-repeat: repeat !important;
+    }
+
     .sheet.f4.landscape { width: 330mm; min-height: 215mm; }
     .sheet.f4.portrait { width: 215mm; min-height: 330mm; }
     .sheet.a4.landscape { width: 297mm; min-height: 210mm; }
     .sheet.a4.portrait { width: 210mm; min-height: 297mm; }
+
+    /* ---- High-Impact Real Stabilo Highlighter Marker Pen Effect ---- */
+    .stabilo-mark {
+      background: #fef08a !important;
+      background: linear-gradient(104deg, #fef08a 0%, #fde047 80%, #fef08a 100%) !important;
+      box-shadow: 0 3px 10px rgba(234, 179, 8, 0.45), inset 0 -2px 0 rgba(202, 138, 4, 0.3) !important;
+      border-radius: 4px 18px 5px 15px !important;
+      padding: 5px 12px !important;
+      color: #0f172a !important;
+      font-weight: 800 !important;
+      font-size: 11px !important;
+      display: inline-block !important;
+      transform: rotate(-1deg);
+      letter-spacing: 0.3px;
+      border: 1px solid #facc15 !important;
+    }
+
+    tr.active-week-row {
+      background-color: rgba(254, 240, 138, 0.35) !important;
+      border-left: 6px solid #eab308 !important;
+    }
+
+    tr.active-week-row td {
+      background-color: rgba(254, 240, 138, 0.28) !important;
+    }
+
+    @media print {
+      .stabilo-mark {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        color: inherit !important;
+        border: none !important;
+        transform: none !important;
+      }
+      tr.active-week-row {
+        background-color: transparent !important;
+        border-left: none !important;
+      }
+      tr.active-week-row td {
+        background-color: transparent !important;
+      }
+    }
 
     /* Paper Patterns */
     .pattern-linen { background-image: radial-gradient(#d5e1d2 0.75px, transparent 0.75px); background-size: 12px 12px; }
@@ -445,6 +554,39 @@
               <option value="2">Semester 2 / Genap (Pertemuan 17 - 31)</option>
             </select>
           </div>
+
+          <div class="field" style="background: #fefce8; padding: 10px; border-radius: 8px; border: 1px solid #fef08a; margin-top: 12px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; color: #854d0e; cursor: pointer; text-transform: none;">
+              <input type="checkbox" id="chkHighlightActive" checked onchange="renderPreview()" style="width: 16px; height: 16px; accent-color: #ca8a04; cursor: pointer;">
+              🖍️ Sorot Baris KBM Disertai Spidol Stabilo (Yellow Pen)
+            </label>
+            <div style="margin-top: 8px;">
+              <label style="font-size: 10.5px; font-weight: 700; color: #a16207;">Target Pertemuan yang Disorot Stabilo:</label>
+              <select id="highlightMeetingTarget" onchange="renderPreview()" style="width: 100%; margin-top: 4px; font-size: 11.5px; font-weight: 600; padding: 5px 8px; border-radius: 6px; border: 1px solid #fde047; background: #ffffff; color: #713f12;">
+                <option value="auto" selected>⚡ Otomatis (Sesuai Kaldik Realtime Tanggal Hari Ini)</option>
+                <option value="1">Pertemuan 1 (Juli — Minggu 3)</option>
+                <option value="2">Pertemuan 2 (Juli — Minggu 5)</option>
+                <option value="3">Pertemuan 3 (Agustus — Minggu 1)</option>
+                <option value="4">Pertemuan 4 (Agustus — Minggu 2)</option>
+                <option value="5">Pertemuan 5 (Agustus — Minggu 3)</option>
+                <option value="6">Pertemuan 6 (Agustus — Minggu 4)</option>
+                <option value="7">Pertemuan 7 (September — Minggu 1)</option>
+                <option value="8">Pertemuan 8 (September — Minggu 2)</option>
+                <option value="9">Pertemuan 9 (September — Minggu 4)</option>
+                <option value="10">Pertemuan 10 (Oktober — Minggu 1)</option>
+                <option value="11">Pertemuan 11 (Oktober — Minggu 2)</option>
+                <option value="12">Pertemuan 12 (Oktober — Minggu 4)</option>
+                <option value="13">Pertemuan 13 (November — Minggu 1)</option>
+                <option value="14">Pertemuan 14 (November — Minggu 2)</option>
+                <option value="15">Pertemuan 15 (November — Minggu 3)</option>
+                <option value="16">Pertemuan 16 (Desember — Minggu 2)</option>
+                <option value="17">Pertemuan 17 (Januari — Minggu 2)</option>
+                <option value="18">Pertemuan 18 (Januari — Minggu 3)</option>
+                <option value="19">Pertemuan 19 (Januari — Minggu 4)</option>
+                <option value="20">Pertemuan 20 (Februari — Minggu 1)</option>
+              </select>
+            </div>
+          </div>
         </div>
       </details>
 
@@ -507,17 +649,64 @@
     <!-- =============== PREVIEW =============== -->
     <div class="preview-wrap">
       <div class="toolbar no-print">
-        <div class="grp">Kertas:
+        <div class="grp">Ukuran Kertas:
           <select id="paperSize" onchange="updatePageStyle()">
-            <option value="f4" selected>F4 / Folio</option>
             <option value="a4">A4</option>
+            <option value="f4" selected>F4 / Folio</option>
           </select>
         </div>
         <div class="grp">Orientasi:
           <select id="orientation" onchange="updatePageStyle()">
-            <option value="landscape" selected>Landscape</option>
             <option value="portrait">Portrait</option>
+            <option value="landscape" selected>Landscape</option>
           </select>
+        </div>
+        <div class="grp">Pattern Kertas:
+          <select id="paperPattern" onchange="onPatternChange()">
+            <option value="none">Polos (Putih)</option>
+            <optgroup label="Tekstur Kertas &amp; Serat">
+              <option value="y-so-serious">Y-So-Serious</option>
+              <option value="ricepaper">Rice Paper (Kertas Beras)</option>
+              <option value="linen" selected>White Linen (Serat Linen)</option>
+              <option value="papyrus">Papyrus (Serat Papirus)</option>
+              <option value="lined">Garis Buku (Lined)</option>
+            </optgroup>
+            <optgroup label="Geometris &amp; Struktur">
+              <option value="grid">Grid Kotak (Matematika)</option>
+              <option value="graphy">Graphy (Kertas Grafik)</option>
+              <option value="subtle_dots">Subtle Dots (Titik Halus)</option>
+              <option value="waves">Gelombang Halus</option>
+              <option value="double-bubble">Double Bubble</option>
+            </optgroup>
+            <optgroup label="Dekoratif &amp; Flora">
+              <option value="leaves">Leaves (Daun)</option>
+              <option value="hotel-wallpaper">Hotel Wallpaper (Klasik)</option>
+              <option value="full-bloom">Full Bloom (Bunga Mekar)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="grp">Tema Warna:
+          <select id="paperTheme" onchange="applyPresetTheme(this.value)">
+            <option value="original" selected>Hijau (Original)</option>
+            <option value="mint">Pastel Mint (Hijau)</option>
+            <option value="sage">Pastel Sage (Matcha)</option>
+            <option value="sky">Pastel Sky (Biru)</option>
+            <option value="lavender">Pastel Lavender (Ungu-Biru)</option>
+            <option value="lilac">Pastel Lilac (Ungu)</option>
+            <option value="rose">Pastel Rose (Pink)</option>
+            <option value="sakura">Pastel Sakura (Pink Cerah)</option>
+            <option value="coral">Pastel Coral (Peach)</option>
+            <option value="cream">Pastel Cream (Krim)</option>
+            <option value="butter">Pastel Butter (Kuning)</option>
+            <option value="ocean">Pastel Ocean (Teal)</option>
+            <option value="steel">Pastel Steel (Abu-abu)</option>
+            <option value="custom">Kustom (Slider)</option>
+          </select>
+        </div>
+        <div class="grp" id="sliderGroup" style="display: none; align-items: center; gap: 6px;">
+          Hue:
+          <input type="range" id="themeHue" min="0" max="360" value="102" oninput="applyHueTheme(this.value)" style="width: 100px; vertical-align: middle; accent-color: var(--teal);">
+          <span id="hueVal">102°</span>
         </div>
         <div class="grp">Zoom:
           <select id="zoom" onchange="applyZoom()">
@@ -776,8 +965,15 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
       let rowsHTML = "";
       let count = 0;
 
-      const todayStr = new Date().toISOString().split('T')[0];
-      const activeMeetingNum = (typeof window.getMeetingNumberFromDate === 'function') ? window.getMeetingNumberFromDate(todayStr) : 2;
+      const targetMeetingVal = document.getElementById('highlightMeetingTarget') ? document.getElementById('highlightMeetingTarget').value : 'auto';
+      let activeMeetingNum = 2;
+      if (targetMeetingVal === 'auto') {
+        const todayStr = new Date().toISOString().split('T')[0];
+        activeMeetingNum = (typeof window.getMeetingNumberFromDate === 'function') ? window.getMeetingNumberFromDate(todayStr) : 2;
+      } else {
+        activeMeetingNum = parseInt(targetMeetingVal) || 2;
+      }
+
       const isHighlightEnabled = document.getElementById('chkHighlightActive') ? document.getElementById('chkHighlightActive').checked : true;
 
       data.forEach((item, index) => {
@@ -794,17 +990,17 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
 
         const isCurrentRow = (item.p === activeMeetingNum);
         let rowStyleAttr = "";
-        let badgeHTML = "";
+        let wktHTML = esc(wkt);
 
         if (isHighlightEnabled && isCurrentRow) {
-          rowStyleAttr = 'class="active-week-row" style="background: #e8f5e9 !important; font-weight: 700; border-left: 5px solid #2e7d32;"';
-          badgeHTML = '<span class="active-badge-pill no-print-badge" style="display:inline-block; background:#2e7d32; color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:3px; margin-left:4px;">📌 MINGGU INI</span>';
+          rowStyleAttr = 'class="active-week-row"';
+          wktHTML = `<span class="stabilo-mark" title="Pertemuan KBM Disorot Spidol Stabilo">🖍️ ${esc(wkt)}</span>`;
         }
 
         rowsHTML += `
           <tr ${rowStyleAttr}>
             <td style="text-align: center; font-weight: bold; width: 4%;">${item.p}</td>
-            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c;">${esc(wkt)} ${badgeHTML}</td>
+            <td style="text-align: center; width: 11%; font-weight: 700;">${wktHTML}</td>
             <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
             <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
             <td style="width: 20%;">${esc(item.tp)}</td>
@@ -883,18 +1079,133 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
     function updatePageStyle() {
       const size = document.getElementById('paperSize').value;
       const orient = document.getElementById('orientation').value;
+      const pattern = document.getElementById('paperPattern') ? document.getElementById('paperPattern').value : 'none';
       const page = document.getElementById('page');
       if (!page) return;
 
-      page.className = "sheet " + size + " " + orient + " pattern-linen";
+      let patternClass = "";
+      if (pattern !== 'none') {
+        patternClass = " pattern-" + pattern;
+      }
+      page.className = "sheet " + size + " " + orient + patternClass;
+
       const [w, h] = sizes[size][orient];
       page.style.padding = orient === 'landscape' ? '8mm 10mm' : '15mm';
 
       document.getElementById('pageSizeStyle').innerHTML = `
         @page { size: ${w}mm ${h}mm; margin: ${orient === 'landscape' ? '8mm 10mm' : '15mm'}; }
+        @media print {
+          .no-print, .no-print-badge { display: none !important; }
+          .active-week-row { background: transparent !important; border-left: none !important; }
+        }
       `;
       applyZoom();
       renderPreview();
+    }
+
+    function onPatternChange() {
+      const pattern = document.getElementById('paperPattern').value;
+      try {
+        localStorage.setItem('hdl_paper_pattern', pattern);
+      } catch (e) {}
+      updatePageStyle();
+    }
+
+    /* ---------- COLOR THEME PRESETS ---------- */
+    const themes = {
+      original: { primary: '#6aa84f', dark: '#588a41', light: '#eaf3e5', borderLight: '#cfe6c2', bgLight: '#f6faf4', text: '#ffffff', navy: '#4a5b70', navyDark: '#3b4a5c', hue: 102 },
+      mint: { primary: '#a8e6cf', dark: '#5eb393', light: '#f2fcf9', borderLight: '#ccefed', bgLight: '#fafdfd', text: '#1e523f', navy: '#2c5e4b', navyDark: '#1c3e30', hue: 159 },
+      sage: { primary: '#87a987', dark: '#5b7d5b', light: '#f4f7f4', borderLight: '#d2dfd2', bgLight: '#fbfcfb', text: '#2d4c2d', navy: '#3a593a', navyDark: '#263b26', hue: 120 },
+      sky: { primary: '#9dd3e8', dark: '#569fbd', light: '#f2f9fc', borderLight: '#cce6f2', bgLight: '#fafcfd', text: '#1b334a', navy: '#2c3e50', navyDark: '#1a252f', hue: 210 },
+      lavender: { primary: '#b3c5ff', dark: '#4860b3', light: '#f2f5ff', borderLight: '#d9e2ff', bgLight: '#fcfdff', text: '#1a2b66', navy: '#2b3b73', navyDark: '#1a2652', hue: 227 },
+      lilac: { primary: '#d6c1e9', dark: '#73568f', light: '#faf6fc', borderLight: '#ebdffd', bgLight: '#fdfbfd', text: '#3f2952', navy: '#4a3b5c', navyDark: '#342942', hue: 270 },
+      rose: { primary: '#ebb7b7', dark: '#965b5b', light: '#fdf6f6', borderLight: '#f5dbdb', bgLight: '#fffdfd', text: '#5c2d2d', navy: '#6e3b3b', navyDark: '#4f2a2a', hue: 350 },
+      sakura: { primary: '#ffc2d1', dark: '#ab4860', light: '#fff5f7', borderLight: '#ffe0e6', bgLight: '#fffcfd', text: '#661a2b', navy: '#732033', navyDark: '#521221', hue: 345 },
+      coral: { primary: '#f7b7a3', dark: '#a85d43', light: '#fef6f3', borderLight: '#fcdcd1', bgLight: '#fffdfd', text: '#602e1c', navy: '#703926', navyDark: '#4c2417', hue: 14 },
+      cream: { primary: '#ebd2b0', dark: '#8c6f46', light: '#fcf7f0', borderLight: '#f3e4d3', bgLight: '#fdfdfb', text: '#4a3820', navy: '#5a4a3a', navyDark: '#44372b', hue: 34 },
+      butter: { primary: '#fae8a4', dark: '#8f7a2a', light: '#fdfcf5', borderLight: '#f7f1d3', bgLight: '#fffefd', text: '#4a3e10', navy: '#5a4c14', navyDark: '#3d330c', hue: 48 },
+      ocean: { primary: '#aedcd8', dark: '#528c87', light: '#f0f8f7', borderLight: '#cceae7', bgLight: '#fafdfd', text: '#1f4845', navy: '#214e4b', navyDark: '#153331', hue: 175 },
+      steel: { primary: '#b8c5cd', dark: '#5a6f7d', light: '#f3f6f8', borderLight: '#dae3e8', bgLight: '#fafbfb', text: '#233441', navy: '#344855', navyDark: '#23333d', hue: 203 }
+    };
+
+    function applyPresetTheme(themeKey) {
+      const sliderGrp = document.getElementById('sliderGroup');
+      if (themeKey === 'custom') {
+        if (sliderGrp) sliderGrp.style.display = 'flex';
+        const sliderEl = document.getElementById('themeHue');
+        const currentHue = sliderEl ? sliderEl.value : 102;
+        applyHueTheme(currentHue);
+        return;
+      }
+      if (sliderGrp) sliderGrp.style.display = 'none';
+
+      const t = themes[themeKey] || themes.original;
+      const page = document.getElementById('page');
+      if (page) {
+        page.style.setProperty('--teal', t.primary);
+        page.style.setProperty('--teal-dark', t.dark);
+        page.style.setProperty('--teal-light', t.light);
+        page.style.setProperty('--teal-border-light', t.borderLight);
+        page.style.setProperty('--teal-bg-light', t.bgLight);
+        page.style.setProperty('--teal-text', t.text || '#ffffff');
+        page.style.setProperty('--navy', t.navy || '#4a5b70');
+        page.style.setProperty('--navy-dark', t.navyDark || '#3b4a5c');
+      }
+
+      const themeSelect = document.getElementById('paperTheme');
+      if (themeSelect) themeSelect.value = themeKey;
+
+      const sliderEl = document.getElementById('themeHue');
+      if (sliderEl && t.hue !== undefined) {
+        sliderEl.value = t.hue;
+        const valEl = document.getElementById('hueVal');
+        if (valEl) valEl.textContent = t.hue + '°';
+      }
+
+      try {
+        localStorage.setItem('hdl_paper_theme_mode', themeKey);
+      } catch (e) {}
+    }
+
+    function applyHueTheme(hue) {
+      const h = parseInt(hue);
+      const sliderGrp = document.getElementById('sliderGroup');
+      if (sliderGrp) sliderGrp.style.display = 'flex';
+
+      const primary = `hsl(${h}, 45%, 70%)`;
+      const dark = `hsl(${h}, 45%, 45%)`;
+      const light = `hsl(${h}, 45%, 96%)`;
+      const borderLight = `hsl(${h}, 45%, 88%)`;
+      const bgLight = `hsl(${h}, 45%, 98%)`;
+      const text = `hsl(${h}, 50%, 20%)`;
+      const navy = `hsl(${h}, 30%, 30%)`;
+      const navyDark = `hsl(${h}, 30%, 22%)`;
+
+      const page = document.getElementById('page');
+      if (page) {
+        page.style.setProperty('--teal', primary);
+        page.style.setProperty('--teal-dark', dark);
+        page.style.setProperty('--teal-light', light);
+        page.style.setProperty('--teal-border-light', borderLight);
+        page.style.setProperty('--teal-bg-light', bgLight);
+        page.style.setProperty('--teal-text', text);
+        page.style.setProperty('--navy', navy);
+        page.style.setProperty('--navy-dark', navyDark);
+      }
+
+      const valEl = document.getElementById('hueVal');
+      if (valEl) valEl.textContent = h + '°';
+
+      const sliderEl = document.getElementById('themeHue');
+      if (sliderEl) sliderEl.value = h;
+
+      const themeSelect = document.getElementById('paperTheme');
+      if (themeSelect) themeSelect.value = 'custom';
+
+      try {
+        localStorage.setItem('hdl_paper_theme_mode', 'custom');
+        localStorage.setItem('hdl_paper_theme_hue', h);
+      } catch (e) {}
     }
 
     function applyZoom() {
@@ -987,6 +1298,19 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
     window.addEventListener('load', () => {
       loadProfileFields();
       checkLoginBadge();
+
+      try {
+        const savedPattern = localStorage.getItem('hdl_paper_pattern');
+        if (savedPattern) {
+          const patSelect = document.getElementById('paperPattern');
+          if (patSelect) patSelect.value = savedPattern;
+        }
+        const savedTheme = localStorage.getItem('hdl_paper_theme_mode') || 'original';
+        applyPresetTheme(savedTheme);
+      } catch (e) {
+        applyPresetTheme('original');
+      }
+
       updatePageStyle();
       applyZoom();
       window.addEventListener('resize', applyZoom);
