@@ -527,6 +527,12 @@
             <option value="1.0">100%</option>
           </select>
         </div>
+        <div class="grp">
+          <label style="display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 11px; cursor: pointer; color: #1b5e20; background: #e8f5e9; padding: 2px 7px; border-radius: 5px; border: 1px solid #c8e6c9;" title="Sorot baris minggu yang sedang berlangsung sesuai tanggal hari ini">
+            <input type="checkbox" id="chkHighlightActive" checked onchange="renderPreview()">
+            📌 Sorot Minggu Aktif
+          </label>
+        </div>
         <button class="btn-copy-all" onclick="copyAllJurnalText()">📋 Copy Format Teks Form</button>
         <div class="spacer"></div>
         <button class="btn-print no-print" onclick="window.print()">Cetak / PDF Jurnal</button>
@@ -699,6 +705,12 @@
       const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
       const wkt = WEEK_MAPPING[item.p] || "";
 
+      let kendalaText = item.kendala;
+      if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombel]) {
+        const list = window.ROMBEL_KENDALA_VARIATIONS[rombel];
+        kendalaText = list[(item.p - 1) % list.length];
+      }
+
       const text = `Hari/Tanggal: [Diisi Tanggal KBM] (${wkt})
 Nama Guru: ${guruNama}
 Kelas: ${rombel}
@@ -710,7 +722,7 @@ Tujuan Pembelajaran: ${item.tp}
 Model dan Metode Pembelajaran: ${item.model}
 Media Pembelajaran: ${item.media}
 Ketuntasan/ketercapaian murid dalam memahami materi pembelajaran: ${item.tuntas}
-Kendala yang dihadapi saat KBM: ${item.kendala}`;
+Kendala yang dihadapi saat KBM: ${kendalaText}`;
 
       navigator.clipboard.writeText(text).then(() => {
         showToast(`📋 Pertemuan Ke-${item.p} (${wkt}) berhasil disalin!`);
@@ -733,6 +745,12 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         if (smtFilter === '2' && item.smt !== 2) return;
 
         const wkt = WEEK_MAPPING[item.p] || "";
+        let kendalaText = item.kendala;
+        if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombel]) {
+          const list = window.ROMBEL_KENDALA_VARIATIONS[rombel];
+          kendalaText = list[(item.p - 1) % list.length];
+        }
+
         fullText += `[PERTEMUAN KE-${item.p} — ${wkt} (Semester ${item.smt})]\n`;
         fullText += `Pertemuan ke: ${item.p}\n`;
         fullText += `Waktu (Kaldik): ${wkt}\n`;
@@ -741,7 +759,7 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         fullText += `Model dan Metode Pembelajaran: ${item.model}\n`;
         fullText += `Media Pembelajaran: ${item.media}\n`;
         fullText += `Ketuntasan/ketercapaian murid: ${item.tuntas}\n`;
-        fullText += `Kendala yang dihadapi saat KBM: ${item.kendala}\n`;
+        fullText += `Kendala yang dihadapi saat KBM: ${kendalaText}\n`;
         fullText += `--------------------------------------------------\n\n`;
       });
 
@@ -768,24 +786,42 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       let rowsHTML = "";
       let count = 0;
 
+      const todayStr = new Date().toISOString().split('T')[0];
+      const activeMeetingNum = (typeof window.getMeetingNumberFromDate === 'function') ? window.getMeetingNumberFromDate(todayStr) : 2;
+      const isHighlightEnabled = document.getElementById('chkHighlightActive') ? document.getElementById('chkHighlightActive').checked : true;
+
       data.forEach((item, index) => {
         if (smtFilter === '1' && item.smt !== 1) return;
         if (smtFilter === '2' && item.smt !== 2) return;
         count++;
 
         const wkt = WEEK_MAPPING[item.p] || "";
+        let kendalaText = item.kendala;
+        if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombel]) {
+          const list = window.ROMBEL_KENDALA_VARIATIONS[rombel];
+          kendalaText = list[(item.p - 1) % list.length];
+        }
+
+        const isCurrentRow = (item.p === activeMeetingNum);
+        let rowStyleAttr = "";
+        let badgeHTML = "";
+
+        if (isHighlightEnabled && isCurrentRow) {
+          rowStyleAttr = 'class="active-week-row" style="background: #e8f5e9 !important; font-weight: 700; border-left: 5px solid #2e7d32;"';
+          badgeHTML = '<span class="active-badge-pill no-print-badge" style="display:inline-block; background:#2e7d32; color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:3px; margin-left:4px;">📌 MINGGU INI</span>';
+        }
 
         rowsHTML += `
-          <tr>
+          <tr ${rowStyleAttr}>
             <td style="text-align: center; font-weight: bold; width: 4%;">${item.p}</td>
-            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c; background: #f4f7f4;">${esc(wkt)}</td>
+            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c;">${esc(wkt)} ${badgeHTML}</td>
             <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
             <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
             <td style="width: 20%;">${esc(item.tp)}</td>
             <td style="width: 14%;">${esc(item.model)}</td>
             <td style="width: 12%;">${esc(item.media)}</td>
             <td style="text-align: center; font-weight: bold; width: 5%; color: #2e7d32;">${item.tuntas}</td>
-            <td style="width: 10%; font-size: 10px;">${esc(item.kendala)}</td>
+            <td style="width: 10%; font-size: 10px;">${esc(kendalaText)}</td>
             <td class="no-print" style="text-align: center; width: 4%;">
               <button class="btn-copy-row" onclick="copyRowText(${index})" title="Salin format untuk Google Form">📋 Salin</button>
             </td>
