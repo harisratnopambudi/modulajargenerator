@@ -1173,20 +1173,39 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       const rombelVal = v('docRombel') || (kelasVal === 'IV' ? "4 Sana'a" : (kelasVal === 'V' ? '5 Cordoba' : '6 Kuffah'));
       const data = kelasVal === 'IV' ? JURNAL_DATA_IV : JURNAL_DATA_V_VI;
 
+      const todayStr = new Date().toISOString().split('T')[0];
+      const activeMeetingNum = (typeof window.getMeetingNumberFromDate === 'function') ? window.getMeetingNumberFromDate(todayStr) : 2;
+      const isHighlightEnabled = document.getElementById('chkHighlightActive') ? document.getElementById('chkHighlightActive').checked : true;
+
       let rowsHTML = "";
       data.forEach((item, index) => {
         const wkt = WEEK_MAPPING[item.p] || "";
+        let kendalaText = item.kendala;
+        if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombelVal]) {
+          const list = window.ROMBEL_KENDALA_VARIATIONS[rombelVal];
+          kendalaText = list[(item.p - 1) % list.length];
+        }
+
+        const isCurrentRow = (item.p === activeMeetingNum);
+        let rowStyleAttr = "";
+        let badgeHTML = "";
+
+        if (isHighlightEnabled && isCurrentRow) {
+          rowStyleAttr = 'class="active-week-row" style="background: #e8f5e9 !important; font-weight: 700; border-left: 5px solid #2e7d32;"';
+          badgeHTML = '<span class="active-badge-pill no-print-badge" style="display:inline-block; background:#2e7d32; color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:3px; margin-left:4px;">📌 MINGGU INI</span>';
+        }
+
         rowsHTML += `
-          <tr>
+          <tr ${rowStyleAttr}>
             <td style="text-align: center; font-weight: bold; width: 4%;">${item.p}</td>
-            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c; background: #f4f7f4;">${esc(wkt)}</td>
+            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c;">${esc(wkt)} ${badgeHTML}</td>
             <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
             <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
             <td style="width: 20%;">${esc(item.tp)}</td>
             <td style="width: 14%;">${esc(item.model)}</td>
             <td style="width: 12%;">${esc(item.media)}</td>
             <td style="text-align: center; font-weight: bold; width: 5%; color: #2e7d32;">${item.tuntas}</td>
-            <td style="width: 10%; font-size: 10px;">${esc(item.kendala)}</td>
+            <td style="width: 10%; font-size: 10px;">${esc(kendalaText)}</td>
             <td class="no-print" style="text-align: center; width: 4%;">
               <button onclick="copyJurnalRowText(${index})" style="background: #eaf3e5; border: 1px solid #cfe6c2; color: #3b4a5c; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer;">📋 Salin</button>
             </td>
