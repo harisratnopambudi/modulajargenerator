@@ -552,16 +552,6 @@
   <style id="pageSizeStyle"></style>
 
   <script>
-    // Validasi role admin
-    try {
-      const email = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
-      if (email !== 'harisratnopambudi@gmail.com') {
-        window.location.href = 'index.html';
-      }
-    } catch (e) {
-      window.location.href = 'index.html';
-    }
-
     const DEFAULT_LOGO_SRC = "img/logosekolah.png";
     const YAYASAN_LOGO_SRC = "img/logoyayasan.png";
 
