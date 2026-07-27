@@ -365,9 +365,31 @@
       min-height: 330mm;
     }
 
-    .sheet.f4.landscape {
-      width: 330mm;
-      min-height: 215mm;
+    /* ---- Stabilo Highlighter Marker Effect ---- */
+    .stabilo-mark {
+      background: linear-gradient(100deg, rgba(254, 240, 138, 0.95) 0%, rgba(253, 224, 71, 0.85) 90%, rgba(254, 240, 138, 0.75) 100%);
+      box-shadow: 0 1px 5px rgba(234, 179, 8, 0.25);
+      border-radius: 4px 14px 3px 12px;
+      padding: 3px 8px;
+      color: #0f172a !important;
+      font-weight: 800;
+      display: inline-block;
+    }
+
+    tr.active-week-row td {
+      background: rgba(254, 240, 138, 0.22) !important;
+    }
+
+    @media print {
+      .stabilo-mark {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        color: inherit !important;
+      }
+      tr.active-week-row td {
+        background: transparent !important;
+      }
     }
 
     /* ---- Paper Patterns ---- */
@@ -1188,17 +1210,17 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
 
         const isCurrentRow = (item.p === activeMeetingNum);
         let rowStyleAttr = "";
-        let badgeHTML = "";
+        let wktHTML = esc(wkt);
 
         if (isHighlightEnabled && isCurrentRow) {
-          rowStyleAttr = 'class="active-week-row" style="background: #e8f5e9 !important; font-weight: 700; border-left: 5px solid #2e7d32;"';
-          badgeHTML = '<span class="active-badge-pill no-print-badge" style="display:inline-block; background:#2e7d32; color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:3px; margin-left:4px;">📌 MINGGU INI</span>';
+          rowStyleAttr = 'class="active-week-row"';
+          wktHTML = `<span class="stabilo-mark" title="Minggu KBM Real-time (Aktif)">🖍️ ${esc(wkt)}</span>`;
         }
 
         rowsHTML += `
           <tr ${rowStyleAttr}>
             <td style="text-align: center; font-weight: bold; width: 4%;">${item.p}</td>
-            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c;">${esc(wkt)} ${badgeHTML}</td>
+            <td style="text-align: center; width: 11%; font-weight: 700;">${wktHTML}</td>
             <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
             <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
             <td style="width: 20%;">${esc(item.tp)}</td>
