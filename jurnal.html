@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jurnal Mengajar Harian - Haris DevLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #4a5b70;
+      --navy-dark: #3b4a5c;
+      --teal: #6aa84f;
+      --teal-dark: #588a41;
+      --teal-light: #eaf3e5;
+      --teal-border-light: #cfe6c2;
+      --teal-bg-light: #f6faf4;
+      --teal-text: #ffffff;
+      --border: #c9d3d6;
+      --ink: #1f2a30;
+      --muted: #5c6b70;
+      --paper: #ffffff;
+      --bg: #eef1f2;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Trebuchet MS', 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      height: 100vh;
+    }
+
+    /* ---------- MOBILE RESPONSIVE ---------- */
+    @media screen and (max-width: 800px) {
+      .app {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .editor {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        max-height: none;
+        overflow-y: visible;
+        padding: 14px 14px 40px;
+      }
+      .preview-wrap {
+        height: auto;
+        min-height: auto;
+      }
+      .canvas {
+        padding: 16px 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      #page-container {
+        transform-origin: top left;
+        max-width: 100%;
+      }
+      .toolbar {
+        padding: 8px 10px;
+        flex-wrap: wrap;
+        gap: 6px;
+        position: relative;
+      }
+      .btn-print {
+        position: fixed;
+        top: auto !important;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+        font-size: 13px;
+        padding: 12px 16px;
+        border-radius: 24px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        z-index: 9999;
+        white-space: nowrap;
+        text-align: center;
+      }
+    }
+
+    /* ---------- EDITOR PANEL ---------- */
+    .editor {
+      overflow-y: auto;
+      background: var(--paper);
+      border-right: 1px solid var(--border);
+      padding: 18px 20px 60px;
+    }
+
+    .editor h1 {
+      font-size: 17px;
+      color: var(--navy);
+      margin: 0 0 2px;
+    }
+
+    .editor .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .section {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .section>summary {
+      background: var(--navy);
+      color: #fff;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .section>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .section>summary::before {
+      content: "▸ ";
+    }
+
+    .section[open]>summary::before {
+      content: "▾ ";
+    }
+
+    .section .body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--navy-dark);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    input[type=text],
+    input[type=number],
+    textarea,
+    select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 12.5px;
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* ---------- PREVIEW AREA ---------- */
+    .preview-wrap {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: #cfd8dc;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      background: #263238;
+      color: #fff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .toolbar select {
+      background: #37474f;
+      color: #fff;
+      border: 1px solid #546e7a;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .toolbar .grp {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    .btn-print {
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12.5px;
+      transition: background 0.2s;
+    }
+
+    .btn-print:hover {
+      background: var(--teal-dark);
+    }
+
+    .btn-copy-all {
+      background: #0288d1;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-copy-all:hover {
+      background: #0277bd;
+    }
+
+    .canvas {
+      flex: 1;
+      overflow: auto;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #page-container {
+      margin: 0 auto;
+    }
+
+    .sheet {
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      position: relative;
+      box-sizing: border-box;
+      padding: 15mm;
+    }
+
+    .sheet.f4.landscape { width: 330mm; min-height: 215mm; }
+    .sheet.f4.portrait { width: 215mm; min-height: 330mm; }
+    .sheet.a4.landscape { width: 297mm; min-height: 210mm; }
+    .sheet.a4.portrait { width: 210mm; min-height: 297mm; }
+
+    /* Paper Patterns */
+    .pattern-linen { background-image: radial-gradient(#d5e1d2 0.75px, transparent 0.75px); background-size: 12px 12px; }
+
+    /* Table Styles */
+    table.jurnal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 11px;
+    }
+
+    table.jurnal-table th {
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--border);
+      padding: 8px 6px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    table.jurnal-table td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      vertical-align: top;
+      color: var(--ink);
+    }
+
+    table.jurnal-table tr:nth-child(even) td {
+      background: #f8fafb;
+    }
+
+    .btn-copy-row {
+      background: #eaf3e5;
+      border: 1px solid #cfe6c2;
+      color: #3b4a5c;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-copy-row:hover {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal-dark);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1b5e20;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      z-index: 99999;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+      font-size: 11px;
+      line-height: 1.4;
+      page-break-inside: avoid;
+    }
+
+    .sign-grid div { text-align: center; }
+    .sign-grid .gap { height: 55px; }
+    .sign-grid .name { font-weight: 700; text-decoration: underline; }
+
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff; }
+      .canvas { padding: 0 !important; overflow: visible !important; display: block !important; }
+      .preview-wrap { height: auto !important; display: block !important; }
+      #page-container { display: block !important; width: auto !important; height: auto !important; margin: 0 !important; padding: 0 !important; }
+      .sheet { box-shadow: none !important; margin: 0 !important; padding: 0 !important; width: auto !important; min-height: 0 !important; transform: none !important; background: transparent !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- =============== EDITOR =============== -->
+    <div class="editor no-print">
+      <div id="accountBadge" style="display: none; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px 12px; background: #eaf3e5; border: 1px solid #cfe6c2; border-radius: 6px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div id="accountBadgeAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: conic-gradient(#DB4437 0deg 90deg, #F4B400 90deg 180deg, #0F9D58 180deg 270deg, #4285F4 270deg 360deg); padding: 2.5px; flex-shrink: 0;">
+            <div style="width: 100%; height: 100%; border-radius: 50%; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; overflow: hidden;" id="accountBadgeAvatarInner">U</div>
+          </div>
+          <div>
+            <div style="font-size: 10px; color: var(--muted); font-weight: 600; line-height: 1;">Akun Google Aktif:</div>
+            <div id="accountBadgeName" style="font-size: 13px; font-weight: bold; color: var(--navy-dark); line-height: 1.4;"></div>
+            <div id="accountBadgeEmail" style="font-size: 11px; color: var(--navy); line-height: 1;"></div>
+          </div>
+        </div>
+        <button onclick="logoutGoogle()" style="background: #fff; border: 1px solid #e0e0e0; color: #c53030; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Logout</button>
+      </div>
+
+      <h1>Jurnal Mengajar Harian</h1>
+      <div class="sub">Rincian isian Google Form KBM 1 Tahun Ajaran (31 Pertemuan). Haris DevLab.</div>
+
+      <!-- Navigation Tabs -->
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 2px solid var(--bg); padding-bottom: 8px;" class="no-print">
+        <a href="index.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📝</span> Modul Ajar
+        </a>
+        <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📂</span> Administrasi
+        </a>
+        <a href="jurnal.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
+          <span>📖</span> Jurnal KBM
+        </a>
+      </div>
+
+      <details class="section" open>
+        <summary>Pilihan Kelas & Semester</summary>
+        <div class="body">
+          <div class="field">
+            <label>Pilih Kelas / Rombel Mengajar</label>
+            <select id="jurnalRombel" onchange="renderPreview()">
+              <optgroup label="Kelas IV (Senin, Selasa, Rabu, Jumat)">
+                <option value="4 Sana'a">4 Sana'a — Senin (08.05 - 09.15)</option>
+                <option value="4 Yaman">4 Yaman — Senin (09.40 - 10.50)</option>
+                <option value="4 Muskat">4 Muskat — Selasa (08.05 - 09.15)</option>
+                <option value="4 Abu Dhabi">4 Abu Dhabi — Rabu (09.40 - 10.50)</option>
+                <option value="4 Najaf">4 Najaf — Jumat (07.30 - 08.40)</option>
+              </optgroup>
+              <optgroup label="Kelas V (Senin, Selasa, Rabu, Kamis)">
+                <option value="5 Cordoba">5 Cordoba — Senin (12.20 - 13.30)</option>
+                <option value="5 Damaskus">5 Damaskus — Selasa (12.55 - 14.05)</option>
+                <option value="5 Istanbul">5 Istanbul — Rabu (12.20 - 13.30)</option>
+                <option value="5 Amman">5 Amman — Kamis (12.55 - 14.05)</option>
+              </optgroup>
+              <optgroup label="Kelas VI (Selasa, Rabu, Kamis, Jumat)">
+                <option value="6 Kuffah" selected>6 Kuffah — Selasa (09.40 - 10.50)</option>
+                <option value="6 Granada">6 Granada — Rabu (08.05 - 09.15)</option>
+                <option value="6 Madrid">6 Madrid — Kamis (10.15 - 11.25)</option>
+                <option value="6 Almeria">6 Almeria — Jumat (10.15 - 11.25)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field">
+            <label>Filter Semester</label>
+            <select id="jurnalSmt" onchange="renderPreview()">
+              <option value="all" selected>Semua Semester (Smt 1 &amp; Smt 2 — 31 Pertemuan)</option>
+              <option value="1">Semester 1 / Ganjil (Pertemuan 1 - 16)</option>
+              <option value="2">Semester 2 / Genap (Pertemuan 17 - 31)</option>
+            </select>
+          </div>
+        </div>
+      </details>
+
+      <details class="section" open>
+        <summary>Identitas Lembaga & Guru</summary>
+        <div class="body">
+          <div class="field">
+            <label>Nama Lembaga/Sekolah</label>
+            <input type="text" id="instansi" value="SDS PLUS 2 ALMUHAJIRIN" oninput="saveProfileFields(); renderPreview()">
+          </div>
+          <div class="field">
+            <label>Mata Pelajaran</label>
+            <input type="text" id="mapel" value="Koding dan Kecerdasan Artifisial (KKA)" oninput="saveProfileFields(); renderPreview()">
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Tahun Pelajaran</label>
+              <input type="text" id="tahun" value="2026/2027" oninput="saveProfileFields(); renderPreview()">
+            </div>
+            <div class="field">
+              <label>Fase</label>
+              <input type="text" id="fase" value="Fase C" oninput="saveProfileFields(); renderPreview()">
+            </div>
+          </div>
+          <div class="field">
+            <label>Tempat &amp; Tanggal Dokumen</label>
+            <input type="text" id="tempatTgl" value="Purwakarta, 10 Juli 2026" oninput="saveProfileFields(); renderPreview()">
+          </div>
+        </div>
+      </details>
+
+      <details class="section">
+        <summary>Tanda Tangan</summary>
+        <div class="body">
+          <div class="row2">
+            <div class="field">
+              <label>Nama Kepala Sekolah</label>
+              <input type="text" id="kepsekNama" value="Hj. Lia Yulindaria, S.P.,S.Pd.,M.Pd." oninput="saveProfileFields(); renderPreview()">
+            </div>
+            <div class="field">
+              <label>NIY/NIP Kepala Sekolah</label>
+              <input type="text" id="kepsekNIY" value="07699114" oninput="saveProfileFields(); renderPreview()">
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label>Nama Guru Bidang Studi</label>
+              <input type="text" id="guruNama" value="Haris Ratno Pambudi, S.T." oninput="saveProfileFields(); renderPreview()">
+            </div>
+            <div class="field">
+              <label>NIY/NIP Guru</label>
+              <input type="text" id="guruNIY" value="236991324" oninput="saveProfileFields(); renderPreview()">
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+
+    <!-- =============== PREVIEW =============== -->
+    <div class="preview-wrap">
+      <div class="toolbar no-print">
+        <div class="grp">Kertas:
+          <select id="paperSize" onchange="updatePageStyle()">
+            <option value="f4" selected>F4 / Folio</option>
+            <option value="a4">A4</option>
+          </select>
+        </div>
+        <div class="grp">Orientasi:
+          <select id="orientation" onchange="updatePageStyle()">
+            <option value="landscape" selected>Landscape</option>
+            <option value="portrait">Portrait</option>
+          </select>
+        </div>
+        <div class="grp">Zoom:
+          <select id="zoom" onchange="applyZoom()">
+            <option value="fit" selected>Sesuai Lebar</option>
+            <option value="0.7">70%</option>
+            <option value="0.85">85%</option>
+            <option value="1.0">100%</option>
+          </select>
+        </div>
+        <button class="btn-copy-all" onclick="copyAllJurnalText()">📋 Copy Format Teks Form</button>
+        <div class="spacer"></div>
+        <button class="btn-print no-print" onclick="window.print()">Cetak / PDF Jurnal</button>
+      </div>
+
+      <div class="canvas">
+        <div id="page-container">
+          <div id="page" class="sheet f4 landscape pattern-linen"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toastMsg" class="toast-msg">📋 Isian Form Google Berhasil Disalin!</div>
+
+  <style id="pageSizeStyle"></style>
+
+  <script>
+    // Validasi role admin
+    try {
+      const email = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
+      if (email !== 'harisratnopambudi@gmail.com') {
+        window.location.href = 'index.html';
+      }
+    } catch (e) {
+      window.location.href = 'index.html';
+    }
+
+    const DEFAULT_LOGO_SRC = "img/logosekolah.png";
+    const YAYASAN_LOGO_SRC = "img/logoyayasan.png";
+
+    // Data Jurnal Kelas IV (Fase B - 31 Pertemuan)
+    const JURNAL_DATA_IV = [
+      { p: 1, smt: 1, materi: "Jenis Komputer & Perangkat Komputer (Hardware & Software)", tp: "1.1 - Mengidentifikasi berbagai jenis komputer yang digunakan di rumah dan sekolah.", model: "Problem Based Learning, Unplugged & Diskusi", media: "Laptop, Proyektor, Kartu Gambar Komputer", tuntas: 4, kendala: "Beberapa siswa masih keliru membedakan hardware dan software, tuntas setelah diberikan contoh fisik." },
+      { p: 2, smt: 1, materi: "Siklus Kerja Sistem Komputer (Input, Proses, Output)", tp: "1.2 - Menjelaskan proses input, proses, dan output pada sistem komputer secara sederhana.", model: "Discovery Learning & Demonstrasi Interaktif", media: "Laptop, Proyektor, Bagan Input-Proses-Output", tuntas: 4, kendala: "KBM berjalan lancar, siswa antusias mempraktikkan alur masukan dan keluaran data." },
+      { p: 3, smt: 1, materi: "Mengenal Robot & AI di Kehidupan Sehari-hari", tp: "1.3 - Mengidentifikasi contoh penerapan robot dan Kecerdasan Artifisial (KA) dalam kehidupan sehari-hari.", model: "Contextual Teaching & Tanya Jawab Interaktif", media: "Video Edukasi AI & Robotika, Slide Presentasi", tuntas: 4, kendala: "Siswa sangat aktif bertanya mengenai contoh robot pintar di sekitar mereka." },
+      { p: 4, smt: 1, materi: "Projek 'Komputer di Sekolahku' (Perencanaan & Observasi)", tp: "1.4 - Melaksanakan projek kolaboratif mengenai komputer di sekolahku.", model: "Project Based Learning (PjBL) & Kerja Kelompok", media: "Lembar Kerja Projek (LKPD), Kartu Observasi", tuntas: 4, kendala: "Pengondisian kelompok di awal membutuhkan waktu, namun tugas observasi berjalan sesuai alokasi." },
+      { p: 5, smt: 1, materi: "Projek 'Komputer di Sekolahku' (Presentasi & Refleksi)", tp: "1.4 - Melaksanakan projek kolaboratif mengenai komputer di sekolahku.", model: "Project Based Learning (PjBL) & Presentasi", media: "Poster Hasil Projek Siswa, Proyektor", tuntas: 4, kendala: "Tidak ada kendala berarti, siswa tampil percaya diri memaparkan hasil pengamatan." },
+      { p: 6, smt: 1, materi: "Berpikir Komputasional — Pengenalan Pola (Pattern)", tp: "2.1 - Mengenali pola dari sekumpulan data atau informasi.", model: "Game-Based Learning & Unplugged Activity", media: "Kartu Permainan Pola Gambar, Papan Tulis", tuntas: 4, kendala: "Membutuhkan variasi contoh pola gambar yang lebih tantangan bagi siswa." },
+      { p: 7, smt: 1, materi: "Berpikir Komputasional — Dekomposisi Masalah", tp: "2.2 - Membagi tugas besar menjadi bagian-bagian yang lebih kecil dan mudah diselesaikan.", model: "Problem Based Learning & Diskusi Terbimbing", media: "Modul Masalah Studi Kasus, LKPD Dekomposisi", tuntas: 4, kendala: "KBM tuntas, siswa belajar merincikan langkah kegiatan harian secara terstruktur." },
+      { p: 8, smt: 1, materi: "Berpikir Komputasional — Menyusun Algoritma Sederhana", tp: "2.3 - Menyusun langkah-langkah penyelesaian masalah secara berurutan.", model: "Direct Instruction & Latihan Terstruktur", media: "Lembar Kerja Algoritma, Papan Tulis", tuntas: 4, kendala: "Beberapa siswa perlu dibimbing agar urutan langkah algoritma tidak ada yang terlewat." },
+      { p: 9, smt: 1, materi: "Projek 'Rencana Kelas Teratur' (Penyusunan Alur)", tp: "2.4 - Melaksanakan projek kolaboratif merancang rencana kelas yang teratur.", model: "Project Based Learning (PjBL) & Kerja Kelompok", media: "Kertas Karton, Sticky Notes, LKPD Projek", tuntas: 4, kendala: "Diskusi kelompok sangat hidup, setiap siswa menyumbangkan ide algoritma kerapihan kelas." },
+      { p: 10, smt: 1, materi: "Projek 'Rencana Kelas Teratur' (Pameran & Evaluation)", tp: "2.4 - Melaksanakan projek kolaboratif merancang rencana kelas yang teratur.", model: "Project Based Learning (PjBL) & Peer Assessment", media: "Hasil Karya Projek Kelompok, Rubrik Penilaian", tuntas: 4, kendala: "Berjalan lancar dan tuntas sesuai target alokasi waktu." },
+      { p: 11, smt: 1, materi: "Konsep Urutan (Sequence) Perintah Programmer", tp: "3.1 - Memahami dan mempraktikkan konsep urutan (sequence) dalam memberikan perintah.", model: "Unplugged Coding & Simulasi Peran Programmer", media: "Kartu Petunjuk Arah/Langkah, Grid Matras", tuntas: 4, kendala: "Siswa sangat menikmati aktivitas bermain peran sebagai robot yang bergerak sesuai instruksi." },
+      { p: 12, smt: 1, materi: "Pengulangan Perintah (Looping) Sederhana", tp: "3.2 - Memahami dan menggunakan perintah berulang (looping) untuk menyederhanakan instruksi.", model: "Inquiry Learning & Praktik Terbimbing", media: "Laptop, Software Coding Visual", tuntas: 4, kendala: "KBM tuntas, siswa memahami bahwa looping menghemat pembuatan baris perintah." },
+      { p: 13, smt: 1, materi: "Melacak Kesalahan Perintah (Debugging) - Bagian 1", tp: "3.3 - Mengidentifikasi dan memperbaiki kesalahan (debugging) pada serangkaian perintah.", model: "Problem Based Learning & Latihan Debugging", media: "Lembar Studi Kasus Kode Rusak, Laptop", tuntas: 4, kendala: "Siswa dilatih melatih kesabaran dan ketelitian saat melacak bagian perintah yang salah." },
+      { p: 14, smt: 1, materi: "Memperbaiki Kesalahan Perintah (Debugging) - Bagian 2", tp: "3.3 - Mengidentifikasi dan memperbaiki kesalahan (debugging) pada serangkaian perintah.", model: "Hands-on Practice & Problem Solving", media: "Laptop / Perangkat Tablet Coding", tuntas: 4, kendala: "Seluruh siswa tuntas menyelesaikan tantangan perbaikan bug." },
+      { p: 15, smt: 1, materi: "Projek 'Robot Kaki' (Merancang Perintah)", tp: "3.4 - Melaksanakan projek kolaboratif membuat perintah untuk robot kaki.", model: "Project Based Learning (PjBL) & Cooperative", media: "Grid Arena Simulation, Lembar Instruksi", tuntas: 4, kendala: "Antusiasme tinggi, kerja sama dalam tim berjalan solid." },
+      { p: 16, smt: 1, materi: "Projek 'Robot Kaki' (Simulasi Unjuk Kerja)", tp: "3.4 - Melaksanakan projek kolaboratif membuat perintah untuk robot kaki.", model: "Project Based Learning & Performance Test", media: "Matras Grid Rintangan, Kartu Program Robot", tuntas: 4, kendala: "Pembelajaran penutup Semester 1 berjalan sukses dan sangat interaktif." },
+
+      { p: 17, smt: 2, materi: "Logika Kondisi Sederhana (Jika - Maka / IF-THEN)", tp: "4.1 - Memahami logika kondisi Jika-Maka untuk pengambilan keputusan sederhana.", model: "Problem Based Learning & Tanya Jawab", media: "Kartu Logika Kondisi dan Aksi, Papan Tulis", tuntas: 4, kendala: "Siswa cepat memahami syarat dan konsekuensi aksi." },
+      { p: 18, smt: 2, materi: "Logika Kondisi Bercabang (Jika-Maka-Selain Itu) - Part 1", tp: "4.2 - Memahami logika kondisi Jika-Maka-Selain itu untuk keputusan bercabang.", model: "Interactive Demonstration & Praktik", media: "Laptop, Software Coding Visual", tuntas: 4, kendala: "Diperlukan pengulangan konsep pada bagian kondisi 'Selain Itu (Else)'." },
+      { p: 19, smt: 2, materi: "Logika Kondisi Bercabang (Jika-Maka-Selain Itu) - Part 2", tp: "4.2 - Memahami logika kondisi Jika-Maka-Selain itu untuk keputusan bercabang.", model: "Hands-on Practice & Problem Solving", media: "Laptop, Lembar Kerja Tantangan Logika", tuntas: 4, kendala: "Pemahaman siswa makin matang saat mempraktikkan program kondisi pada perangkat." },
+      { p: 20, smt: 2, materi: "Projek 'Keputusan Robot Menuju Sekolah' (Rancangan)", tp: "4.3 - Melaksanakan projek kolaboratif membuat aturan keputusan untuk robot menuju sekolah.", model: "Project Based Learning & Diskusi Kelompok", media: "Peta Jalur / Maze Karton, Lembar Aturan", tuntas: 4, kendala: "Siswa sangat kreatif membuat percabangan kondisi rute jalan." },
+      { p: 21, smt: 2, materi: "Projek 'Keputusan Robot Menuju Sekolah' (Simulasi)", tp: "4.3 - Melaksanakan projek kolaboratif membuat aturan keputusan untuk robot menuju sekolah.", model: "Project Based Learning & Unjuk Kerja", media: "Arena Maze Grid & Perangkat Robot Unplugged", tuntas: 4, kendala: "Seluruh kelompok berhasil mengeksekusi aturan logika robot hingga sampai tujuan." },
+      { p: 22, smt: 2, materi: "Unplugged Coding Menggunakan Simbol Perintah", tp: "5.1 - Mempraktikkan unplugged coding menggunakan simbol.", model: "Game-Based Learning & Role-Playing", media: "Kartu Simbol Panah & Aksi Perintah", tuntas: 4, kendala: "Suasana kelas sangat hidup dan menyenangkan." },
+      { p: 23, smt: 2, materi: "Unplugged Coding System Koordinat Sederhana - Part 1", tp: "5.2 - Mempraktikkan unplugged coding menggunakan koordinat.", model: "Cooperative Learning & Praktik Kisi Matras", media: "Papan Kisi Koordinat, Bidak Permainan", tuntas: 4, kendala: "Beberapa siswa masih keliru memasukkan urutan sumbu (X,Y), tuntas setelah bimbingan." },
+      { p: 24, smt: 2, materi: "Unplugged Coding System Koordinat Sederhana - Part 2", tp: "5.2 - Mempraktikkan unplugged coding menggunakan koordinat.", model: "Game-Based Learning & Challenge Activity", media: "Lembar Kerja Peta Koordinat Tantangan", tuntas: 4, kendala: "KBM tuntas, siswa mahir menentukan titik lokasi koordinat sasaran." },
+      { p: 25, smt: 2, materi: "Projek 'Robot Bijak Menuju Sekolah' (Penyusunan)", tp: "5.3 - Melaksanakan projek kolaboratif membuat perintah untuk robot bijak menuju sekolah.", model: "Project Based Learning & Diskusi Kelompok", media: "Lembar Alur Projek, Kartu Karakter Bijak", tuntas: 4, kendala: "Integrasi nilai karakter bijak berteknologi berjalan baik dalam skenario." },
+      { p: 26, smt: 2, materi: "Projek 'Robot Bijak Menuju Sekolah' (Simulasi)", tp: "5.3 - Melaksanakan projek kolaboratif membuat perintah untuk robot bijak menuju sekolah.", model: "Project Based Learning & Performance Showcase", media: "Arena Simulasi Unplugged", tuntas: 4, kendala: "Unjuk kerja kelompok terlaksana dengan sangat baik." },
+      { p: 27, smt: 2, materi: "Konsep Literasi Digital dalam Konteks AI", tp: "6.1 - Menjelaskan konsep literasi digital dalam konteks Kecerdasan Artifisial.", model: "Contextual Teaching & Diskusi Kelas", media: "Slide Presentasi, Video Edukasi Keamanan", tuntas: 4, kendala: "Siswa menyimak dengan seksama materi keamanan informasi di internet." },
+      { p: 28, smt: 2, materi: "Sikap Bijak Menggunakan Kecerdasan Artifisial - Part 1", tp: "6.2 - Menunjukkan sikap bijak dalam menggunakan Kecerdasan Artifisial.", model: "Diskusi Kelompok & Studi Kasus Dilema Digital", media: "Kartu Studi Kasus Penggunaan AI", tuntas: 4, kendala: "Diskusi aktif mengenai batas kejujuran saat dibantu oleh teknologi AI." },
+      { p: 29, smt: 2, materi: "Sikap Bijak Menggunakan Kecerdasan Artifisial - Part 2", tp: "6.2 - Menunjukkan sikap bijak dalam menggunakan Kecerdasan Artifisial.", model: "Role-Playing (Bermain Peran)", media: "Naskah Skenario Bermain Peran", tuntas: 4, kendala: "Siswa mengekspresikan peran pengguna teknologi bijak dengan baik." },
+      { p: 30, smt: 2, materi: "Projek Play-Role 'Pengguna Bijak AI' (Persiapan)", tp: "6.3 - Melaksanakan projek kolaboratif bermain peran pengguna bijak teknologi dan KA.", model: "Project Based Learning & Group Preparation", media: "Properti Sederhana, Lembar Peran", tuntas: 4, kendala: "Pembagian skenario pementasan berjalan cepat dan tertata." },
+      { p: 31, smt: 2, materi: "Projek Play-Role 'Pengguna Bijak AI' (Pementasan & Refleksi)", tp: "6.3 - Melaksanakan projek kolaboratif bermain peran pengguna bijak teknologi dan KA.", model: "Project Based Learning & Refleksi Akhir Tahun", media: "Ruang Kelas (Mini Stage), Rubrik Evaluation", tuntas: 4, kendala: "Pementasan sukses, refleksi pembelajaran KKA 1 tahun ajaran berkesan positif." }
+    ];
+
+    // Data Jurnal Kelas V & VI (Fase C - 31 Pertemuan)
+    const JURNAL_DATA_V_VI = [
+      { p: 1, smt: 1, materi: "Berpikir Komputasional — Mengidentifikasi Masalah Sehari-hari", tp: "1.1 - Mengidentifikasi permasalahan sederhana dalam kehidupan sehari-hari.", model: "Problem Based Learning & Curah Pendapat", media: "Modul Pembelajaran KKA, Laptop, LCD", tuntas: 4, kendala: "Siswa antusias memetakan masalah-masalah sederhana di lingkungan sekolah." },
+      { p: 2, smt: 1, materi: "4 Pilar Berpikir Komputasional (Dekomposisi, Pola, Abstraksi)", tp: "1.2 - Menguraikan masalah menggunakan dekomposisi, pengenalan pola, dan abstraksi.", model: "Discovery Learning & Latihan Studi Kasus", media: "Lembar Kerja Siswa (LKPD) 4 Pilar BK", tuntas: 4, kendala: "Pemahaman konsep abstraksi membutuhkan contoh konkret tambahan." },
+      { p: 3, smt: 1, materi: "Merancang Algoritma dan Diagram Alir (Flowchart)", tp: "1.3 - Menyusun algoritma dan flowchart sebagai solusi suatu permasalahan.", model: "Direct Instruction & Latihan Membuat Chart", media: "Modul Panduan Simbol Flowchart, Papan Tulis", tuntas: 4, kendala: "Beberapa siswa perlu dibimbing dalam pemilihan simbol keputusan pada flowchart." },
+      { p: 4, smt: 1, materi: "Pengenalan Lingkungan Scratch & Pemrograman Visual", tp: "1.4 - Mengembangkan program visual menggunakan Scratch.", model: "Hands-on / Praktik Laboratorium Komputer", media: "Perangkat Komputer, Aplikasi Scratch Desktop", tuntas: 4, kendala: "Siswa mengeksplorasi blok perintah pergerakan Sprite dengan antusias." },
+      { p: 5, smt: 1, materi: "Sistem Koordinat (X, Y) dalam Pemrograman Scratch", tp: "1.5 - Menggunakan koordinat, variabel, dan logika dasar dalam membuat program Scratch.", model: "Guided Inquiry & Lab Practice", media: "Perangkat Komputer, Canvas Grid Scratch", tuntas: 4, kendala: "Siswa berlatih mengatur posisi Sprite menggunakan angka positif dan negatif pada sumbu X-Y." },
+      { p: 6, smt: 1, materi: "Penerapan Variabel dan Logika Pemrograman Scratch", tp: "1.5 - Menggunakan koordinat, variabel, dan logika dasar dalam membuat program Scratch.", model: "Lab Practice & Project-Based Task", media: "Perangkat Komputer, Template Proyek Scratch", tuntas: 4, kendala: "KBM tuntas, siswa berhasil membuat variabel skor dan pewaktu (timer)." },
+      { p: 7, smt: 1, materi: "Teknik Menguji Program & Debugging Kesalahan Kode", tp: "1.6 - Menguji (debugging) dan menyempurnakan program yang telah dibuat.", model: "Problem Based Learning & Peer Review", media: "Perangkat Komputer, File Skrip Scratch", tuntas: 4, kendala: "Siswa belajar menganalisis urutan blok yang menyebabkan Sprite tidak berjalan sesuai alur." },
+      { p: 8, smt: 1, materi: "Penyempurnaan & Finalisasi Proyek Scratch", tp: "1.6 - Menguji (debugging) dan menyempurnakan program yang telah dibuat.", model: "Project Based Learning & Showcase", media: "Komputer, Project File Scratch", tuntas: 4, kendala: "Hasil karya program gim/animasi siswa tuntas dan dapat dijalankan dengan baik." },
+      { p: 9, smt: 1, materi: "Konsep Teknologi Digital, Manfaat, dan Dampaknya", tp: "2.1 - Menjelaskan konsep teknologi digital beserta manfaat dan dampaknya dalam kehidupan sehari-hari.", model: "Contextual Teaching & Diskusi Kelompok", media: "Video Edukasi Dampak Teknologi, LCD Proyektor", tuntas: 4, kendala: "Siswa aktif menyampaikan argumen mengenai penggunaan gadget secara bijak." },
+      { p: 10, smt: 1, materi: "Komponen Utama Sistem Komputer dan Cara Kerjanya", tp: "2.2 - Mengidentifikasi komponen dasar sistem komputer dan cara kerjanya.", model: "Interactive Lecture & Observation", media: "Unit Komputer (CPU, RAM, Storage, Perangkat I/O)", tuntas: 4, kendala: "KBM tuntas, siswa mengamati langsung komponen fisik komputer secara nyata." },
+      { p: 11, smt: 1, materi: "Pemanfaatan Internet Secara Bijak & Penelusuran Informasi", tp: "2.3 - Memanfaatkan internet secara bijak untuk mencari informasi dan referensi proyek.", model: "Hands-on / Praktik Browser", media: "Komputer, Jaringan Internet, Web Browser", tuntas: 4, kendala: "Siswa dilatih menggunakan kata kunci penelusuran yang tepat dan efektif." },
+      { p: 12, smt: 1, materi: "Evaluasi Kredibilitas Informasi & Referensi Proyek Digital", tp: "2.3 - Memanfaatkan internet secara bijak untuk mencari informasi dan referensi proyek.", model: "Problem Based Learning & Analysis Task", media: "Lembar Analisis Berita/Informasi, Internet", tuntas: 4, kendala: "Siswa diajarkan membedakan sumber informasi yang valid dan tepercaya." },
+      { p: 13, smt: 1, materi: "Peran Komputer & Internet dalam Kecerdasan Artifisial - Part 1", tp: "2.4 - Mengidentifikasi peran sistem komputer dan internet dalam Kecerdasan Artifisial (KA).", model: "Direct Instruction & Penayangan Video", media: "Slide Presentasi AI, Video Pembelajaran", tuntas: 4, kendala: "Siswa memahami hubungan keterkaitan antara Big Data, Internet, dan Pemrosesan AI." },
+      { p: 14, smt: 1, materi: "Peran Komputer & Internet dalam Kecerdasan Artifisial - Part 2", tp: "2.4 - Mengidentifikasi peran sistem komputer dan internet dalam Kecerdasan Artifisial (KA).", model: "Inquiry Learning & Web Simulation Demo", media: "Perangkat Komputer, Web Demo Interaktif AI", tuntas: 4, kendala: "Siswa sangat antusias mencoba eksperimen pemrosesan data visual pada aplikasi web AI." },
+      { p: 15, smt: 1, materi: "Pembuatan Konten Digital Sederhana Beretika (Desain Poster)", tp: "2.5 - Membuat dan membagikan konten digital sederhana dengan memperhatikan etika digital.", model: "Project Based Learning (PjBL)", media: "Perangkat Komputer, Aplikasi Desain Grafis", tuntas: 4, kendala: "Siswa mulai merancang susunan tata letak dan pesan edukasi digital." },
+      { p: 16, smt: 1, materi: "Publikasi & Presentasi Karya Konten Digital Beretika", tp: "2.5 - Membuat dan membagikan konten digital sederhana dengan memperhatikan etika digital.", model: "Project Based Learning & Student Presentation", media: "Proyektor LCD, Karya Konten Siswa", tuntas: 4, kendala: "KBM penutup Semester 1 berjalan tuntas, karya siswa dipresentasikan dengan baik." },
+
+      { p: 17, smt: 2, materi: "Konsep Dasar & Pengertian Kecerdasan Artifisial (KA)", tp: "3.1 - Menjelaskan pengertian Kecerdasan Artifisial (KA).", model: "Discovery Learning & Interactive Presentation", media: "Video Edukasi AI, Slide Materi KKA", tuntas: 4, kendala: "Siswa dapat membedakan antara kecerdasan alami manusia dan kecerdasan buatan." },
+      { p: 18, smt: 2, materi: "Manfaat dan Dampak AI dalam Kehidupan Sehari-hari", tp: "3.2 - Mengidentifikasi manfaat dan dampak KA dalam kehidupan sehari-hari.", model: "Diskusi Kelompok & Study Case Analysis", media: "Modul Kasus Penerapan AI, Papan Tulis", tuntas: 4, kendala: "Siswa secara kritis mendiskusikan contoh pemanfaatan AI di berbagai bidang." },
+      { p: 19, smt: 2, materi: "AI Sebagai Alat Bantu Manusia (Human-AI Collaboration)", tp: "3.3 - Menjelaskan bahwa KA dikembangkan untuk membantu manusia.", model: "Contextual Teaching and Learning", media: "Video Edukasi Kolaborasi Manusia dan AI", tuntas: 4, kendala: "Menanamkan pemahaman bahwa AI diciptakan untuk mempermudah pekerjaan manusia." },
+      { p: 20, smt: 2, materi: "Perbedaan Cara Pengindraan Manusia vs Komputer (Sensor)", tp: "3.4 - Menjelaskan perbedaan cara manusia dan komputer melakukan pengindraan.", model: "Inquiry Learning & Demonstrasi Sensor", media: "Laptop, Webcam, Sensor / Simulasi Sensor", tuntas: 4, kendala: "Siswa terpukau mengamati bagaimana kamera komputer mengenali warna dan bentuk benda." },
+      { p: 21, smt: 2, materi: "Klasifikasi Mesin Cerdas vs Mesin Non-Cerdas", tp: "3.5 - Membedakan mesin cerdas dan mesin noncerdas.", model: "Problem Based Learning & Sorting Game", media: "Kartu Perangkat Teknologi, Papan Klasifikasi", tuntas: 4, kendala: "Siswa mampu mengkategorikan peralatan rumah tangga cerdas dan konvensional." },
+      { p: 22, smt: 2, materi: "Penerapan Etika Dasar Penggunaan Kecerdasan Artifisial", tp: "3.6 - Menerapkan etika dasar dalam penggunaan Kecerdasan Artifisial.", model: "Diskusi Kelas & Refleksi Diri", media: "Poster Etika Digital & AI, Lembar Refleksi", tuntas: 4, kendala: "Penekanan pada pentingnya kejujuran, perlindungan data pribadi, dan hak cipta." },
+      { p: 23, smt: 2, materi: "Cara Kerja Sistem KA dalam Mengenali Pola Data", tp: "4.1 - Menjelaskan cara kerja sederhana sistem KA dalam mengenali pola.", model: "Hands-on Interactive Demo (Machine Learning)", media: "Perangkat Komputer, Web Teachable Machine", tuntas: 4, kendala: "Pembelajaran sangat dinamis, siswa mencoba memberikan data sampel visual ke sistem." },
+      { p: 24, smt: 2, materi: "Klasifikasi Objek Berdasarkan Ciri / Karakteristik Spesifik", tp: "4.2 - Melakukan klasifikasi objek berdasarkan ciri atau karakteristik tertentu.", model: "Lab Practice & Data Training", media: "Perangkat Komputer, Dataset Gambar Objek", tuntas: 4, kendala: "Siswa belajar mengumpulkan data latih (training data) yang bervariasi." },
+      { p: 25, smt: 2, materi: "Memahami Proses Klasifikasi dan Prediksi oleh Sistem KA", tp: "4.3 - Menjelaskan proses klasifikasi dan prediksi yang dilakukan oleh sistem KA.", model: "Problem Based Learning & Analysis", media: "Komputer, Hasil Output Akurasi Prediksi AI", tuntas: 4, kendala: "KBM tuntas, siswa memahami konsep confidence score (tingkat keyakinan prediksi AI)." },
+      { p: 26, smt: 2, materi: "Eksperimen Perubahan Hasil Prediksi Berdasarkan Input Data", tp: "4.4 - Mengamati perubahan hasil prediksi berdasarkan perubahan input.", model: "Lab Experiment & Inquiry Learning", media: "Perangkat Komputer, Interactive AI Web Tool", tuntas: 4, kendala: "Siswa mencoba memberikan data input yang membingungkan sistem untuk melihat perubahan." },
+      { p: 27, smt: 2, materi: "Evaluasi Kualitas Input terhadap Akurasi Prediksi AI", tp: "4.5 - Menyimpulkan bahwa akurasi prediksi KA dipengaruhi oleh kualitas dan variasi input.", model: "Inquiry Learning & Generalisasi Hasil", media: "Grafik Hasil Eksperimen, Papan Tulis", tuntas: 4, kendala: "Siswa berhasil menarik kesimpulan prinsip 'Garbage In, Garbage Out' pada sistem AI." },
+      { p: 28, smt: 2, materi: "Praktik Lintas Bidang (PLB) — Merancang Solusi Proyek", tp: "5.1 - Merancang solusi menggunakan proses desain rekayasa.", model: "Project Based Learning (PjBL) & Perancangan", media: "Lembar Desain Proyek Scratch + KKA, Laptop", tuntas: 4, kendala: "Siswa mulai menentukan ide proyek perpaduan KKA dengan mata pelajaran lain." },
+      { p: 29, smt: 2, materi: "Praktik Lintas Bidang (PLB) — Pengodean Proyek Scratch", tp: "5.2 - Mengembangkan proyek interaktif berbasis Scratch untuk menyelesaikan permasalahan sederhana & 5.3", model: "Project Based Learning (PjBL) & Hands-on", media: "Perangkat Komputer, Aplikasi Scratch Desktop", tuntas: 4, kendala: "Siswa fokus menyusun alur logika, variabel, dan animasi proyek interaktif mereka." },
+      { p: 30, smt: 2, materi: "Praktik Lintas Bidang (PLB) — Testing & Debugging", tp: "5.4 - Menguji, memperbaiki, dan menyempurnakan proyek yang dibuat.", model: "Peer Review, Testing & Debugging", media: "Perangkat Komputer, Lembar Feedback Uji Coba", tuntas: 4, kendala: "Siswa saling mencoba proyek teman sejawat dan memberikan masukan perbaikan bug." },
+      { p: 31, smt: 2, materi: "Gelar Karya (Exhibition) & Presentasi Proyek Lintas Bidang", tp: "5.5 - Menyajikan dan mempresentasikan hasil karya digital secara percaya diri.", model: "Student Presentation & Refleksi Akhir Tahun", media: "Perangkat Komputer, LCD Proyektor, Rubrik", tuntas: 4, kendala: "Seluruh rangkaian KBM KKA 1 tahun ajaran berakhir sukses, siswa mempresentasikan karya dengan percaya diri." }
+    ];
+
+    function v(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
+    }
+
+    function esc(text) {
+      if (!text) return "";
+      return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function getSelectedJurnalData() {
+      const rombel = v('jurnalRombel');
+      return rombel.startsWith('4') ? JURNAL_DATA_IV : JURNAL_DATA_V_VI;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toastMsg');
+      if (!el) return;
+      el.textContent = msg || '📋 Isian Form Google Berhasil Disalin!';
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    function copyRowText(index) {
+      const data = getSelectedJurnalData();
+      const item = data[index];
+      if (!item) return;
+
+      const rombel = v('jurnalRombel');
+      const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
+      const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
+
+      const text = `Hari/Tanggal: [Diisi Tanggal KBM]
+Nama Guru: ${guruNama}
+Kelas: ${rombel}
+Mata Pelajaran: ${mapel}
+Pertemuan ke: ${item.p}
+Materi Pembelajaran: ${item.materi}
+Tujuan Pembelajaran: ${item.tp}
+Model dan Metode Pembelajaran: ${item.model}
+Media Pembelajaran: ${item.media}
+Ketuntasan/ketercapaian murid dalam memahami materi pembelajaran: ${item.tuntas}
+Kendala yang dihadapi saat KBM: ${item.kendala}`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`📋 Pertemuan Ke-${item.p} (${rombel}) berhasil disalin!`);
+      }).catch(err => {
+        console.error('Gagal salin:', err);
+      });
+    }
+
+    function copyAllJurnalText() {
+      const data = getSelectedJurnalData();
+      const smtFilter = v('jurnalSmt');
+      const rombel = v('jurnalRombel');
+      const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
+      const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
+
+      let fullText = `=== BANK ISIAN JURNAL MENGAJAR FORM GOOGLE ===\nKelas: ${rombel} | Guru: ${guruNama} | Mapel: ${mapel}\n\n`;
+
+      data.forEach(item => {
+        if (smtFilter === '1' && item.smt !== 1) return;
+        if (smtFilter === '2' && item.smt !== 2) return;
+
+        fullText += `[PERTEMUAN KE-${item.p} (Semester ${item.smt})]\n`;
+        fullText += `Pertemuan ke: ${item.p}\n`;
+        fullText += `Materi Pembelajaran: ${item.materi}\n`;
+        fullText += `Tujuan Pembelajaran: ${item.tp}\n`;
+        fullText += `Model dan Metode Pembelajaran: ${item.model}\n`;
+        fullText += `Media Pembelajaran: ${item.media}\n`;
+        fullText += `Ketuntasan/ketercapaian murid: ${item.tuntas}\n`;
+        fullText += `Kendala yang dihadapi saat KBM: ${item.kendala}\n`;
+        fullText += `--------------------------------------------------\n\n`;
+      });
+
+      navigator.clipboard.writeText(fullText).then(() => {
+        showToast(`📋 Seluruh Isian Jurnal (${rombel}) Berhasil Disalin!`);
+      }).catch(err => {
+        console.error('Gagal salin:', err);
+      });
+    }
+
+    function renderPreview() {
+      const rombel = v('jurnalRombel');
+      const smtFilter = v('jurnalSmt');
+      const instansi = v('instansi');
+      const mapel = v('mapel');
+      const tahun = v('tahun');
+      const tempatTgl = v('tempatTgl');
+      const kepsekNama = v('kepsekNama');
+      const kepsekNIY = v('kepsekNIY');
+      const guruNama = v('guruNama');
+      const guruNIY = v('guruNIY');
+
+      const data = getSelectedJurnalData();
+      let rowsHTML = "";
+      let count = 0;
+
+      data.forEach((item, index) => {
+        if (smtFilter === '1' && item.smt !== 1) return;
+        if (smtFilter === '2' && item.smt !== 2) return;
+        count++;
+
+        rowsHTML += `
+          <tr>
+            <td style="text-align: center; font-weight: bold; width: 4%;">${item.p}</td>
+            <td style="text-align: center; width: 6%; font-weight: 600;">Smt ${item.smt}</td>
+            <td style="font-weight: 600; width: 17%;">${esc(item.materi)}</td>
+            <td style="width: 22%;">${esc(item.tp)}</td>
+            <td style="width: 15%;">${esc(item.model)}</td>
+            <td style="width: 13%;">${esc(item.media)}</td>
+            <td style="text-align: center; font-weight: bold; width: 5%; color: #2e7d32;">${item.tuntas}</td>
+            <td style="width: 12%; font-size: 10px;">${esc(item.kendala)}</td>
+            <td class="no-print" style="text-align: center; width: 6%;">
+              <button class="btn-copy-row" onclick="copyRowText(${index})" title="Salin format untuk Google Form">📋 Salin</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const html = `
+        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px; margin-bottom: 20px; border-bottom: 2px solid #3b4a5c; padding-bottom: 10px;">
+          <img src="${YAYASAN_LOGO_SRC}" alt="Logo Yayasan" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none';">
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 17px; font-weight: 800; color: #3b4a5c; text-transform: uppercase; letter-spacing: 1px;">JURNAL MENGAJAR HARIAN GURU</div>
+            <div style="font-size: 15px; font-weight: 800; color: #3b4a5c; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px;">${esc(instansi).toUpperCase()}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">KELAS ${esc(rombel).toUpperCase()} &mdash; MATA PELAJARAN ${esc(mapel).toUpperCase()}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">TAHUN AJARAN ${esc(tahun)}</div>
+          </div>
+          <img src="${DEFAULT_LOGO_SRC}" alt="Logo Sekolah" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none';">
+        </div>
+
+        <table class="jurnal-table">
+          <thead>
+            <tr>
+              <th style="width: 4%;">P.Ke</th>
+              <th style="width: 6%;">Smt</th>
+              <th style="width: 17%;">Materi Pembelajaran</th>
+              <th style="width: 22%;">Tujuan Pembelajaran (TP)</th>
+              <th style="width: 15%;">Model &amp; Metode</th>
+              <th style="width: 13%;">Media Pembelajaran</th>
+              <th style="width: 5%;">Tuntas</th>
+              <th style="width: 12%;">Kendala saat KBM</th>
+              <th class="no-print" style="width: 6%;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
+
+        <div style="font-size: 10px; font-style: italic; margin-top: 10px; color: var(--muted);">
+          Catatan: Jurnal Mengajar Harian diisi setiap selesai KBM pada Form Google sekolah. Klik tombol "📋 Salin" pada setiap baris untuk menyalin isian secara instan.
+        </div>
+
+        <div class="sign-grid">
+          <div>
+            Mengetahui<br>Kepala Sekolah ${esc(instansi)}
+            <div class="gap"></div>
+            <div class="name">${esc(kepsekNama)}</div>
+            NIY. ${esc(kepsekNIY)}
+          </div>
+          <div>
+            ${esc(tempatTgl)}<br>Guru Bidang Studi
+            <div class="gap"></div>
+            <div class="name">${esc(guruNama)}</div>
+            NIY. ${esc(guruNIY)}
+          </div>
+        </div>
+      `;
+
+      const page = document.getElementById('page');
+      if (page) page.innerHTML = html;
+    }
+
+    const sizes = {
+      a4: { portrait: [210, 297], landscape: [297, 210] },
+      f4: { portrait: [215, 330], landscape: [330, 215] }
+    };
+
+    function updatePageStyle() {
+      const size = document.getElementById('paperSize').value;
+      const orient = document.getElementById('orientation').value;
+      const page = document.getElementById('page');
+      if (!page) return;
+
+      page.className = "sheet " + size + " " + orient + " pattern-linen";
+      const [w, h] = sizes[size][orient];
+      page.style.padding = orient === 'landscape' ? '8mm 10mm' : '15mm';
+
+      document.getElementById('pageSizeStyle').innerHTML = `
+        @page { size: ${w}mm ${h}mm; margin: ${orient === 'landscape' ? '8mm 10mm' : '15mm'}; }
+      `;
+      applyZoom();
+      renderPreview();
+    }
+
+    function applyZoom() {
+      const z = document.getElementById('zoom').value;
+      const page = document.getElementById('page');
+      const container = document.getElementById('page-container');
+      const canvas = document.querySelector('.canvas');
+      if (!page || !container || !canvas) return;
+
+      const size = document.getElementById('paperSize').value;
+      const orient = document.getElementById('orientation').value;
+      const [w, h] = sizes[size][orient];
+      const pagePxWidth = w * 3.7795;
+
+      let scale = 1;
+      if (z === "fit") {
+        const canvasWidth = canvas.clientWidth - 40;
+        scale = canvasWidth / pagePxWidth;
+        scale = Math.min(Math.max(scale, 0.4), 1.2);
+      } else {
+        scale = parseFloat(z);
+      }
+
+      page.style.transform = `scale(${scale})`;
+      page.style.transformOrigin = "top left";
+      container.style.width = `${pagePxWidth * scale}px`;
+      container.style.height = `${page.offsetHeight * scale}px`;
+    }
+
+    const PERSIST_PROFILE_FIELDS = [
+      'instansi', 'tahun', 'mapel', 'fase', 'tempatTgl', 'kepsekNama', 'kepsekNIY', 'guruNama', 'guruNIY'
+    ];
+
+    function getProfileStorageKey(id) {
+       const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
+       return userEmail ? `hdl_persisted_${userEmail}_${id}` : `hdl_persisted_${id}`;
+    }
+
+    function saveProfileFields() {
+      try {
+        PERSIST_PROFILE_FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) localStorage.setItem(getProfileStorageKey(id), el.value);
+        });
+      } catch (e) { }
+    }
+
+    function loadProfileFields() {
+      try {
+        PERSIST_PROFILE_FIELDS.forEach(id => {
+          const val = localStorage.getItem(getProfileStorageKey(id));
+          const el = document.getElementById(id);
+          if (val !== null && el) el.value = val;
+          if (el && !el.dataset.autosaveAttached) {
+             el.addEventListener('input', saveProfileFields);
+             el.dataset.autosaveAttached = 'true';
+          }
+        });
+      } catch (e) { }
+    }
+
+    function checkLoginBadge() {
+      try {
+        const savedCode = localStorage.getItem('hdl_access_code') || '';
+        const badge = document.getElementById('accountBadge');
+        if (savedCode && badge) {
+          badge.style.display = 'flex';
+          const uName = localStorage.getItem('hdl_user_name') || 'Pengguna';
+          const uEmail = localStorage.getItem('hdl_user_email') || '';
+          const uPhoto = localStorage.getItem('hdl_user_photo') || '';
+          const nameEl = document.getElementById('accountBadgeName');
+          const emailEl = document.getElementById('accountBadgeEmail');
+          const avatarInner = document.getElementById('accountBadgeAvatarInner');
+          if (nameEl) nameEl.textContent = uName;
+          if (emailEl) emailEl.textContent = uEmail;
+          if (uPhoto && avatarInner) {
+            avatarInner.innerHTML = '<img src="' + uPhoto + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+          } else if (avatarInner) {
+            avatarInner.textContent = uName.charAt(0).toUpperCase();
+          }
+        }
+      } catch (e) { }
+    }
+
+    function logoutGoogle() {
+      localStorage.removeItem('hdl_access_code');
+      window.location.href = 'index.html';
+    }
+
+    window.addEventListener('load', () => {
+      loadProfileFields();
+      checkLoginBadge();
+      updatePageStyle();
+      applyZoom();
+      window.addEventListener('resize', applyZoom);
+    });
+  </script>
+</body>
+
+</html>
