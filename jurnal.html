@@ -631,6 +631,41 @@
       { p: 31, smt: 2, materi: "Gelar Karya (Exhibition) & Presentasi Proyek Lintas Bidang", tp: "5.5 - Menyajikan dan mempresentasikan hasil karya digital secara percaya diri.", model: "Student Presentation & Refleksi Akhir Tahun", media: "Perangkat Komputer, LCD Proyektor, Rubrik", tuntas: 4, kendala: "Seluruh rangkaian KBM KKA 1 tahun ajaran berakhir sukses, siswa mempresentasikan karya dengan percaya diri." }
     ];
 
+    const WEEK_MAPPING = {
+      1: "Juli — Minggu 4",
+      2: "Juli — Minggu 5",
+      3: "Agustus — Minggu 1",
+      4: "Agustus — Minggu 2",
+      5: "Agustus — Minggu 3",
+      6: "Agustus — Minggu 4",
+      7: "September — Minggu 1",
+      8: "September — Minggu 2",
+      9: "Oktober — Minggu 1",
+      10: "Oktober — Minggu 3",
+      11: "Oktober — Minggu 4",
+      12: "Oktober — Minggu 5",
+      13: "November — Minggu 1",
+      14: "November — Minggu 2",
+      15: "November — Minggu 3",
+      16: "Desember — Minggu 2",
+
+      17: "Januari — Minggu 2",
+      18: "Januari — Minggu 3",
+      19: "Januari — Minggu 4",
+      20: "Februari — Minggu 1",
+      21: "Februari — Minggu 2",
+      22: "Februari — Minggu 3",
+      23: "Maret — Minggu 4",
+      24: "Maret — Minggu 5",
+      25: "April — Minggu 2",
+      26: "April — Minggu 3",
+      27: "Mei — Minggu 1",
+      28: "Mei — Minggu 2",
+      29: "Mei — Minggu 3",
+      30: "Juni — Minggu 2",
+      31: "Juni — Minggu 3"
+    };
+
     function v(id) {
       const el = document.getElementById(id);
       return el ? el.value : "";
@@ -662,12 +697,14 @@
       const rombel = v('jurnalRombel');
       const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
       const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
+      const wkt = WEEK_MAPPING[item.p] || "";
 
-      const text = `Hari/Tanggal: [Diisi Tanggal KBM]
+      const text = `Hari/Tanggal: [Diisi Tanggal KBM] (${wkt})
 Nama Guru: ${guruNama}
 Kelas: ${rombel}
 Mata Pelajaran: ${mapel}
 Pertemuan ke: ${item.p}
+Estimasi Waktu: ${wkt}
 Materi Pembelajaran: ${item.materi}
 Tujuan Pembelajaran: ${item.tp}
 Model dan Metode Pembelajaran: ${item.model}
@@ -676,7 +713,7 @@ Ketuntasan/ketercapaian murid dalam memahami materi pembelajaran: ${item.tuntas}
 Kendala yang dihadapi saat KBM: ${item.kendala}`;
 
       navigator.clipboard.writeText(text).then(() => {
-        showToast(`📋 Pertemuan Ke-${item.p} (${rombel}) berhasil disalin!`);
+        showToast(`📋 Pertemuan Ke-${item.p} (${wkt}) berhasil disalin!`);
       }).catch(err => {
         console.error('Gagal salin:', err);
       });
@@ -695,8 +732,10 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         if (smtFilter === '1' && item.smt !== 1) return;
         if (smtFilter === '2' && item.smt !== 2) return;
 
-        fullText += `[PERTEMUAN KE-${item.p} (Semester ${item.smt})]\n`;
+        const wkt = WEEK_MAPPING[item.p] || "";
+        fullText += `[PERTEMUAN KE-${item.p} — ${wkt} (Semester ${item.smt})]\n`;
         fullText += `Pertemuan ke: ${item.p}\n`;
+        fullText += `Waktu (Kaldik): ${wkt}\n`;
         fullText += `Materi Pembelajaran: ${item.materi}\n`;
         fullText += `Tujuan Pembelajaran: ${item.tp}\n`;
         fullText += `Model dan Metode Pembelajaran: ${item.model}\n`;
@@ -734,17 +773,20 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         if (smtFilter === '2' && item.smt !== 2) return;
         count++;
 
+        const wkt = WEEK_MAPPING[item.p] || "";
+
         rowsHTML += `
           <tr>
             <td style="text-align: center; font-weight: bold; width: 4%;">${item.p}</td>
-            <td style="text-align: center; width: 6%; font-weight: 600;">Smt ${item.smt}</td>
-            <td style="font-weight: 600; width: 17%;">${esc(item.materi)}</td>
-            <td style="width: 22%;">${esc(item.tp)}</td>
-            <td style="width: 15%;">${esc(item.model)}</td>
-            <td style="width: 13%;">${esc(item.media)}</td>
+            <td style="text-align: center; width: 10%; font-weight: 700; color: #3b4a5c; background: #f4f7f4;">${esc(wkt)}</td>
+            <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
+            <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
+            <td style="width: 20%;">${esc(item.tp)}</td>
+            <td style="width: 14%;">${esc(item.model)}</td>
+            <td style="width: 12%;">${esc(item.media)}</td>
             <td style="text-align: center; font-weight: bold; width: 5%; color: #2e7d32;">${item.tuntas}</td>
-            <td style="width: 12%; font-size: 10px;">${esc(item.kendala)}</td>
-            <td class="no-print" style="text-align: center; width: 6%;">
+            <td style="width: 10%; font-size: 10px;">${esc(item.kendala)}</td>
+            <td class="no-print" style="text-align: center; width: 4%;">
               <button class="btn-copy-row" onclick="copyRowText(${index})" title="Salin format untuk Google Form">📋 Salin</button>
             </td>
           </tr>
@@ -767,14 +809,15 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
           <thead>
             <tr>
               <th style="width: 4%;">P.Ke</th>
-              <th style="width: 6%;">Smt</th>
-              <th style="width: 17%;">Materi Pembelajaran</th>
-              <th style="width: 22%;">Tujuan Pembelajaran (TP)</th>
-              <th style="width: 15%;">Model &amp; Metode</th>
-              <th style="width: 13%;">Media Pembelajaran</th>
+              <th style="width: 10%;">Waktu (Bulan &amp; Minggu)</th>
+              <th style="width: 5%;">Smt</th>
+              <th style="width: 16%;">Materi Pembelajaran</th>
+              <th style="width: 20%;">Tujuan Pembelajaran (TP)</th>
+              <th style="width: 14%;">Model &amp; Metode</th>
+              <th style="width: 12%;">Media Pembelajaran</th>
               <th style="width: 5%;">Tuntas</th>
-              <th style="width: 12%;">Kendala saat KBM</th>
-              <th class="no-print" style="width: 6%;">Aksi</th>
+              <th style="width: 10%;">Kendala saat KBM</th>
+              <th class="no-print" style="width: 4%;">Aksi</th>
             </tr>
           </thead>
           <tbody>
