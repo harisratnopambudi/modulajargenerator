@@ -690,6 +690,9 @@
         <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
           <span>📂</span> Administrasi Kelas
         </a>
+        <a href="jurnal.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📖</span> Jurnal Mengajar
+        </a>
       </div>
 
       <details class="section" open>
@@ -702,6 +705,7 @@
               <option value="prota">Program Tahunan (PROTA)</option>
               <option value="tp">Tujuan Pembelajaran (TP)</option>
               <option value="jadwal">Jadwal Jam Mengajar</option>
+              <option value="jurnal">Jurnal Mengajar Harian</option>
             </select>
           </div>
           <div class="field" id="fieldKelas">
@@ -1007,6 +1011,10 @@
 
     function onDocTypeChange() {
       const docType = v('docType');
+      if (docType === 'jurnal') {
+        window.location.href = 'jurnal.html';
+        return;
+      }
       const orientSelect = document.getElementById('orientation');
       if (orientSelect) {
         if (docType === 'prosem' || docType === 'jadwal') {
