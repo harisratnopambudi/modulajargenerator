@@ -365,28 +365,31 @@
       min-height: 330mm;
     }
 
-    /* ---- Stabilo Highlighter Marker Effect ---- */
+    /* ---- Simple Clean Yellow Stabilo Highlight ---- */
     .stabilo-mark {
-      background: linear-gradient(100deg, rgba(254, 240, 138, 0.95) 0%, rgba(253, 224, 71, 0.85) 90%, rgba(254, 240, 138, 0.75) 100%);
-      box-shadow: 0 1px 5px rgba(234, 179, 8, 0.25);
-      border-radius: 4px 14px 3px 12px;
-      padding: 3px 8px;
-      color: #0f172a !important;
-      font-weight: 800;
-      display: inline-block;
+      background-color: #fff59d !important;
+      color: #1a252f !important;
+      font-weight: 700 !important;
+      padding: 3px 6px !important;
+      border-radius: 3px !important;
+      display: inline-block !important;
+    }
+
+    tr.active-week-row {
+      background-color: #fffde7 !important;
     }
 
     tr.active-week-row td {
-      background: rgba(254, 240, 138, 0.22) !important;
+      background-color: #fffde7 !important;
     }
 
     @media print {
       .stabilo-mark {
         background: transparent !important;
-        box-shadow: none !important;
         padding: 0 !important;
         color: inherit !important;
       }
+      tr.active-week-row,
       tr.active-week-row td {
         background: transparent !important;
       }
@@ -1249,7 +1252,7 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
 
         if (isHighlightEnabled && isCurrentRow) {
           rowStyleAttr = 'class="active-week-row"';
-          wktHTML = `<span class="stabilo-mark" title="Minggu KBM Real-time (Aktif)">🖍️ ${esc(wkt)}</span>`;
+          wktHTML = `<span class="stabilo-mark">${esc(wkt)}</span>`;
         }
 
         rowsHTML += `
