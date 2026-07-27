@@ -687,10 +687,10 @@
         <a href="index.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
           <span>📝</span> Modul Ajar
         </a>
-        <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
+        <a href="administrasi.html" id="navAdministrasi" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
           <span>📂</span> Administrasi Kelas
         </a>
-        <a href="jurnal.html" onclick="if(location.hostname.includes('github')||location.hostname.includes('harisdevlab')){location.href='administrasi.html?type=jurnal';return false;}" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+        <a href="jurnal.html" id="navJurnal" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
           <span>📖</span> Jurnal Mengajar
         </a>
       </div>
@@ -1251,6 +1251,32 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       if (rombelField) {
         rombelField.style.display = docType === 'jurnal' ? '' : 'none';
       }
+
+      // Highlight active navigation tab dynamically
+      const navAdmin = document.getElementById('navAdministrasi');
+      const navJurnal = document.getElementById('navJurnal');
+      if (navAdmin && navJurnal) {
+        if (docType === 'jurnal') {
+          navJurnal.style.background = 'var(--navy)';
+          navJurnal.style.color = '#ffffff';
+          navJurnal.style.fontWeight = '700';
+
+          navAdmin.style.background = '#eef1f2';
+          navAdmin.style.color = 'var(--navy-dark)';
+          navAdmin.style.fontWeight = '600';
+          navAdmin.style.border = '1px solid var(--border)';
+        } else {
+          navAdmin.style.background = 'var(--navy)';
+          navAdmin.style.color = '#ffffff';
+          navAdmin.style.fontWeight = '700';
+
+          navJurnal.style.background = '#eef1f2';
+          navJurnal.style.color = 'var(--navy-dark)';
+          navJurnal.style.fontWeight = '600';
+          navJurnal.style.border = '1px solid var(--border)';
+        }
+      }
+
       updatePageStyle();
     }
 
