@@ -344,46 +344,33 @@
     .sheet.a4.landscape { width: 297mm; min-height: 210mm; }
     .sheet.a4.portrait { width: 210mm; min-height: 297mm; }
 
-    /* ---- High-Impact Real Stabilo Highlighter Marker Pen Effect ---- */
+    /* ---- Simple Clean Yellow Stabilo Highlight ---- */
     .stabilo-mark {
-      background: #fef08a !important;
-      background: linear-gradient(104deg, #fef08a 0%, #fde047 80%, #fef08a 100%) !important;
-      box-shadow: 0 3px 10px rgba(234, 179, 8, 0.45), inset 0 -2px 0 rgba(202, 138, 4, 0.3) !important;
-      border-radius: 4px 18px 5px 15px !important;
-      padding: 5px 12px !important;
-      color: #0f172a !important;
-      font-weight: 800 !important;
-      font-size: 11px !important;
+      background-color: #fff59d !important;
+      color: #1a252f !important;
+      font-weight: 700 !important;
+      padding: 3px 6px !important;
+      border-radius: 3px !important;
       display: inline-block !important;
-      transform: rotate(-1deg);
-      letter-spacing: 0.3px;
-      border: 1px solid #facc15 !important;
     }
 
     tr.active-week-row {
-      background-color: rgba(254, 240, 138, 0.35) !important;
-      border-left: 6px solid #eab308 !important;
+      background-color: #fffde7 !important;
     }
 
     tr.active-week-row td {
-      background-color: rgba(254, 240, 138, 0.28) !important;
+      background-color: #fffde7 !important;
     }
 
     @media print {
       .stabilo-mark {
         background: transparent !important;
-        box-shadow: none !important;
         padding: 0 !important;
         color: inherit !important;
-        border: none !important;
-        transform: none !important;
       }
-      tr.active-week-row {
-        background-color: transparent !important;
-        border-left: none !important;
-      }
+      tr.active-week-row,
       tr.active-week-row td {
-        background-color: transparent !important;
+        background: transparent !important;
       }
     }
 
@@ -994,7 +981,7 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
 
         if (isHighlightEnabled && isCurrentRow) {
           rowStyleAttr = 'class="active-week-row"';
-          wktHTML = `<span class="stabilo-mark" title="Pertemuan KBM Disorot Spidol Stabilo">🖍️ ${esc(wkt)}</span>`;
+          wktHTML = `<span class="stabilo-mark">${esc(wkt)}</span>`;
         }
 
         rowsHTML += `
