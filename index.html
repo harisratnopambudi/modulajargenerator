@@ -1952,6 +1952,9 @@
         <a id="tabAdministrasi" href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: none; align-items: center; gap: 6px; border: 1px solid var(--border);">
           <span>📂</span> Administrasi Kelas
         </a>
+        <a id="tabJurnal" href="jurnal.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: none; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📖</span> Jurnal Mengajar
+        </a>
       </div>
 
       <details class="section ai-panel" open>
@@ -3359,11 +3362,14 @@ KELAS 5</textarea>
       try {
         const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
         const tabAdmin = document.getElementById('tabAdministrasi');
+        const tabJurnal = document.getElementById('tabJurnal');
         if (tabAdmin) {
           if (userEmail === 'harisratnopambudi@gmail.com') {
             tabAdmin.style.display = 'inline-flex';
+            if (tabJurnal) tabJurnal.style.display = 'inline-flex';
           } else {
             tabAdmin.style.display = 'none';
+            if (tabJurnal) tabJurnal.style.display = 'none';
           }
         }
       } catch (e) { }
