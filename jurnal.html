@@ -1010,9 +1010,7 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
             <td style="text-align: center; width: 11%; font-weight: 700;">${wktHTML}</td>
             <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
             <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
-            <td style="width: 20%;">${esc(tpFormatted)}</td>h: 5%; font-weight: 600;">Smt ${item.smt}</td>
-            <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
-            <td style="width: 20%;">${esc(item.tp)}</td>
+            <td style="width: 20%;">${esc(tpFormatted)}</td>
             <td style="width: 14%;">${esc(item.model)}</td>
             <td style="width: 12%;">${esc(item.media)}</td>
             <td style="text-align: center; font-weight: bold; width: 5%; color: #2e7d32;">${item.tuntas}</td>
@@ -1321,6 +1319,7 @@ Kendala yang dihadapi saat KBM: ${kendalaText}`;
       }
 
       updatePageStyle();
+      renderPreview();
       applyZoom();
       window.addEventListener('resize', applyZoom);
     });
