@@ -1296,10 +1296,6 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
             </td>
           </tr>
         `;
-      });r: 1px solid #cfe6c2; color: #3b4a5c; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer;">📋 Salin</button>
-            </td>
-          </tr>
-        `;
       });
 
       return `
@@ -2362,6 +2358,7 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         applyPresetTheme('original');
       }
 
+      onDocTypeChange();
       renderPreview();
       updatePageStyle();
       applyZoom();
