@@ -745,7 +745,7 @@
             <label>Pilih Rombel / Kelas Mengajar</label>
             <select id="docRombel" onchange="renderPreview()">
               <optgroup label="Kelas IV">
-                <option value="4 Sana'a">4 Sana'a — Senin (08.05 - 09.15)</option>
+                <option value="4 Sana'a">4 Sana'a — Rabu (13.30 - 14.20)</option>
                 <option value="4 Yaman">4 Yaman — Senin (09.40 - 10.50)</option>
                 <option value="4 Muskat">4 Muskat — Kamis (07.30 - 08.40)</option>
                 <option value="4 Abu Dhabi">4 Abu Dhabi — Rabu (09.40 - 10.50)</option>
@@ -753,7 +753,7 @@
               </optgroup>
               <optgroup label="Kelas V">
                 <option value="5 Cordoba">5 Cordoba — Senin (12.20 - 13.30)</option>
-                <option value="5 Damaskus">5 Damaskus — Rabu (13.30 - 14.20)</option>
+                <option value="5 Damaskus">5 Damaskus — Jumat (12.20 - 13.30)</option>
                 <option value="5 Istanbul">5 Istanbul — Rabu (12.20 - 13.30)</option>
                 <option value="5 Amman">5 Amman — Kamis (12.20 - 13.30)</option>
               </optgroup>
@@ -1795,9 +1795,9 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       { time: '07.30 - 08.05', period: 5,
         mon: '', tue: '', wed: '', thu: '4 Muskat', fri: '4 Najaf' },
       { time: '08.05 - 08.40', period: 6,
-        mon: "4 Sana'a", tue: '', wed: '6 Granada', thu: '4 Muskat', fri: '4 Najaf' },
+        mon: '', tue: '', wed: '6 Granada', thu: '4 Muskat', fri: '4 Najaf' },
       { time: '08.40 - 09.15', period: 7,
-        mon: "4 Sana'a", tue: '', wed: '6 Granada', thu: '', fri: '' },
+        mon: '', tue: '', wed: '6 Granada', thu: '', fri: '' },
       { time: '09.40 - 10.15', period: 9,
         mon: '4 Yaman', tue: '', wed: '4 Abu Dhabi', thu: '', fri: '' },
       { time: '10.15 - 10.50', period: 10,
@@ -1805,13 +1805,13 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       { time: '10.50 - 11.25', period: 11,
         mon: '', tue: '', wed: '', thu: '6 Madrid', fri: '6 Almeria' },
       { time: '12.20 - 12.55', period: 16,
-        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '5 Amman', fri: '' },
+        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '5 Amman', fri: '5 Damaskus' },
       { time: '12.55 - 13.30', period: 17,
-        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '5 Amman', fri: '' },
+        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '5 Amman', fri: '5 Damaskus' },
       { time: '13.30 - 14.05', period: 18,
-        mon: '', tue: '', wed: '5 Damaskus', thu: '6 Kuffah', fri: '' },
+        mon: '', tue: '', wed: "4 Sana'a", thu: '6 Kuffah', fri: '' },
       { time: '14.05 - 14.20', period: 19,
-        mon: '', tue: '', wed: '5 Damaskus', thu: '6 Kuffah', fri: '' }
+        mon: '', tue: '', wed: "4 Sana'a", thu: '6 Kuffah', fri: '' }
     ];
 
     function getKelasLevel(text) {
