@@ -2275,13 +2275,32 @@ KELAS 5</textarea>
           <div class="row2">
             <div class="field"><label>Nama Kepala Sekolah</label><input type="text" id="kepsekNama"
                 value="Hj. Lia Yulindaria, S.P.,S.Pd.,M.Pd."></div>
-            <div class="field"><label>NIY Kepala Sekolah</label><input type="text" id="kepsekNIY" value="07699114">
+            <div class="field">
+              <label>Nomor Identitas Kepala Sekolah</label>
+              <div style="display:flex; gap:6px;">
+                <select id="kepsekLabelType" onchange="saveProfileFields(); renderPreview();" style="width:100px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; font-size:13px;">
+                  <option value="NIP">NIP</option>
+                  <option value="NIY">NIY</option>
+                  <option value="NIP/NIY" selected>NIP/NIY</option>
+                </select>
+                <input type="text" id="kepsekNIY" value="07699114" style="flex:1;">
+              </div>
             </div>
           </div>
           <div class="row2">
             <div class="field"><label>Nama Guru Bidang Studi</label><input type="text" id="guruNama"
                 value="Haris Ratno Pambudi, S.T."></div>
-            <div class="field"><label>NIY Guru</label><input type="text" id="guruNIY" value="236991324"></div>
+            <div class="field">
+              <label>Nomor Identitas Guru</label>
+              <div style="display:flex; gap:6px;">
+                <select id="guruLabelType" onchange="saveProfileFields(); renderPreview();" style="width:100px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; font-size:13px;">
+                  <option value="NIP">NIP</option>
+                  <option value="NIY">NIY</option>
+                  <option value="NIP/NIY" selected>NIP/NIY</option>
+                </select>
+                <input type="text" id="guruNIY" value="236991324" style="flex:1;">
+              </div>
+            </div>
           </div>
         </div>
       </details>
@@ -3095,13 +3114,13 @@ KELAS 5</textarea>
         Mengetahui<br>Kepala Sekolah
         <div class="gap"></div>
         <div class="name">${esc(v('kepsekNama'))}</div>
-        NIY. ${esc(v('kepsekNIY'))}
+        ${esc(v('kepsekLabelType') || 'NIP/NIY')}. ${esc(v('kepsekNIY'))}
       </div>
       <div>
         ${esc(v('tempatTgl'))}<br>Guru Bidang Studi
         <div class="gap"></div>
         <div class="name">${esc(v('guruNama'))}</div>
-        NIY. ${esc(v('guruNIY'))}
+        ${esc(v('guruLabelType') || 'NIP/NIY')}. ${esc(v('guruNIY'))}
       </div>
     </div>
   `;
@@ -4506,7 +4525,7 @@ Aturan wajib:
 
     const PERSIST_PROFILE_FIELDS = [
       'penyusun', 'instansi', 'tahun', 'jenjang', 'mapel', 'fase',
-      'tempatTgl', 'kepsekNama', 'kepsekNIY', 'guruNama', 'guruNIY'
+      'tempatTgl', 'kepsekNama', 'kepsekLabelType', 'kepsekNIY', 'guruNama', 'guruLabelType', 'guruNIY'
     ];
     const PERSIST_PROFILE_CHECKBOXES = [
       'toggleBanner', 'toggleLogoYayasan', 'toggleQuran'
