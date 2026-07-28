@@ -4,12 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administrasi Kelas - Haris DevLab</title>
+  <title>Jurnal Mengajar Harian - Haris DevLab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --navy: #4a5b70;
@@ -29,9 +27,6 @@
 
     * {
       box-sizing: border-box;
-    }
-
-    * {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
       color-adjust: exact;
@@ -82,14 +77,6 @@
         gap: 6px;
         position: relative;
       }
-      .toolbar .grp {
-        font-size: 11px;
-        gap: 4px;
-      }
-      .toolbar select {
-        font-size: 11px;
-        padding: 4px 6px;
-      }
       .btn-print {
         position: fixed;
         top: auto !important;
@@ -104,24 +91,6 @@
         z-index: 9999;
         white-space: nowrap;
         text-align: center;
-      }
-      #accountBadge {
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 8px 10px;
-      }
-      .row2 {
-        grid-template-columns: 1fr;
-      }
-      .section > summary {
-        font-size: 12px;
-        padding: 8px 10px;
-      }
-      .section .body {
-        padding: 10px;
-      }
-      .toggle-grp {
-        font-size: 10px;
       }
     }
 
@@ -199,200 +168,109 @@
       padding: 7px 8px;
       border: 1px solid var(--border);
       border-radius: 5px;
-      background: #fbfcfc;
+      background: #fff;
       color: var(--ink);
     }
 
     .row2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .field {
-      margin-bottom: 2px;
-    }
-
-    /* ---------- PREVIEW PANEL ---------- */
+    /* ---------- PREVIEW AREA ---------- */
     .preview-wrap {
       display: flex;
       flex-direction: column;
       height: 100vh;
-      position: relative;
+      background: #cfd8dc;
+      overflow: hidden;
     }
 
     .toolbar {
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
+      background: #263238;
+      color: #fff;
+      padding: 10px 16px;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       gap: 12px;
+      font-size: 12px;
+      flex-shrink: 0;
       z-index: 10;
     }
 
+    .toolbar select {
+      background: #37474f;
+      color: #fff;
+      border: 1px solid #546e7a;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
     .toolbar .grp {
-      font-size: 11px;
-      font-weight: bold;
-      color: var(--navy-dark);
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .toolbar select {
-      width: auto;
-      padding: 4px 8px;
-      font-size: 11.5px;
-    }
-
-    .toolbar .spacer {
+    .spacer {
       flex: 1;
     }
 
     .btn-print {
-      background: var(--navy);
+      background: var(--teal);
       color: #fff;
-      font-weight: bold;
-      padding: 8px 16px;
+      border: none;
+      padding: 7px 16px;
       border-radius: 5px;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 12px;
-      box-shadow: 0 2px 4px rgba(74, 91, 112, 0.2);
-      transition: background .2s;
+      font-size: 12.5px;
+      transition: background 0.2s;
     }
 
     .btn-print:hover {
-      background: var(--navy-dark);
+      background: var(--teal-dark);
     }
 
-    .toggle-grp {
+    .btn-copy-all {
+      background: #0288d1;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: bold;
-      color: var(--navy-dark);
-      cursor: pointer;
+      gap: 5px;
     }
 
-    /* Toggle Switch */
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 28px;
-      height: 16px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      inset: 0;
-      background-color: #cbd5e0;
-      transition: .2s;
-      border-radius: 16px;
-    }
-
-    .toggle-slider:before {
-      position: absolute;
-      content: "";
-      height: 12px;
-      width: 12px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      transition: .2s;
-      border-radius: 50%;
-    }
-
-    .toggle-switch input:checked+.toggle-slider {
-      background-color: var(--teal);
-    }
-
-    .toggle-switch input:checked+.toggle-slider:before {
-      transform: translateX(12px);
+    .btn-copy-all:hover {
+      background: #0277bd;
     }
 
     .canvas {
       flex: 1;
-      overflow-y: auto;
-      scrollbar-gutter: stable;
-      text-align: center;
-      padding: 40px 20px;
-      background: #e4e8eb;
-      background-image: radial-gradient(#c4cbd0 1px, transparent 1px);
-      background-size: 20px 20px;
+      overflow: auto;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
     }
 
     #page-container {
-      display: inline-block;
-      position: relative;
-      text-align: left;
-      vertical-align: top;
       margin: 0 auto;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 4px;
-      background: var(--paper);
     }
 
     .sheet {
-      background: var(--paper);
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      position: relative;
+      box-sizing: border-box;
       padding: 15mm;
-      font-size: 11px;
-      line-height: 1.45;
-      margin: 0;
-    }
-
-    .sheet.a4.portrait {
-      width: 210mm;
-      min-height: 297mm;
-    }
-
-    .sheet.a4.landscape {
-      width: 297mm;
-      min-height: 210mm;
-    }
-
-    .sheet.f4.portrait {
-      width: 215mm;
-      min-height: 330mm;
-    }
-
-    /* ---- Simple Clean Yellow Stabilo Highlight ---- */
-    .stabilo-mark {
-      background-color: #fff59d !important;
-      color: #1a252f !important;
-      font-weight: 700 !important;
-      padding: 3px 6px !important;
-      border-radius: 3px !important;
-      display: inline-block !important;
-    }
-
-    tr.active-week-row {
-      background-color: #fffde7 !important;
-    }
-
-    tr.active-week-row td {
-      background-color: #fffde7 !important;
-    }
-
-    @media print {
-      .stabilo-mark {
-        background: transparent !important;
-        padding: 0 !important;
-        color: inherit !important;
-      }
-      tr.active-week-row,
-      tr.active-week-row td {
-        background: transparent !important;
-      }
     }
 
     /* ---- Paper Patterns ---- */
@@ -461,145 +339,110 @@
       background-repeat: repeat !important;
     }
 
-    /* ---------- LAYOUT CETAK / PREVIEW ---------- */
-    .m-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      border: 2px solid var(--navy-dark);
-      background: var(--teal-bg-light);
-      padding: 10px 15px;
-      margin-bottom: 15px;
-      border-radius: 6px;
+    .sheet.f4.landscape { width: 330mm; min-height: 215mm; }
+    .sheet.f4.portrait { width: 215mm; min-height: 330mm; }
+    .sheet.a4.landscape { width: 297mm; min-height: 210mm; }
+    .sheet.a4.portrait { width: 210mm; min-height: 297mm; }
+
+    /* ---- Simple Clean Yellow Stabilo Highlight ---- */
+    .stabilo-mark {
+      background-color: #fff59d !important;
+      color: #1a252f !important;
+      font-weight: 700 !important;
+      padding: 3px 6px !important;
+      border-radius: 3px !important;
+      display: inline-block !important;
     }
 
-    .m-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 55px;
-      height: 55px;
+    tr.active-week-row {
+      background-color: #fffde7 !important;
     }
 
-    .m-logo svg,
-    .m-logo img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+    tr.active-week-row td {
+      background-color: #fffde7 !important;
     }
 
-    .m-title {
-      flex: 1;
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--teal-text);
-      background: var(--navy);
-      padding: 6px 12px;
-      border-radius: 4px;
-      text-align: center;
-      letter-spacing: 0.5px;
+    @media print {
+      .stabilo-mark {
+        background: transparent !important;
+        padding: 0 !important;
+        color: inherit !important;
+      }
+      tr.active-week-row,
+      tr.active-week-row td {
+        background: transparent !important;
+      }
     }
 
-    .m-badge {
-      font-size: 8.5px;
-      font-weight: 700;
-      text-align: center;
-      border: 1px solid var(--navy);
-      padding: 4px 8px;
-      border-radius: 4px;
-      background: #fff;
-      line-height: 1.3;
-      min-width: 90px;
-    }
+    /* Paper Patterns */
+    .pattern-linen { background-image: radial-gradient(#d5e1d2 0.75px, transparent 0.75px); background-size: 12px 12px; }
 
-    table.mtab {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 14px;
-    }
-
-    table.mtab th,
-    table.mtab td {
-      border: 1px solid var(--border);
-      padding: 5px 8px;
-      font-size: 11px;
-    }
-
-    table.mtab td.key {
-      font-weight: 700;
-      width: 25%;
-      background: var(--teal-bg-light);
-      color: var(--navy-dark);
-    }
-
-    /* Styles for curriculum tables */
-    table.adm-tab {
+    /* Table Styles */
+    table.jurnal-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
-      font-size: 12.5px;
+      font-size: 11px;
     }
 
-    table.adm-tab th {
+    table.jurnal-table th {
       background: var(--navy);
       color: white;
       border: 1px solid var(--border);
-      padding: 8px 10px;
+      padding: 8px 6px;
       font-weight: 700;
       text-align: center;
     }
 
-    table.adm-tab td {
+    table.jurnal-table td {
       border: 1px solid var(--border);
-      padding: 7px 8px;
-      vertical-align: middle;
+      padding: 6px 8px;
+      vertical-align: top;
       color: var(--ink);
     }
 
-    table.adm-tab tr:nth-child(even) td {
+    table.jurnal-table tr:nth-child(even) td {
       background: #f8fafb;
     }
 
-    table.prosem-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10px;
-      margin-top: 10px;
-    }
-
-    table.prosem-table th,
-    table.prosem-table td {
-      border: 1px solid var(--border);
-      padding: 4px 2px;
-      text-align: center;
-    }
-
-    table.prosem-table th {
-      background: var(--navy);
-      color: white;
-      font-weight: bold;
-    }
-
-    table.prosem-table td.materi-cell {
-      text-align: left;
-      padding-left: 6px;
-      font-weight: 500;
-    }
-
-    table.prosem-table .cell-as {
-      background: #e67e22 !important;
-      color: white !important;
-      font-weight: bold;
-    }
-
-    table.prosem-table .cell-jp {
-      font-weight: bold;
-    }
-
-    table.prosem-table tr.total-row td {
+    .btn-copy-row {
       background: #eaf3e5;
-      font-weight: bold;
+      border: 1px solid #cfe6c2;
       color: #3b4a5c;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-copy-row:hover {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal-dark);
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1b5e20;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      z-index: 99999;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .sign-grid {
@@ -612,65 +455,17 @@
       page-break-inside: avoid;
     }
 
-    .sign-grid div {
-      text-align: center;
-    }
-
-    .sign-grid .gap {
-      height: 55px;
-    }
-
-    .sign-grid .name {
-      font-weight: 700;
-      text-decoration: underline;
-    }
+    .sign-grid div { text-align: center; }
+    .sign-grid .gap { height: 55px; }
+    .sign-grid .name { font-weight: 700; text-decoration: underline; }
 
     @media print {
-      .no-print {
-        display: none !important;
-      }
-
-      body {
-        background: #fff;
-      }
-
-      .canvas {
-        padding: 0;
-        overflow: visible;
-        display: block;
-        background: transparent !important;
-        background-image: none !important;
-      }
-
-      .preview-wrap {
-        height: auto !important;
-        display: block !important;
-      }
-
-      #page-container {
-        display: block !important;
-        width: auto !important;
-        height: auto !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: none !important;
-      }
-
-      .app {
-        display: block;
-        height: auto;
-      }
-
-      .sheet {
-        box-shadow: none;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: auto !important;
-        min-height: 0 !important;
-        transform: none !important;
-        background: transparent !important;
-      }
+      .no-print { display: none !important; }
+      body { background: #fff; }
+      .canvas { padding: 0 !important; overflow: visible !important; display: block !important; }
+      .preview-wrap { height: auto !important; display: block !important; }
+      #page-container { display: block !important; width: auto !important; height: auto !important; margin: 0 !important; padding: 0 !important; }
+      .sheet { box-shadow: none !important; margin: 0 !important; padding: 0 !important; width: auto !important; min-height: 0 !important; transform: none !important; background: transparent !important; }
     }
   </style>
 </head>
@@ -692,72 +487,45 @@
             <div id="accountBadgeEmail" style="font-size: 11px; color: var(--navy); line-height: 1;"></div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 15px;">
-          <div id="cloudSyncStatus" style="display: none; align-items: center; gap: 4px; font-size: 11px; color: var(--navy); opacity: 0.8;" title="Tersimpan di Cloud">
-            <svg id="cloudSyncIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <!-- Default: Saved -->
-              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
-              <polyline points="9 14 11 16 15 11"></polyline>
-            </svg>
-            <span id="cloudSyncText" style="display:none; font-weight:600;">Tersimpan</span>
-          </div>
-          <button onclick="logoutGoogle()" style="background: #fff; border: 1px solid #e0e0e0; color: #c53030; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Logout</button>
-        </div>
+        <button onclick="logoutGoogle()" style="background: #fff; border: 1px solid #e0e0e0; color: #c53030; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Logout</button>
       </div>
-      <h1>Generator Modul Ajar</h1>
-      <div class="sub">Manajemen perangkat administrasi pembelajaran. Haris DevLab.</div>
+
+      <h1>Jurnal Mengajar Harian</h1>
+      <div class="sub">Rincian isian Google Form KBM 1 Tahun Ajaran (31 Pertemuan). Haris DevLab.</div>
 
       <!-- Navigation Tabs -->
       <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 2px solid var(--bg); padding-bottom: 8px;" class="no-print">
         <a href="index.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
           <span>📝</span> Modul Ajar
         </a>
-        <a href="administrasi.html" id="navAdministrasi" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
-          <span>📂</span> Administrasi Kelas
+        <a href="administrasi.html" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
+          <span>📂</span> Administrasi
         </a>
-        <a href="jurnal.html" id="navJurnal" style="text-decoration: none; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; background: #eef1f2; color: var(--navy-dark); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border);">
-          <span>📖</span> Jurnal Mengajar
+        <a href="jurnal.html" style="text-decoration: none; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; background: var(--navy); color: white; display: inline-flex; align-items: center; gap: 6px;">
+          <span>📖</span> Jurnal KBM
         </a>
       </div>
 
       <details class="section" open>
-        <summary>Pilihan Administrasi</summary>
+        <summary>Pilihan Kelas & Semester</summary>
         <div class="body">
           <div class="field">
-            <label>Jenis Perangkat Administrasi</label>
-            <select id="docType" onchange="onDocTypeChange()">
-              <option value="prosem">Program Semester (PROSEM)</option>
-              <option value="prota">Program Tahunan (PROTA)</option>
-              <option value="tp">Tujuan Pembelajaran (TP)</option>
-              <option value="jadwal">Jadwal Jam Mengajar</option>
-              <option value="jurnal">Jurnal Mengajar Harian</option>
-            </select>
-          </div>
-          <div class="field" id="fieldKelas">
-            <label>Tingkat Kelas</label>
-            <select id="docKelas" onchange="renderPreview()">
-              <option value="IV">Kelas IV (Empat)</option>
-              <option value="V">Kelas V (Lima)</option>
-              <option value="VI" selected>Kelas VI (Enam)</option>
-            </select>
-          </div>
-          <div class="field" id="fieldRombel" style="display: none;">
-            <label>Pilih Rombel / Kelas Mengajar</label>
-            <select id="docRombel" onchange="onRombelChange(); renderPreview()">
-              <optgroup label="Kelas IV">
+            <label>Pilih Kelas / Rombel Mengajar</label>
+            <select id="jurnalRombel" onchange="renderPreview()">
+              <optgroup label="Kelas IV (Senin, Rabu, Kamis, Jumat)">
                 <option value="4 Sana'a">4 Sana'a — Senin (08.05 - 09.15)</option>
                 <option value="4 Yaman">4 Yaman — Senin (09.40 - 10.50)</option>
                 <option value="4 Muskat">4 Muskat — Kamis (07.30 - 08.40)</option>
                 <option value="4 Abu Dhabi">4 Abu Dhabi — Rabu (09.40 - 10.50)</option>
                 <option value="4 Najaf">4 Najaf — Jumat (07.30 - 08.40)</option>
               </optgroup>
-              <optgroup label="Kelas V">
+              <optgroup label="Kelas V (Senin, Rabu, Kamis)">
                 <option value="5 Cordoba">5 Cordoba — Senin (12.20 - 13.30)</option>
-                <option value="5 Damaskus">5 Damaskus — Jumat (12.20 - 13.30)</option>
+                <option value="5 Damaskus">5 Damaskus — Rabu (13.30 - 14.20)</option>
                 <option value="5 Istanbul">5 Istanbul — Rabu (12.20 - 13.30)</option>
                 <option value="5 Amman">5 Amman — Kamis (12.20 - 13.30)</option>
               </optgroup>
-              <optgroup label="Kelas VI">
+              <optgroup label="Kelas VI (Rabu, Kamis, Jumat)">
                 <option value="6 Kuffah" selected>6 Kuffah — Kamis (13.30 - 14.20)</option>
                 <option value="6 Granada">6 Granada — Rabu (08.05 - 09.15)</option>
                 <option value="6 Madrid">6 Madrid — Kamis (10.15 - 11.25)</option>
@@ -765,8 +533,16 @@
               </optgroup>
             </select>
           </div>
+          <div class="field">
+            <label>Filter Semester</label>
+            <select id="jurnalSmt" onchange="renderPreview()">
+              <option value="all" selected>Semua Semester (Smt 1 &amp; Smt 2 — 31 Pertemuan)</option>
+              <option value="1">Semester 1 / Ganjil (Pertemuan 1 - 16)</option>
+              <option value="2">Semester 2 / Genap (Pertemuan 17 - 31)</option>
+            </select>
+          </div>
 
-          <div class="field" id="fieldStabiloJurnal" style="background: #fefce8; padding: 10px; border-radius: 8px; border: 1px solid #fef08a; margin-top: 12px; display: none;">
+          <div class="field" style="background: #fefce8; padding: 10px; border-radius: 8px; border: 1px solid #fef08a; margin-top: 12px;">
             <label style="display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 800; color: #854d0e; cursor: pointer; text-transform: none;">
               <input type="checkbox" id="chkHighlightActive" checked onchange="renderPreview()" style="width: 16px; height: 16px; accent-color: #ca8a04; cursor: pointer;">
               🖍️ Sorot Baris KBM Disertai Spidol Stabilo (Yellow Pen)
@@ -791,6 +567,10 @@
                 <option value="14">Pertemuan 14 (November — Minggu 2)</option>
                 <option value="15">Pertemuan 15 (November — Minggu 3)</option>
                 <option value="16">Pertemuan 16 (Desember — Minggu 2)</option>
+                <option value="17">Pertemuan 17 (Januari — Minggu 2)</option>
+                <option value="18">Pertemuan 18 (Januari — Minggu 3)</option>
+                <option value="19">Pertemuan 19 (Januari — Minggu 4)</option>
+                <option value="20">Pertemuan 20 (Februari — Minggu 1)</option>
               </select>
             </div>
           </div>
@@ -932,149 +712,31 @@
         <div class="grp">Zoom:
           <select id="zoom" onchange="applyZoom()">
             <option value="fit" selected>Sesuai Lebar</option>
-            <option value="0.55">55%</option>
             <option value="0.7">70%</option>
             <option value="0.85">85%</option>
             <option value="1.0">100%</option>
-            <option value="1.15">115%</option>
-            <option value="1.3">130%</option>
-            <option value="1.5">150%</option>
           </select>
         </div>
+        <button class="btn-copy-all" onclick="copyAllJurnalText()">📋 Copy Format Teks Form</button>
         <div class="spacer"></div>
-        <button class="btn-print no-print" onclick="window.print()">Cetak / Simpan PDF</button>
+        <button class="btn-print no-print" onclick="window.print()">Cetak / PDF Jurnal</button>
       </div>
-
 
       <div class="canvas">
         <div id="page-container">
           <div id="page" class="sheet f4 landscape pattern-linen"></div>
         </div>
       </div>
-
     </div>
 
   </div>
 
+  <div id="toastMsg" class="toast-msg">📋 Isian Form Google Berhasil Disalin!</div>
+
   <style id="pageSizeStyle"></style>
 
   <script>
-    // Validasi role admin (hanya harisratnopambudi@gmail.com yang boleh mengakses)
-    try {
-      const email = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
-      if (email !== 'harisratnopambudi@gmail.com') {
-        window.location.href = 'index.html';
-      }
-    } catch (e) {
-      window.location.href = 'index.html';
-    }
-
-    let logoDataUrl = "";
-    let logoYayasanDataUrl = "";
-    const DEFAULT_LOGO_SRC = "img/logosekolah.png";
-    const YAYASAN_LOGO_SRC = "img/logoyayasan.png";
-    const BANNER_SRC = "img/banner.png";
-
-    // 1. Data PROTA — Kelas V/VI (Fase C)
-    const PROTA_DATA = [
-      { no: 1, semester: "1 (Ganjil)", bab: "Bab 1", materi: "Berpikir Komputasional", jp: 16, ket: "" },
-      { no: 2, semester: "1 (Ganjil)", bab: "Bab 2", materi: "Literasi Digital", jp: 16, ket: "" },
-      { no: 3, semester: "2 (Genap)", bab: "Bab 3", materi: "Literasi dan Etika Kecerdasan Artifisial (KA)", jp: 12, ket: "" },
-      { no: 4, semester: "2 (Genap)", bab: "Bab 4", materi: "Pemanfaatan dan Pengembangan Kecerdasan Artifisial", jp: 10, ket: "" },
-      { no: 5, semester: "2 (Genap)", bab: "Bab 5", materi: "Praktik Lintas Bidang", jp: 8, ket: "" }
-    ];
-
-    // 1b. Data PROTA — Kelas IV (Fase B)
-    const PROTA_DATA_IV = [
-      { no: 1, semester: "1 (Ganjil)", bab: "Bab 1", materi: "Mengenal Sistem Komputer", jp: 10, ket: "" },
-      { no: 2, semester: "1 (Ganjil)", bab: "Bab 2", materi: "Berpikir Komputasional", jp: 10, ket: "" },
-      { no: 3, semester: "1 (Ganjil)", bab: "Bab 3", materi: "Memberi Perintah Seperti Programmer", jp: 12, ket: "" },
-      { no: 4, semester: "2 (Genap)", bab: "Bab 4", materi: "Robot Mengambil Keputusan", jp: 10, ket: "" },
-      { no: 5, semester: "2 (Genap)", bab: "Bab 5", materi: "Melakukan Perintah dalam Permainan (Unplugged Coding)", jp: 10, ket: "" },
-      { no: 6, semester: "2 (Genap)", bab: "Bab 6", materi: "Bijak dengan Teknologi dan KA", jp: 10, ket: "" }
-    ];
-
-    // 2. Data PROSEM S1 — Kelas V/VI (26 minggu: Juli W1-5 s/d Desember W1-4)
-    const PROSEM_S1_DATA = [
-      { no: 1, bab: "Bab 1 — Berpikir Komputasional", jp: 16, weeks: ["", "", "", 2, 2, 2, 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
-      { no: 2, bab: "Bab 2 — Literasi Digital", jp: 16, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, "", "", "", 2, 2, 2, 2, 2, 2, "", "", 2, "", ""] }
-    ];
-
-    // 2b. Data PROSEM S1 — Kelas IV (26 minggu: Juli W1-5 s/d Desember W1-4)
-    const PROSEM_S1_DATA_IV = [
-      { no: 1, bab: "Bab 1 — Mengenal Sistem Komputer", jp: 10, weeks: ["", "", "", 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
-      { no: 2, bab: "Bab 2 — Berpikir Komputasional", jp: 10, weeks: ["", "", "", "", "", "", "", "", 2, 2, 2, "", "", "", "", 2, 2, "", "", "", "", "", "", "", "", ""] },
-      { no: 3, bab: "Bab 3 — Memberi Perintah Seperti Programmer", jp: 12, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, 2, 2, "", "", 2, "", ""] }
-    ];
-
-    // 3. Data PROSEM S2 — Kelas V/VI (25 minggu: Januari W1-4 s/d Juni W1-4)
-    const PROSEM_S2_DATA = [
-      { no: 1, bab: "Bab 3 — Literasi dan Etika Kecerdasan Artifisial (KA)", jp: 12, weeks: ["", 2, 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
-      { no: 2, bab: "Bab 4 — Pemanfaatan dan Pengembangan Kecerdasan Artifisial", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, 2, "", 2, 2, "", 2, "", "", "", "", "", "", ""] },
-      { no: 3, bab: "Bab 5 — Praktik Lintas Bidang", jp: 8, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, "", "", 2, 2, ""] }
-    ];
-
-    // 3b. Data PROSEM S2 — Kelas IV (25 minggu: Januari W1-4 s/d Juni W1-4)
-    const PROSEM_S2_DATA_IV = [
-      { no: 1, bab: "Bab 4 — Robot Mengambil Keputusan", jp: 10, weeks: ["", 2, 2, 2, 2, 2, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""] },
-      { no: 2, bab: "Bab 5 — Melakukan Perintah dalam Permainan (Unplugged Coding)", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", 2, 2, "", 2, 2, "", 2, "", "", "", "", "", "", ""] },
-      { no: 3, bab: "Bab 6 — Bijak dengan Teknologi dan KA", jp: 10, weeks: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 2, 2, "", "", 2, 2, ""] }
-    ];
-
-    // 4. Data TP — Kelas V/VI (Fase C)
-    const TP_DATA = [
-      { no: 1, kode: "1.1", bab: "Bab 1. Berpikir Komputasional", tp: "Mengidentifikasi permasalahan sederhana dalam kehidupan sehari-hari.", jp: 2 },
-      { no: 2, kode: "1.2", bab: "Bab 1. Berpikir Komputasional", tp: "Menguraikan masalah menggunakan dekomposisi, pengenalan pola, dan abstraksi.", jp: 2 },
-      { no: 3, kode: "1.3", bab: "Bab 1. Berpikir Komputasional", tp: "Menyusun algoritma dan flowchart sebagai solusi suatu permasalahan.", jp: 3 },
-      { no: 4, kode: "1.4", bab: "Bab 1. Berpikir Komputasional", tp: "Mengembangkan program visual menggunakan Scratch.", jp: 3 },
-      { no: 5, kode: "1.5", bab: "Bab 1. Berpikir Komputasional", tp: "Menggunakan koordinat, variabel, dan logika dasar dalam membuat program Scratch.", jp: 3 },
-      { no: 6, kode: "1.6", bab: "Bab 1. Berpikir Komputasional", tp: "Menguji (debugging) dan menyempurnakan program yang telah dibuat.", jp: 3 },
-      { no: 7, kode: "2.1", bab: "Bab 2. Literasi Digital", tp: "Menjelaskan konsep teknologi digital beserta manfaat dan dampaknya dalam kehidupan sehari-hari.", jp: 3 },
-      { no: 8, kode: "2.2", bab: "Bab 2. Literasi Digital", tp: "Mengidentifikasi komponen dasar sistem komputer dan cara kerjanya.", jp: 3 },
-      { no: 9, kode: "2.3", bab: "Bab 2. Literasi Digital", tp: "Memanfaatkan internet secara bijak untuk mencari informasi dan referensi proyek.", jp: 3 },
-      { no: 10, kode: "2.4", bab: "Bab 2. Literasi Digital", tp: "Mengidentifikasi peran sistem komputer dan internet dalam Kecerdasan Artifisial (KA).", jp: 3 },
-      { no: 11, kode: "2.5", bab: "Bab 2. Literasi Digital", tp: "Membuat dan membagikan konten digital sederhana dengan memperhatikan etika digital.", jp: 4 },
-      { no: 12, kode: "3.1", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menjelaskan pengertian Kecerdasan Artifisial (KA).", jp: 2 },
-      { no: 13, kode: "3.2", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Mengidentifikasi manfaat dan dampak KA dalam kehidupan sehari-hari.", jp: 2 },
-      { no: 14, kode: "3.3", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menjelaskan bahwa KA dikembangkan untuk membantu manusia.", jp: 2 },
-      { no: 15, kode: "3.4", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menjelaskan perbedaan cara manusia dan komputer melakukan pengindraan.", jp: 2 },
-      { no: 16, kode: "3.5", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Membedakan mesin cerdas dan mesin noncerdas.", jp: 2 },
-      { no: 17, kode: "3.6", bab: "Bab 3. Literasi dan Etika Kecerdasan Artifisial (KA)", tp: "Menerapkan etika dasar dalam penggunaan Kecerdasan Artifisial.", jp: 2 },
-      { no: 18, kode: "4.1", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Menjelaskan cara kerja sederhana sistem KA dalam mengenali pola.", jp: 2 },
-      { no: 19, kode: "4.2", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Melakukan klasifikasi objek berdasarkan ciri atau karakteristik tertentu.", jp: 2 },
-      { no: 20, kode: "4.3", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Menjelaskan proses klasifikasi dan prediksi yang dilakukan oleh sistem KA.", jp: 2 },
-      { no: 21, kode: "4.4", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Mengamati perubahan hasil prediksi berdasarkan perubahan input.", jp: 2 },
-      { no: 22, kode: "4.5", bab: "Bab 4. Pemanfaatan dan Pengembangan Kecerdasan Artifisial", tp: "Menyimpulkan bahwa akurasi prediksi KA dipengaruhi oleh kualitas dan variasi input.", jp: 2 },
-      { no: 23, kode: "5.1", bab: "Bab 5. Praktik Lintas Bidang", tp: "Merancang solusi menggunakan proses desain rekayasa.", jp: 1 },
-      { no: 24, kode: "5.2", bab: "Bab 5. Praktik Lintas Bidang", tp: "Mengembangkan proyek interaktif berbasis Scratch untuk menyelesaikan permasalahan sederhana.", jp: 2 },
-      { no: 25, kode: "5.3", bab: "Bab 5. Praktik Lintas Bidang", tp: "Mengintegrasikan konsep matematika atau mata pelajaran lain ke dalam proyek Scratch.", jp: 2 },
-      { no: 26, kode: "5.4", bab: "Bab 5. Praktik Lintas Bidang", tp: "Menguji, memperbaiki, dan menyempurnakan proyek yang dibuat.", jp: 2 },
-      { no: 27, kode: "5.5", bab: "Bab 5. Praktik Lintas Bidang", tp: "Menyajikan dan mempresentasikan hasil karya digital secara percaya diri.", jp: 1 }
-    ];
-
-    // 4b. Data TP — Kelas IV (Fase B)
-    const TP_DATA_IV = [
-      { no: 1, kode: "1.1", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Mengidentifikasi berbagai jenis komputer yang digunakan di rumah dan sekolah.", jp: 2 },
-      { no: 2, kode: "1.2", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Menjelaskan proses input, proses, dan output pada sistem komputer secara sederhana.", jp: 2 },
-      { no: 3, kode: "1.3", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Mengidentifikasi contoh penerapan robot dan Kecerdasan Artifisial (KA) dalam kehidupan sehari-hari.", jp: 2 },
-      { no: 4, kode: "1.4", bab: "Bab 1. Mengenal Sistem Komputer", tp: "Melaksanakan projek kolaboratif mengenai komputer di sekolahku.", jp: 4 },
-      { no: 5, kode: "2.1", bab: "Bab 2. Berpikir Komputasional", tp: "Mengenali pola dari sekumpulan data atau informasi.", jp: 2 },
-      { no: 6, kode: "2.2", bab: "Bab 2. Berpikir Komputasional", tp: "Membagi tugas besar menjadi bagian-bagian yang lebih kecil dan mudah diselesaikan (dekomposisi).", jp: 2 },
-      { no: 7, kode: "2.3", bab: "Bab 2. Berpikir Komputasional", tp: "Menyusun langkah-langkah penyelesaian masalah secara berurutan (algoritma).", jp: 2 },
-      { no: 8, kode: "2.4", bab: "Bab 2. Berpikir Komputasional", tp: "Melaksanakan projek kolaboratif merancang rencana kelas yang teratur.", jp: 4 },
-      { no: 9, kode: "3.1", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Memahami dan mempraktikkan konsep urutan (sequence) dalam memberikan perintah.", jp: 2 },
-      { no: 10, kode: "3.2", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Memahami dan menggunakan perintah berulang (looping) untuk menyederhanakan instruksi.", jp: 2 },
-      { no: 11, kode: "3.3", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Mengidentifikasi dan memperbaiki kesalahan (debugging) pada serangkaian perintah.", jp: 4 },
-      { no: 12, kode: "3.4", bab: "Bab 3. Memberi Perintah Seperti Programmer", tp: "Melaksanakan projek kolaboratif membuat perintah untuk robot kaki.", jp: 4 },
-      { no: 13, kode: "4.1", bab: "Bab 4. Robot Mengambil Keputusan", tp: "Memahami logika kondisi Jika-Maka untuk pengambilan keputusan sederhana.", jp: 2 },
-      { no: 14, kode: "4.2", bab: "Bab 4. Robot Mengambil Keputusan", tp: "Memahami logika kondisi Jika-Maka-Selain itu untuk keputusan bercabang.", jp: 4 },
-      { no: 15, kode: "4.3", bab: "Bab 4. Robot Mengambil Keputusan", tp: "Melaksanakan projek kolaboratif membuat aturan keputusan untuk robot menuju sekolah.", jp: 4 },
-      { no: 16, kode: "5.1", bab: "Bab 5. Melakukan Perintah dalam Permainan (Unplugged Coding)", tp: "Mempraktikkan unplugged coding menggunakan simbol.", jp: 2 },
-      { no: 17, kode: "5.2", bab: "Bab 5. Melakukan Perintah dalam Permainan (Unplugged Coding)", tp: "Mempraktikkan unplugged coding menggunakan koordinat.", jp: 4 },
-      { no: 18, kode: "5.3", bab: "Bab 5. Melakukan Perintah dalam Permainan (Unplugged Coding)", tp: "Melaksanakan projek kolaboratif membuat perintah untuk robot bijak menuju sekolah.", jp: 4 },
-      { no: 19, kode: "6.1", bab: "Bab 6. Bijak dengan Teknologi dan KA", tp: "Menjelaskan konsep literasi digital dalam konteks Kecerdasan Artifisial.", jp: 2 },
-      { no: 20, kode: "6.2", bab: "Bab 6. Bijak dengan Teknologi dan KA", tp: "Menunjukkan sikap bijak dalam menggunakan Kecerdasan Artifisial.", jp: 4 },
-      { no: 21, kode: "6.3", bab: "Bab 6. Bijak dengan Tekn    // 5. Data Jurnal Mengajar — Kelas IV (31 Pertemuan)
+    // Data Jurnal Kelas IV (Fase B - 31 Pertemuan)
     const JURNAL_DATA_IV = [
       { p: 1, smt: 1, materi: "Jenis Komputer & Perangkat Komputer (Hardware & Software)", tp: "4.1 - Mengidentifikasi berbagai jenis komputer yang digunakan di rumah dan sekolah.", model: "Problem Based Learning, Unplugged & Diskusi", media: "Laptop, Proyektor, Kartu Gambar Komputer", tuntas: 4, kendala: "Beberapa siswa masih keliru membedakan hardware dan software, tuntas setelah diberikan contoh fisik." },
       { p: 2, smt: 1, materi: "Siklus Kerja Sistem Komputer (Input, Proses, Output)", tp: "4.2 - Menjelaskan proses input, proses, dan output pada sistem komputer secara sederhana.", model: "Discovery Learning & Demonstrasi Interaktif", media: "Laptop, Proyektor, Bagan Input-Proses-Output", tuntas: 4, kendala: "KBM berjalan lancar, siswa antusias mempraktikkan alur masukan dan keluaran data." },
@@ -1092,6 +754,7 @@
       { p: 14, smt: 1, materi: "Memperbaiki Kesalahan Perintah (Debugging) - Bagian 2", tp: "4.11 - Mengidentifikasi dan memperbaiki kesalahan (debugging) pada serangkaian perintah.", model: "Hands-on Practice & Problem Solving", media: "Laptop / Perangkat Tablet Coding", tuntas: 4, kendala: "Seluruh siswa tuntas menyelesaikan tantangan perbaikan bug." },
       { p: 15, smt: 1, materi: "Projek 'Robot Kaki' (Merancang Perintah)", tp: "4.12 - Melaksanakan projek kolaboratif membuat perintah untuk robot kaki.", model: "Project Based Learning (PjBL) & Cooperative", media: "Grid Arena Simulation, Lembar Instruksi", tuntas: 4, kendala: "Antusiasme tinggi, kerja sama dalam tim berjalan solid." },
       { p: 16, smt: 1, materi: "Projek 'Robot Kaki' (Simulasi Unjuk Kerja)", tp: "4.12 - Melaksanakan projek kolaboratif membuat perintah untuk robot kaki.", model: "Project Based Learning & Performance Test", media: "Matras Grid Rintangan, Kartu Program Robot", tuntas: 4, kendala: "Pembelajaran penutup Semester 1 berjalan sukses dan sangat interaktif." },
+
       { p: 17, smt: 2, materi: "Logika Kondisi Sederhana (Jika - Maka / IF-THEN)", tp: "4.13 - Memahami logika kondisi Jika-Maka untuk pengambilan keputusan sederhana.", model: "Problem Based Learning & Tanya Jawab", media: "Kartu Logika Kondisi dan Aksi, Papan Tulis", tuntas: 4, kendala: "Siswa cepat memahami syarat dan konsekuensi aksi." },
       { p: 18, smt: 2, materi: "Logika Kondisi Bercabang (Jika-Maka-Selain Itu) - Part 1", tp: "4.14 - Memahami logika kondisi Jika-Maka-Selain itu untuk keputusan bercabang.", model: "Interactive Demonstration & Praktik", media: "Laptop, Software Coding Visual", tuntas: 4, kendala: "Diperlukan pengulangan konsep pada bagian kondisi 'Selain Itu (Else)'." },
       { p: 19, smt: 2, materi: "Logika Kondisi Bercabang (Jika-Maka-Selain Itu) - Part 2", tp: "4.14 - Memahami logika kondisi Jika-Maka-Selain itu untuk keputusan bercabang.", model: "Hands-on Practice & Problem Solving", media: "Laptop, Lembar Kerja Tantangan Logika", tuntas: 4, kendala: "Pemahaman siswa makin matang saat mempraktikkan program kondisi pada perangkat." },
@@ -1109,7 +772,7 @@
       { p: 31, smt: 2, materi: "Projek Play-Role 'Pengguna Bijak AI' (Pementasan & Refleksi)", tp: "4.21 - Melaksanakan projek kolaboratif bermain peran pengguna bijak teknologi dan KA.", model: "Project Based Learning & Refleksi Akhir Tahun", media: "Ruang Kelas (Mini Stage), Rubrik Evaluation", tuntas: 4, kendala: "Pementasan sukses, refleksi pembelajaran KKA 1 tahun ajaran berkesan positif." }
     ];
 
-    // 6. Data Jurnal Mengajar — Kelas V & VI (31 Pertemuan)
+    // Data Jurnal Kelas V & VI (Fase C - 31 Pertemuan)
     const JURNAL_DATA_V_VI = [
       { p: 1, smt: 1, materi: "Berpikir Komputasional — Mengidentifikasi Masalah Sehari-hari", tp: "5.1 - Mengidentifikasi permasalahan sederhana dalam kehidupan sehari-hari.", model: "Problem Based Learning & Curah Pendapat", media: "Modul Pembelajaran KKA, Laptop, LCD", tuntas: 4, kendala: "Siswa antusias memetakan masalah-masalah sederhana di lingkungan sekolah." },
       { p: 2, smt: 1, materi: "4 Pilar Berpikir Komputasional (Dekomposisi, Pola, Abstraksi)", tp: "5.2 - Menguraikan masalah menggunakan dekomposisi, pengenalan pola, dan abstraksi.", model: "Discovery Learning & Latihan Studi Kasus", media: "Lembar Kerja Siswa (LKPD) 4 Pilar BK", tuntas: 4, kendala: "Pemahaman konsep abstraksi membutuhkan contoh konkret tambahan." },
@@ -1127,6 +790,7 @@
       { p: 14, smt: 1, materi: "Peran Komputer & Internet dalam Kecerdasan Artifisial - Part 2", tp: "5.10 - Mengidentifikasi peran sistem komputer dan internet dalam Kecerdasan Artifisial (KA).", model: "Inquiry Learning & Web Simulation Demo", media: "Perangkat Komputer, Web Demo Interaktif AI", tuntas: 4, kendala: "Siswa sangat antusias mencoba eksperimen pemrosesan data visual pada aplikasi web AI." },
       { p: 15, smt: 1, materi: "Pembuatan Konten Digital Sederhana Beretika (Desain Poster)", tp: "5.11 - Membuat dan membagikan konten digital sederhana dengan memperhatikan etika digital.", model: "Project Based Learning (PjBL)", media: "Perangkat Komputer, Aplikasi Desain Grafis", tuntas: 4, kendala: "Siswa mulai merancang susunan tata letak dan pesan edukasi digital." },
       { p: 16, smt: 1, materi: "Publikasi & Presentasi Karya Konten Digital Beretika", tp: "5.11 - Membuat dan membagikan konten digital sederhana dengan memperhatikan etika digital.", model: "Project Based Learning & Student Presentation", media: "Proyektor LCD, Karya Konten Siswa", tuntas: 4, kendala: "KBM penutup Semester 1 berjalan tuntas, karya siswa dipresentasikan dengan baik." },
+
       { p: 17, smt: 2, materi: "Konsep Dasar & Pengertian Kecerdasan Artifisial (KA)", tp: "5.12 - Menjelaskan pengertian Kecerdasan Artifisial (KA).", model: "Discovery Learning & Interactive Presentation", media: "Video Edukasi AI, Slide Materi KKA", tuntas: 4, kendala: "Siswa dapat membedakan antara kecerdasan alami manusia dan kecerdasan buatan." },
       { p: 18, smt: 2, materi: "Manfaat dan Dampak AI dalam Kehidupan Sehari-hari", tp: "5.13 - Mengidentifikasi manfaat dan dampak KA dalam kehidupan sehari-hari.", model: "Diskusi Kelompok & Study Case Analysis", media: "Modul Kasus Penerapan AI, Papan Tulis", tuntas: 4, kendala: "Siswa secara kritis mendiskusikan contoh pemanfaatan AI di berbagai bidang." },
       { p: 19, smt: 2, materi: "AI Sebagai Alat Bantu Manusia (Human-AI Collaboration)", tp: "5.14 - Menjelaskan bahwa KA dikembangkan untuk membantu manusia.", model: "Contextual Teaching and Learning", media: "Video Edukasi Kolaborasi Manusia dan AI", tuntas: 4, kendala: "Menanamkan pemahaman bahwa AI diciptakan untuk mempermudah pekerjaan manusia." },
@@ -1144,35 +808,12 @@
       { p: 31, smt: 2, materi: "Gelar Karya (Exhibition) & Presentasi Proyek Lintas Bidang", tp: "5.27 - Menyajikan dan mempresentasikan hasil karya digital secara percaya diri.", model: "Student Presentation & Refleksi Akhir Tahun", media: "Perangkat Komputer, LCD Proyektor, Rubrik", tuntas: 4, kendala: "Seluruh rangkaian KBM KKA 1 tahun ajaran berakhir sukses, siswa mempresentasikan karya dengan percaya diri." }
     ];
 
-    function getFormattedJurnalTp(tp, kelasVal) {
+    function getFormattedJurnalTp(tp, rombelVal) {
       if (!tp) return "";
-      if (kelasVal === 'VI' || (typeof kelasVal === 'string' && (kelasVal.startsWith('6') || kelasVal.includes('6')))) {
+      if (rombelVal && (rombelVal.startsWith('6') || rombelVal.includes('6'))) {
         return tp.replace(/\b5\./g, '6.');
       }
       return tp;
-    }
-
-    // Fungsi pemilih data berdasarkan kelas
-    function getProtaData() {
-      return v('docKelas') === 'IV' ? PROTA_DATA_IV : PROTA_DATA;
-    }
-    function getProsemS1Data() {
-      return v('docKelas') === 'IV' ? PROSEM_S1_DATA_IV : PROSEM_S1_DATA;
-    }
-    function getProsemS2Data() {
-      return v('docKelas') === 'IV' ? PROSEM_S2_DATA_IV : PROSEM_S2_DATA;
-    }
-    function getTpData() {
-      return v('docKelas') === 'IV' ? TP_DATA_IV : TP_DATA;
-    }
-
-    function onRombelChange() {
-      const rombel = v('docRombel');
-      const docKelasEl = document.getElementById('docKelas');
-      if (!docKelasEl || !rombel) return;
-      if (rombel.startsWith('4')) docKelasEl.value = 'IV';
-      else if (rombel.startsWith('5')) docKelasEl.value = 'V';
-      else if (rombel.startsWith('6')) docKelasEl.value = 'VI';
     }
 
     const WEEK_MAPPING = {
@@ -1210,21 +851,49 @@
       31: "Juni — Minggu 3"
     };
 
-    function copyJurnalRowText(index) {
-      const kelasVal = v('docKelas');
-      const rombelVal = v('docRombel') || (kelasVal === 'IV' ? "4 Sana'a" : (kelasVal === 'V' ? '5 Cordoba' : '6 Kuffah'));
-      const data = kelasVal === 'IV' ? JURNAL_DATA_IV : JURNAL_DATA_V_VI;
+    function v(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : "";
+    }
+
+    function esc(text) {
+      if (!text) return "";
+      return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function getSelectedJurnalData() {
+      const rombel = v('jurnalRombel');
+      return rombel.startsWith('4') ? JURNAL_DATA_IV : JURNAL_DATA_V_VI;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toastMsg');
+      if (!el) return;
+      el.textContent = msg || '📋 Isian Form Google Berhasil Disalin!';
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    function copyRowText(index) {
+      const data = getSelectedJurnalData();
       const item = data[index];
       if (!item) return;
 
+      const rombel = v('jurnalRombel');
       const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
       const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
       const wkt = WEEK_MAPPING[item.p] || "";
-      const tpFormatted = getFormattedJurnalTp(item.tp, kelasVal);
+      const tpFormatted = getFormattedJurnalTp(item.tp, rombel);
+
+      let kendalaText = item.kendala;
+      if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombel]) {
+        const list = window.ROMBEL_KENDALA_VARIATIONS[rombel];
+        kendalaText = list[(item.p - 1) % list.length];
+      }
 
       const text = `Hari/Tanggal: [Diisi Tanggal KBM] (${wkt})
 Nama Guru: ${guruNama}
-Kelas: ${rombelVal}
+Kelas: ${rombel}
 Mata Pelajaran: ${mapel}
 Pertemuan ke: ${item.p}
 Estimasi Waktu: ${wkt}
@@ -1233,19 +902,73 @@ Tujuan Pembelajaran: ${tpFormatted}
 Model dan Metode Pembelajaran: ${item.model}
 Media Pembelajaran: ${item.media}
 Ketuntasan/ketercapaian murid dalam memahami materi pembelajaran: ${item.tuntas}
-Kendala yang dihadapi saat KBM: ${item.kendala}`;
+Kendala yang dihadapi saat KBM: ${kendalaText}`;
 
       navigator.clipboard.writeText(text).then(() => {
-        alert(`📋 Isian Form Pertemuan Ke-${item.p} [${wkt}] (${rombelVal}) Berhasil Disalin!`);
+        showToast(`📋 Pertemuan Ke-${item.p} (${wkt}) berhasil disalin!`);
       }).catch(err => {
         console.error('Gagal salin:', err);
       });
     }
 
-    function renderJurnalTable() {
-      const kelasVal = v('docKelas');
-      const rombelVal = v('docRombel') || (kelasVal === 'IV' ? "4 Sana'a" : (kelasVal === 'V' ? '5 Cordoba' : '6 Kuffah'));
-      const data = kelasVal === 'IV' ? JURNAL_DATA_IV : JURNAL_DATA_V_VI;
+    function copyAllJurnalText() {
+      const data = getSelectedJurnalData();
+      const smtFilter = v('jurnalSmt');
+      const rombel = v('jurnalRombel');
+      const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
+      const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
+
+      let fullText = `=== BANK ISIAN JURNAL MENGAJAR FORM GOOGLE ===\nKelas: ${rombel} | Guru: ${guruNama} | Mapel: ${mapel}\n\n`;
+
+      data.forEach(item => {
+        if (smtFilter === '1' && item.smt !== 1) return;
+        if (smtFilter === '2' && item.smt !== 2) return;
+
+        const wkt = WEEK_MAPPING[item.p] || "";
+        let kendalaText = item.kendala;
+        if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombel]) {
+          const list = window.ROMBEL_KENDALA_VARIATIONS[rombel];
+          kendalaText = list[(item.p - 1) % list.length];
+        }
+
+        const tpFormatted = getFormattedJurnalTp(item.tp, rombel);
+
+        fullText += `[PERTEMUAN KE-${item.p} — ${wkt} (Semester ${item.smt})]\n`;
+        fullText += `Pertemuan ke: ${item.p}\n`;
+        fullText += `Waktu (Kaldik): ${wkt}\n`;
+        fullText += `Materi Pembelajaran: ${item.materi}\n`;
+        fullText += `Tujuan Pembelajaran: ${tpFormatted}\n`;
+        fullText += `Model dan Metode Pembelajaran: ${item.model}\n`;
+        fullText += `Media Pembelajaran: ${item.media}\n`;
+        fullText += `Ketuntasan/ketercapaian murid: ${item.tuntas}\n`;
+        fullText += `Kendala yang dihadapi saat KBM: ${kendalaText}\n`;
+        fullText += `--------------------------------------------------\n\n`;
+      });
+
+      navigator.clipboard.writeText(fullText).then(() => {
+        showToast(`📋 Seluruh Isian Jurnal (${rombel}) Berhasil Disalin!`);
+      }).catch(err => {
+        console.error('Gagal salin:', err);
+      });
+    }
+
+    function renderPreview() {
+      const rombel = v('jurnalRombel');
+      const smtFilter = v('jurnalSmt');
+      const instansi = v('instansi');
+      const mapel = v('mapel');
+      const tahun = v('tahun');
+      const tempatTgl = v('tempatTgl');
+      const kepsekNama = v('kepsekNama');
+      const kepsekLabelType = v('kepsekLabelType') || 'NIP/NIY';
+      const kepsekNIY = v('kepsekNIY');
+      const guruNama = v('guruNama');
+      const guruLabelType = v('guruLabelType') || 'NIP/NIY';
+      const guruNIY = v('guruNIY');
+
+      const data = getSelectedJurnalData();
+      let rowsHTML = "";
+      let count = 0;
 
       const targetMeetingVal = document.getElementById('highlightMeetingTarget') ? document.getElementById('highlightMeetingTarget').value : 'auto';
       let activeMeetingNum = 2;
@@ -1255,14 +978,18 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       } else {
         activeMeetingNum = parseInt(targetMeetingVal) || 2;
       }
+
       const isHighlightEnabled = document.getElementById('chkHighlightActive') ? document.getElementById('chkHighlightActive').checked : true;
 
-      let rowsHTML = "";
       data.forEach((item, index) => {
+        if (smtFilter === '1' && item.smt !== 1) return;
+        if (smtFilter === '2' && item.smt !== 2) return;
+        count++;
+
         const wkt = WEEK_MAPPING[item.p] || "";
         let kendalaText = item.kendala;
-        if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombelVal]) {
-          const list = window.ROMBEL_KENDALA_VARIATIONS[rombelVal];
+        if (window.ROMBEL_KENDALA_VARIATIONS && window.ROMBEL_KENDALA_VARIATIONS[rombel]) {
+          const list = window.ROMBEL_KENDALA_VARIATIONS[rombel];
           kendalaText = list[(item.p - 1) % list.length];
         }
 
@@ -1275,7 +1002,7 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
           wktHTML = `<span class="stabilo-mark">${esc(wkt)}</span>`;
         }
 
-        const tpFormatted = getFormattedJurnalTp(item.tp, kelasVal);
+        const tpFormatted = getFormattedJurnalTp(item.tp, rombel);
 
         rowsHTML += `
           <tr ${rowStyleAttr}>
@@ -1283,27 +1010,33 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
             <td style="text-align: center; width: 11%; font-weight: 700;">${wktHTML}</td>
             <td style="text-align: center; width: 5%; font-weight: 600;">Smt ${item.smt}</td>
             <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
-            <td style="width: 20%;">${esc(tpFormatted)}</td>
+            <td style="width: 20%;">${esc(tpFormatted)}</td>h: 5%; font-weight: 600;">Smt ${item.smt}</td>
+            <td style="font-weight: 600; width: 16%;">${esc(item.materi)}</td>
+            <td style="width: 20%;">${esc(item.tp)}</td>
             <td style="width: 14%;">${esc(item.model)}</td>
             <td style="width: 12%;">${esc(item.media)}</td>
             <td style="text-align: center; font-weight: bold; width: 5%; color: #2e7d32;">${item.tuntas}</td>
             <td style="width: 10%; font-size: 10px;">${esc(kendalaText)}</td>
             <td class="no-print" style="text-align: center; width: 4%;">
-              <button onclick="copyJurnalRowText(${index})" style="background: #eaf3e5; border: 1px solid #cfe6c2; color: #3b4a5c; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer;">📋 Salin</button>
-            </td>
-          </tr>
-        `;
-      });r: 1px solid #cfe6c2; color: #3b4a5c; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer;">📋 Salin</button>
+              <button class="btn-copy-row" onclick="copyRowText(${index})" title="Salin format untuk Google Form">📋 Salin</button>
             </td>
           </tr>
         `;
       });
 
-      return `
-        <div style="font-size: 11px; font-weight: bold; margin-top: 10px; margin-bottom: 5px; color: var(--navy-dark);" class="no-print">
-          Rincian Isian Google Form KBM — Rombel: <span style="color: var(--teal-dark);">${esc(rombelVal)}</span> (1 Tahun Ajaran / 31 Pertemuan)
+      const html = `
+        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px; margin-bottom: 20px; border-bottom: 2px solid #3b4a5c; padding-bottom: 10px;">
+          <img src="${YAYASAN_LOGO_SRC}" alt="Logo Yayasan" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none';">
+          <div style="flex: 1; text-align: center;">
+            <div style="font-size: 17px; font-weight: 800; color: #3b4a5c; text-transform: uppercase; letter-spacing: 1px;">JURNAL MENGAJAR HARIAN GURU</div>
+            <div style="font-size: 15px; font-weight: 800; color: #3b4a5c; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px;">${esc(instansi).toUpperCase()}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">KELAS ${esc(rombel).toUpperCase()} &mdash; MATA PELAJARAN ${esc(mapel).toUpperCase()}</div>
+            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">TAHUN AJARAN ${esc(tahun)}</div>
+          </div>
+          <img src="${DEFAULT_LOGO_SRC}" alt="Logo Sekolah" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none';">
         </div>
-        <table class="adm-tab" style="font-size: 10.5px;">
+
+        <table class="jurnal-table">
           <thead>
             <tr>
               <th style="width: 4%;">P.Ke</th>
@@ -1322,133 +1055,10 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
             ${rowsHTML}
           </tbody>
         </table>
-        <div style="font-size: 10px; font-style: italic; margin-top: 8px; color: var(--muted);" class="no-print">
-          Tips: Klik tombol "📋 Salin" pada pertemuan yang bersangkutan, lalu langsung tempelkan (paste) ke Form Google sekolah.
+
+        <div style="font-size: 10px; font-style: italic; margin-top: 10px; color: var(--muted);">
+          Catatan: Jurnal Mengajar Harian diisi setiap selesai KBM pada Form Google sekolah. Klik tombol "📋 Salin" pada setiap baris untuk menyalin isian secara instan.
         </div>
-      `;
-    }
-
-    function v(id) {
-      const el = document.getElementById(id);
-      return el ? el.value : "";
-    }
-
-    function esc(text) {
-      if (!text) return "";
-      return text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
-
-    function onDocTypeChange() {
-      const docType = v('docType');
-      const orientSelect = document.getElementById('orientation');
-      if (orientSelect) {
-        if (docType === 'prosem' || docType === 'jadwal' || docType === 'jurnal') {
-          orientSelect.value = 'landscape';
-        } else {
-          orientSelect.value = 'portrait';
-        }
-      }
-      const kelasField = document.getElementById('fieldKelas');
-      const rombelField = document.getElementById('fieldRombel');
-      if (kelasField) {
-        kelasField.style.display = docType === 'jadwal' ? 'none' : '';
-      }
-      if (rombelField) {
-        rombelField.style.display = docType === 'jurnal' ? '' : 'none';
-      }
-      const stabiloField = document.getElementById('fieldStabiloJurnal');
-      if (stabiloField) {
-        stabiloField.style.display = docType === 'jurnal' ? '' : 'none';
-      }
-
-      // Highlight active navigation tab dynamically
-      const navAdmin = document.getElementById('navAdministrasi');
-      const navJurnal = document.getElementById('navJurnal');
-      if (navAdmin && navJurnal) {
-        if (docType === 'jurnal') {
-          navJurnal.style.background = 'var(--navy)';
-          navJurnal.style.color = '#ffffff';
-          navJurnal.style.fontWeight = '700';
-
-          navAdmin.style.background = '#eef1f2';
-          navAdmin.style.color = 'var(--navy-dark)';
-          navAdmin.style.fontWeight = '600';
-          navAdmin.style.border = '1px solid var(--border)';
-        } else {
-          navAdmin.style.background = 'var(--navy)';
-          navAdmin.style.color = '#ffffff';
-          navAdmin.style.fontWeight = '700';
-
-          navJurnal.style.background = '#eef1f2';
-          navJurnal.style.color = 'var(--navy-dark)';
-          navJurnal.style.fontWeight = '600';
-          navJurnal.style.border = '1px solid var(--border)';
-        }
-      }
-
-      updatePageStyle();
-    }
-
-    function renderPreview() {
-      const docType = v('docType');
-      const kelas = v('docKelas');
-      const rombel = v('docRombel');
-      const instansi = v('instansi');
-      const mapel = v('mapel');
-      const tahun = v('tahun');
-      const fase = v('fase');
-      const tempatTgl = v('tempatTgl');
-      const kepsekNama = v('kepsekNama');
-      const kepsekLabelType = v('kepsekLabelType') || 'NIP/NIY';
-      const kepsekNIY = v('kepsekNIY');
-      const guruNama = v('guruNama');
-      const guruLabelType = v('guruLabelType') || 'NIP/NIY';
-      const guruNIY = v('guruNIY');
-
-      const logoHTML = `<img src="${DEFAULT_LOGO_SRC}" alt="Logo Sekolah" onerror="this.style.display='none';">`;
-      const yayasanLogoSrc = YAYASAN_LOGO_SRC;
-
-      let docTypeName = "";
-      let tableHTML = "";
-      let kelasText = "";
-      if (docType === 'jurnal') {
-        kelasText = `KELAS ${rombel || kelas}`;
-      } else if (kelas === "IV") kelasText = "KELAS IV (EMPAT)";
-      else if (kelas === "V") kelasText = "KELAS V (LIMA)";
-      else if (kelas === "VI") kelasText = "KELAS VI (ENAM)";
-      else kelasText = `KELAS ${kelas}`;
-
-      if (docType === 'prota') {
-        docTypeName = `PROGRAM TAHUNAN (PROTA)`;
-        tableHTML = renderProtaTable();
-      } else if (docType === 'prosem') {
-        docTypeName = `PROGRAM SEMESTER (PROSEM)`;
-        tableHTML = renderProsemTable();
-      } else if (docType === 'tp') {
-        docTypeName = `TUJUAN PEMBELAJARAN (TP)`;
-        tableHTML = renderTPTable();
-      } else if (docType === 'jadwal') {
-        docTypeName = `JADWAL JAM MENGAJAR`;
-        tableHTML = renderJadwalTable();
-      } else if (docType === 'jurnal') {
-        docTypeName = `JURNAL MENGAJAR HARIAN GURU`;
-        tableHTML = renderJurnalTable();
-      }
-
-      const html = `
-        <!-- JUDUL DOKUMEN -->
-        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px; margin-bottom: 20px; border-bottom: 2px solid #3b4a5c; padding-bottom: 10px;">
-          <img src="${yayasanLogoSrc}" alt="Logo Yayasan" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none';">
-          <div style="flex: 1; text-align: center;">
-            <div style="font-size: 17px; font-weight: 800; color: #3b4a5c; text-transform: uppercase; letter-spacing: 1px;">${docTypeName}</div>
-            <div style="font-size: 15px; font-weight: 800; color: #3b4a5c; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px;">${instansi.toUpperCase()}</div>
-            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${docType === 'jadwal' ? 'MATA PELAJARAN ' + mapel.toUpperCase() : kelasText + ' — MATA PELAJARAN ' + mapel.toUpperCase()}</div>
-            <div style="font-size: 11px; font-weight: 700; color: #7a8a90; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">TAHUN AJARAN ${tahun}</div>
-          </div>
-          ${logoHTML.replace('<img', '<img style="width: 60px; height: 60px; object-fit: contain;"')}
-        </div>
-
-        ${tableHTML}
 
         <div class="sign-grid">
           <div>
@@ -1470,459 +1080,6 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       if (page) page.innerHTML = html;
     }
 
-    function renderProtaTable() {
-      const protaData = getProtaData();
-      let jpS1 = 0, jpS2 = 0;
-      let rows = "";
-      protaData.forEach(r => {
-        if (r.semester.includes('1')) jpS1 += r.jp;
-        else jpS2 += r.jp;
-        rows += `
-          <tr>
-            <td style="text-align: center; width: 5%;">${r.no}</td>
-            <td style="text-align: center; width: 15%;">${r.semester}</td>
-            <td style="text-align: center; width: 10%; font-weight: bold;">${r.bab}</td>
-            <td style="padding-left: 10px;">${r.materi}</td>
-            <td style="text-align: center; width: 15%; font-weight: bold;">${r.jp} JP</td>
-            <td style="width: 15%;">${r.ket}</td>
-          </tr>
-        `;
-      });
-
-      return `
-        <table class="adm-tab">
-          <thead>
-            <tr>
-              <th style="width: 5%;">No</th>
-              <th style="width: 15%;">Semester</th>
-              <th style="width: 10%;">Bab</th>
-              <th>Materi Pokok</th>
-              <th style="width: 15%;">Alokasi Waktu (JP)</th>
-              <th style="width: 15%;">Keterangan</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-            <tr style="font-weight: bold; background: #eaf3e5 !important;">
-              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah JP Semester 1 (Ganjil)</td>
-              <td style="text-align: center; font-weight: bold;">${jpS1} JP</td>
-              <td></td>
-            </tr>
-            <tr style="font-weight: bold; background: #eaf3e5 !important;">
-              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah JP Semester 2 (Genap)</td>
-              <td style="text-align: center; font-weight: bold;">${jpS2} JP</td>
-              <td></td>
-            </tr>
-            <tr style="font-weight: 800; background: #e8f0e3 !important; color: #3b4a5c;">
-              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">JUMLAH TOTAL JP — 1 TAHUN AJARAN</td>
-              <td style="text-align: center; font-weight: bold;">${jpS1 + jpS2} JP</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="font-size: 10.5px; font-style: italic; margin-top: 8px; color: #7a8a90;">
-          Catatan: 1 JP = 35 menit. Estimasi 2 JP/minggu, 16 minggu efektif semester 1 dan 15 minggu efektif semester 2.
-        </div>
-      `;
-    }
-
-    function renderProsemTable() {
-      const S1_NON_EFFECTIVE = {
-        0: "LIBUR SEMESTER 1",
-        1: "LIBUR SEKOLAH",
-        2: "MPLS",
-        12: "FIELD TRIP",
-        13: "FIELD TRIP",
-        14: "STS 1",
-        21: "SAS MULOK",
-        22: "SAS DINAS",
-        24: "PEMBAGIAN RAPOR",
-        25: "LIBUR SEMESTER 1"
-      };
-
-      const S2_NON_EFFECTIVE = {
-        0: "LIBUR SEMESTER 1",
-        7: "LIBUR RAMADHAN",
-        8: "PESANTREN RAMADHAN",
-        9: "LIBUR IDUL FITRI",
-        10: "LIBUR IDUL FITRI",
-        13: "STS 2",
-        16: "TRY OUT TKA",
-        20: "SAT MULOK",
-        21: "SAT DINAS",
-        24: "LIBUR AKHIR SEMESTER"
-      };
-
-      function getNonEffectiveCell(label, rowspan) {
-        let bgColor = "#f0f3f4";
-        let textColor = "#7f8c8d";
-        
-        const upper = label.toUpperCase();
-        if (upper.includes("LIBUR") || upper.includes("RAPOR") || upper.includes("SEKOLAH")) {
-          bgColor = "#fce4e4";
-          textColor = "#c0392b";
-        } else if (upper.includes("PSTS") || upper.includes("SAS") || upper.includes("SAT")) {
-          bgColor = "#fef5e7";
-          textColor = "#d35400";
-        } else if (upper.includes("MPLS") || upper.includes("TRIP") || upper.includes("RAMADHAN") || upper.includes("PEKERTI")) {
-          bgColor = "#eaf2f8";
-          textColor = "#2980b9";
-        }
-        
-        return `<td rowspan="${rowspan}" style="background: ${bgColor} !important; color: ${textColor} !important; font-size: 8px; font-weight: 800; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; padding: 6px 1px; letter-spacing: 0.5px; vertical-align: middle; line-height: 1.1;">${esc(label)}</td>`;
-      }
-
-      // Semester 1 table
-      const s1Data = getProsemS1Data();
-      const s1TotalRows = s1Data.length + 1; // data rows + asesmen row
-      let s1Rows = "";
-      let jpS1Total = 0;
-      for (let rIdx = 0; rIdx < s1TotalRows; rIdx++) {
-        let cellsHTML = "";
-        
-        if (rIdx < s1Data.length) {
-          const r = s1Data[rIdx];
-          jpS1Total += r.jp;
-          cellsHTML += `<td>${r.no}</td>`;
-          cellsHTML += `<td class="materi-cell">${r.bab}</td>`;
-          cellsHTML += `<td class="cell-jp">${r.jp}</td>`;
-          
-          for (let colIdx = 0; colIdx < 26; colIdx++) {
-            if (colIdx in S1_NON_EFFECTIVE) {
-              if (rIdx === 0) {
-                cellsHTML += getNonEffectiveCell(S1_NON_EFFECTIVE[colIdx], s1TotalRows);
-              }
-            } else {
-              cellsHTML += `<td>${r.weeks[colIdx]}</td>`;
-            }
-          }
-          s1Rows += `<tr>${cellsHTML}</tr>`;
-        } else {
-          cellsHTML += `<td colspan="2" class="materi-cell" style="font-weight: bold; background: #fafafa;">Penilaian / Asesmen</td>`;
-          cellsHTML += `<td class="cell-jp" style="background: #fafafa;"></td>`;
-          
-          for (let colIdx = 0; colIdx < 26; colIdx++) {
-            if (!(colIdx in S1_NON_EFFECTIVE)) {
-              cellsHTML += `<td></td>`;
-            }
-          }
-          s1Rows += `<tr>${cellsHTML}</tr>`;
-        }
-      }
-
-      // Semester 2 table
-      const s2Data = getProsemS2Data();
-      const s2TotalRows = s2Data.length + 1;
-      let s2Rows = "";
-      let jpS2Total = 0;
-      for (let rIdx = 0; rIdx < s2TotalRows; rIdx++) {
-        let cellsHTML = "";
-        
-        if (rIdx < s2Data.length) {
-          const r = s2Data[rIdx];
-          jpS2Total += r.jp;
-          cellsHTML += `<td>${r.no}</td>`;
-          cellsHTML += `<td class="materi-cell">${r.bab}</td>`;
-          cellsHTML += `<td class="cell-jp">${r.jp}</td>`;
-          
-          for (let colIdx = 0; colIdx < 25; colIdx++) {
-            if (colIdx in S2_NON_EFFECTIVE) {
-              if (rIdx === 0) {
-                cellsHTML += getNonEffectiveCell(S2_NON_EFFECTIVE[colIdx], s2TotalRows);
-              }
-            } else {
-              cellsHTML += `<td>${r.weeks[colIdx]}</td>`;
-            }
-          }
-          s2Rows += `<tr>${cellsHTML}</tr>`;
-        } else {
-          cellsHTML += `<td colspan="2" class="materi-cell" style="font-weight: bold; background: #fafafa;">Penilaian / Asesmen</td>`;
-          cellsHTML += `<td class="cell-jp" style="background: #fafafa;"></td>`;
-          
-          for (let colIdx = 0; colIdx < 25; colIdx++) {
-            if (!(colIdx in S2_NON_EFFECTIVE)) {
-              cellsHTML += `<td></td>`;
-            }
-          }
-          s2Rows += `<tr>${cellsHTML}</tr>`;
-        }
-      }
-
-      return `
-        <div style="font-weight: bold; margin-top: 15px; font-size: 11px; background: var(--navy); color: white; padding: 4px 10px; border-radius: 4px;">SEMESTER 1 (GANJIL)</div>
-        <table class="prosem-table">
-          <thead>
-            <tr>
-              <th rowspan="2" style="width: 3.5%;">No</th>
-              <th rowspan="2">Bab / Materi Pokok</th>
-              <th rowspan="2" style="width: 5%;">JP</th>
-              <th colspan="5">Juli</th>
-              <th colspan="4">Agustus</th>
-              <th colspan="4">September</th>
-              <th colspan="5">Oktober</th>
-              <th colspan="4">November</th>
-              <th colspan="4">Desember</th>
-            </tr>
-            <tr>
-              <!-- Juli -->
-              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th><th style="width: 2.1%;">5</th>
-              <!-- Agustus -->
-              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
-              <!-- September -->
-              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
-              <!-- Oktober -->
-              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th><th style="width: 2.1%;">5</th>
-              <!-- November -->
-              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
-              <!-- Desember -->
-              <th style="width: 2.1%;">1</th><th style="width: 2.1%;">2</th><th style="width: 2.1%;">3</th><th style="width: 2.1%;">4</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${s1Rows}
-            <tr class="total-row">
-              <td colspan="2" style="text-align: right; padding-right: 15px;">Jumlah JP</td>
-              <td>${jpS1Total}</td>
-              <td colspan="26" style="text-align: left; padding-left: 10px; font-size: 8.5px; font-weight: normal; font-style: italic; background: #fafafa; color: var(--muted);">
-                Keterangan Kaldik Smt I: Okt Mgu 2 = Sumatif Tengah Semester I (STS 1); Nov Mgu 4 = SAS Mulok; Des Mgu 1 = SAS Dinas
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div style="font-weight: bold; margin-top: 25px; font-size: 11px; background: var(--navy); color: white; padding: 4px 10px; border-radius: 4px;">SEMESTER 2 (GENAP)</div>
-        <table class="prosem-table">
-          <thead>
-            <tr>
-              <th rowspan="2" style="width: 3.5%;">No</th>
-              <th rowspan="2">Bab / Materi Pokok</th>
-              <th rowspan="2" style="width: 5%;">JP</th>
-              <th colspan="4">Januari</th>
-              <th colspan="4">Februari</th>
-              <th colspan="5">Maret</th>
-              <th colspan="4">April</th>
-              <th colspan="4">Mei</th>
-              <th colspan="4">Juni</th>
-            </tr>
-            <tr>
-              <!-- Januari -->
-              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
-              <!-- Februari -->
-              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
-              <!-- Maret -->
-              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th><th style="width: 2.2%;">5</th>
-              <!-- April -->
-              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
-              <!-- Mei -->
-              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
-              <!-- Juni -->
-              <th style="width: 2.2%;">1</th><th style="width: 2.2%;">2</th><th style="width: 2.2%;">3</th><th style="width: 2.2%;">4</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${s2Rows}
-            <tr class="total-row">
-              <td colspan="2" style="text-align: right; padding-right: 15px;">Jumlah JP</td>
-              <td>${jpS2Total}</td>
-              <td colspan="25" style="text-align: left; padding-left: 10px; font-size: 8.5px; font-weight: normal; font-style: italic; background: #fafafa; color: var(--muted);">
-                Keterangan Kaldik Smt II: Apr Mgu 1 = Sumatif Tengah Semester II (STS 2); Mei Mgu 4 = SAT Mulok; Jun Mgu 1 = SAT Dinas
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div style="font-size: 10px; font-style: italic; margin-top: 10px; color: var(--muted); line-height: 1.3;">
-          Catatan: Pembagian minggu disesuaikan dengan Kalender Pendidikan (Kaldik) SDS Plus 2 Al Muhajirin Purwakarta Tahun Pelajaran 2026/2027. (1 JP = 35 Menit).
-        </div>
-      `;
-    }
-
-    function renderTPTable() {
-      const kelasVal = document.getElementById('docKelas').value;
-      const kelasDigit = kelasVal === 'IV' ? '4' : (kelasVal === 'V' ? '5' : (kelasVal === 'VI' ? '6' : kelasVal));
-      const tpData = getTpData();
-
-      let rows = "";
-      let lastBab = "";
-      let totalJP = 0;
-      tpData.forEach(r => {
-        totalJP += r.jp;
-        let babCell = "";
-        if (r.bab !== lastBab) {
-          // Count rows with this bab
-          const groupCount = tpData.filter(x => x.bab === r.bab).length;
-          babCell = `<td rowspan="${groupCount}" style="font-weight: bold; font-size: 10.5px; width: 25%; background: #f6faf4; color: #3b4a5c; border-right: 1px solid #cfe6c2;">${r.bab}</td>`;
-          lastBab = r.bab;
-        }
-
-        const kodeTP = `${kelasDigit}.${r.no}`;
-
-        rows += `
-          <tr>
-            <td style="text-align: center; width: 5%;">${r.no}</td>
-            <td style="text-align: center; width: 10%; font-weight: bold; color: #3b4a5c;">${kodeTP}</td>
-            ${babCell}
-            <td style="padding-left: 8px;">${r.tp}</td>
-            <td style="text-align: center; width: 10%; font-weight: bold;">${r.jp} JP</td>
-          </tr>
-        `;
-      });
-
-      return `
-        <table class="adm-tab">
-          <thead>
-            <tr>
-              <th style="width: 5%;">No</th>
-              <th style="width: 10%;">Kode TP</th>
-              <th style="width: 25%;">Bab / Elemen</th>
-              <th>Tujuan Pembelajaran (TP)</th>
-              <th style="width: 10%;">JP</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-            <tr style="font-weight: bold; background: #e8f0e3 !important; color: #3b4a5c;">
-              <td colspan="4" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah Alokasi Waktu (JP) — 1 Tahun Ajaran</td>
-              <td style="text-align: center; font-weight: bold;">${totalJP} JP</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-    }
-
-    // ===== JADWAL JAM MENGAJAR DATA (hanya jam mengajar) =====
-    const JADWAL_DATA = [
-      // Hanya menampilkan jam pelajaran yang diajar oleh guru
-      { time: '07.30 - 08.05', period: 5,
-        mon: '', tue: '', wed: '', thu: '4 Muskat', fri: '4 Najaf' },
-      { time: '08.05 - 08.40', period: 6,
-        mon: "4 Sana'a", tue: '', wed: '6 Granada', thu: '4 Muskat', fri: '4 Najaf' },
-      { time: '08.40 - 09.15', period: 7,
-        mon: "4 Sana'a", tue: '', wed: '6 Granada', thu: '', fri: '' },
-      { time: '09.40 - 10.15', period: 9,
-        mon: '4 Yaman', tue: '', wed: '4 Abu Dhabi', thu: '', fri: '' },
-      { time: '10.15 - 10.50', period: 10,
-        mon: '4 Yaman', tue: '', wed: '4 Abu Dhabi', thu: '6 Madrid', fri: '6 Almeria' },
-      { time: '10.50 - 11.25', period: 11,
-        mon: '', tue: '', wed: '', thu: '6 Madrid', fri: '6 Almeria' },
-      { time: '12.20 - 12.55', period: 16,
-        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '5 Amman', fri: '5 Damaskus' },
-      { time: '12.55 - 13.30', period: 17,
-        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '5 Amman', fri: '5 Damaskus' },
-      { time: '13.30 - 14.05', period: 18,
-        mon: '', tue: '', wed: '', thu: '6 Kuffah', fri: '' },
-      { time: '14.05 - 14.20', period: 19,
-        mon: '', tue: '', wed: '', thu: '6 Kuffah', fri: '' }
-    ];
-
-    function getKelasLevel(text) {
-      if (!text) return 0;
-      if (text.startsWith('4')) return 4;
-      if (text.startsWith('5')) return 5;
-      if (text.startsWith('6')) return 6;
-      return 0;
-    }
-
-    function renderJadwalTable() {
-      const tahun = v('tahun') || '2026/2027';
-      const mapel = v('mapel') || 'Koding dan Kecerdasan Artifisial (KKA)';
-      const guruNama = v('guruNama') || 'Haris Ratno Pambudi, S.T.';
-
-      // Count total JP per kelas
-      let jpKelas4 = 0, jpKelas5 = 0, jpKelas6 = 0;
-      const days = ['mon', 'tue', 'wed', 'thu', 'fri'];
-      JADWAL_DATA.forEach(row => {
-        days.forEach(day => {
-          const cell = row[day];
-          if (cell) {
-            const lvl = getKelasLevel(cell);
-            if (lvl === 4) jpKelas4++;
-            else if (lvl === 5) jpKelas5++;
-            else if (lvl === 6) jpKelas6++;
-          }
-        });
-      });
-
-      let rows = '';
-      JADWAL_DATA.forEach((row, idx) => {
-        rows += '<tr>';
-        rows += `<td style="text-align: center; font-weight: bold; width: 5%;">${idx + 1}</td>`;
-        rows += `<td style="text-align: center; font-weight: 600; width: 8%; white-space: nowrap;">${row.period}</td>`;
-        rows += `<td style="text-align: center; font-weight: 600; width: 12%; white-space: nowrap;">${row.time}</td>`;
-
-        days.forEach(day => {
-          const cell = row[day];
-          if (!cell) {
-            rows += '<td style="text-align: center;"></td>';
-          } else {
-            const lvl = getKelasLevel(cell);
-            let bgColor = '';
-            let textColor = 'var(--ink)';
-            if (lvl === 4) {
-              bgColor = 'background: var(--teal-light);';
-            } else if (lvl === 5) {
-              bgColor = 'background: var(--teal); color: var(--teal-text);';
-              textColor = 'var(--teal-text)';
-            } else if (lvl === 6) {
-              bgColor = 'background: #c17f3e; color: #fff;';
-              textColor = '#fff';
-            }
-            rows += `<td style="text-align: center; font-weight: 700; ${bgColor}">${esc(cell)}</td>`;
-          }
-        });
-
-        rows += '</tr>';
-      });
-
-      return `
-        <table class="adm-tab">
-          <thead>
-            <tr>
-              <th style="width: 5%;">No</th>
-              <th style="width: 8%;">Jam Ke-</th>
-              <th style="width: 12%;">Waktu</th>
-              <th>Senin</th>
-              <th>Selasa</th>
-              <th>Rabu</th>
-              <th>Kamis</th>
-              <th>Jumat</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-            <tr style="font-weight: 800; background: #eaf3e5 !important; color: #3b4a5c;">
-              <td colspan="3" style="text-align: right; padding-right: 15px; font-weight: bold;">Total JP Mengajar per Minggu</td>
-              <td colspan="5" style="text-align: center; font-weight: bold;">
-                Kelas IV: ${jpKelas4} JP &nbsp;&bull;&nbsp; Kelas V: ${jpKelas5} JP &nbsp;&bull;&nbsp; Kelas VI: ${jpKelas6} JP &nbsp;&bull;&nbsp; <strong>Total: ${jpKelas4 + jpKelas5 + jpKelas6} JP</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div style="font-size: 10.5px; margin-top: 12px; line-height: 1.6;">
-          <div style="font-weight: 700; color: var(--navy-dark); margin-bottom: 4px;">Keterangan Warna:</div>
-          <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-            <span style="display: inline-flex; align-items: center; gap: 5px;">
-              <span style="display: inline-block; width: 16px; height: 16px; background: var(--teal-light); border: 1px solid var(--teal-border-light); border-radius: 3px;"></span>
-              <span style="color: var(--muted); font-weight: 600;">Kelas IV</span>
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 5px;">
-              <span style="display: inline-block; width: 16px; height: 16px; background: var(--teal); border: 1px solid var(--teal-dark); border-radius: 3px;"></span>
-              <span style="color: var(--muted); font-weight: 600;">Kelas V</span>
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 5px;">
-              <span style="display: inline-block; width: 16px; height: 16px; background: #c17f3e; border: 1px solid #a56830; border-radius: 3px;"></span>
-              <span style="color: var(--muted); font-weight: 600;">Kelas VI</span>
-            </span>
-          </div>
-          <div style="margin-top: 8px; font-style: italic; color: var(--muted);">
-            Catatan: 1 JP = 35 menit. Jadwal mengajar ${esc(v('instansi') || 'SDS Plus 2 Al Muhajirin')} Tahun Pelajaran ${esc(tahun)}.
-          </div>
-        </div>
-      `;
-    }
-
-    /* ---------- PAGE SIZE / PRINT ---------- */
     const sizes = {
       a4: { portrait: [210, 297], landscape: [297, 210] },
       f4: { portrait: [215, 330], landscape: [330, 215] }
@@ -1940,54 +1097,15 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         patternClass = " pattern-" + pattern;
       }
       page.className = "sheet " + size + " " + orient + patternClass;
-      const [w, h] = sizes[size][orient];
 
-      // Adjust padding dynamically for screen preview
+      const [w, h] = sizes[size][orient];
       page.style.padding = orient === 'landscape' ? '8mm 10mm' : '15mm';
 
       document.getElementById('pageSizeStyle').innerHTML = `
-        @page {
-          size: ${w}mm ${h}mm;
-          margin: ${orient === 'landscape' ? '8mm 10mm' : '15mm'};
-        }
+        @page { size: ${w}mm ${h}mm; margin: ${orient === 'landscape' ? '8mm 10mm' : '15mm'}; }
         @media print {
-          .no-print {
-            display: none !important;
-          }
-          body {
-            background: #fff;
-            width: auto !important;
-            height: auto !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          .canvas {
-            padding: 0 !important;
-            background: transparent !important;
-            background-image: none !important;
-            overflow: visible !important;
-            display: block !important;
-          }
-          #page-container {
-            display: block !important;
-            width: auto !important;
-            height: auto !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            background: none !important;
-            transform: none !important;
-          }
-          .sheet {
-            box-shadow: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            width: auto !important;
-            min-height: 0 !important;
-            transform: none !important;
-            background: transparent !important;
-            page-break-after: always;
-          }
+          .no-print, .no-print-badge { display: none !important; }
+          .active-week-row { background: transparent !important; border-left: none !important; }
         }
       `;
       applyZoom();
@@ -2000,36 +1118,6 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         localStorage.setItem('hdl_paper_pattern', pattern);
       } catch (e) {}
       updatePageStyle();
-    }
-
-    function applyZoom() {
-      const z = document.getElementById('zoom').value;
-      const page = document.getElementById('page');
-      const container = document.getElementById('page-container');
-      const canvas = document.querySelector('.canvas');
-      if (!page || !container || !canvas) return;
-
-      const size = document.getElementById('paperSize').value;
-      const orient = document.getElementById('orientation').value;
-      const [w, h] = sizes[size][orient];
-
-      const pagePxWidth = w * 3.7795;
-      const pagePxHeight = h * 3.7795;
-
-      let scale = 1;
-      if (z === "fit") {
-        const canvasWidth = canvas.clientWidth - 40;
-        scale = canvasWidth / pagePxWidth;
-        scale = Math.min(Math.max(scale, 0.4), 1.2);
-      } else {
-        scale = parseFloat(z);
-      }
-
-      page.style.transform = `scale(${scale})`;
-      page.style.transformOrigin = "top left";
-
-      container.style.width = `${pagePxWidth * scale}px`;
-      container.style.height = `${page.offsetHeight * scale}px`;
     }
 
     /* ---------- COLOR THEME PRESETS ---------- */
@@ -2129,49 +1217,36 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       } catch (e) {}
     }
 
-    const PERSIST_PROFILE_FIELDS = [
-      'penyusun', 'instansi', 'tahun', 'jenjang', 'mapel', 'fase',
-      'tempatTgl', 'kepsekNama', 'kepsekLabelType', 'kepsekNIY', 'guruNama', 'guruLabelType', 'guruNIY'
-    ];
-    const PERSIST_PROFILE_CHECKBOXES = [
-      'toggleBanner', 'toggleLogoYayasan'
-    ];
+    function applyZoom() {
+      const z = document.getElementById('zoom').value;
+      const page = document.getElementById('page');
+      const container = document.getElementById('page-container');
+      const canvas = document.querySelector('.canvas');
+      if (!page || !container || !canvas) return;
 
-    let cloudSyncTimeout = null;
+      const size = document.getElementById('paperSize').value;
+      const orient = document.getElementById('orientation').value;
+      const [w, h] = sizes[size][orient];
+      const pagePxWidth = w * 3.7795;
 
-    function updateCloudSyncStatus(state) {
-      const icon = document.getElementById('cloudSyncIcon');
-      const text = document.getElementById('cloudSyncText');
-      const statusDiv = document.getElementById('cloudSyncStatus');
-      if (!icon || !text || !statusDiv) return;
-      
-      const isLogged = localStorage.getItem('hdl_access_code') && localStorage.getItem('hdl_access_code').startsWith('google_jwt_token:');
-      if (!isLogged) {
-        statusDiv.style.display = 'none';
-        return;
+      let scale = 1;
+      if (z === "fit") {
+        const canvasWidth = canvas.clientWidth - 40;
+        scale = canvasWidth / pagePxWidth;
+        scale = Math.min(Math.max(scale, 0.4), 1.2);
+      } else {
+        scale = parseFloat(z);
       }
-      statusDiv.style.display = 'flex';
 
-      if (state === 'syncing') {
-        icon.innerHTML = '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><polyline points="12 11 12 16"></polyline><polyline points="9 13 12 11 15 13"></polyline>';
-        icon.style.color = 'var(--navy)';
-        text.textContent = 'Menyimpan...';
-        text.style.display = 'inline';
-        statusDiv.title = 'Menyimpan ke Cloud...';
-      } else if (state === 'saved') {
-        icon.innerHTML = '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><polyline points="9 14 11 16 15 11"></polyline>';
-        icon.style.color = '#38a169'; // green
-        text.textContent = 'Tersimpan';
-        text.style.display = 'none';
-        statusDiv.title = 'Tersimpan di Cloud';
-      } else if (state === 'error') {
-        icon.innerHTML = '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><line x1="12" y1="12" x2="12" y2="16"></line><line x1="12" y1="18" x2="12.01" y2="18"></line>';
-        icon.style.color = '#e53e3e'; // red
-        text.textContent = 'Gagal Simpan';
-        text.style.display = 'inline';
-        statusDiv.title = 'Gagal menyimpan ke Cloud';
-      }
+      page.style.transform = `scale(${scale})`;
+      page.style.transformOrigin = "top left";
+      container.style.width = `${pagePxWidth * scale}px`;
+      container.style.height = `${page.offsetHeight * scale}px`;
     }
+
+    const PERSIST_PROFILE_FIELDS = [
+      'instansi', 'tahun', 'mapel', 'fase', 'tempatTgl', 'kepsekNama', 'kepsekLabelType', 'kepsekNIY', 'guruNama', 'guruLabelType', 'guruNIY'
+    ];
 
     function getProfileStorageKey(id) {
        const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
@@ -2180,118 +1255,24 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
 
     function saveProfileFields() {
       try {
-        let profileData = { fields: {}, checkboxes: {} };
         PERSIST_PROFILE_FIELDS.forEach(id => {
           const el = document.getElementById(id);
-          if (el) {
-            localStorage.setItem(getProfileStorageKey(id), el.value);
-            profileData.fields[id] = el.value;
-          }
+          if (el) localStorage.setItem(getProfileStorageKey(id), el.value);
         });
-        PERSIST_PROFILE_CHECKBOXES.forEach(id => {
-          const el = document.getElementById(id);
-          if (el) {
-            const val = el.checked ? 'true' : 'false';
-            localStorage.setItem(getProfileStorageKey(id), val);
-            profileData.checkboxes[id] = val;
-          }
-        });
-
-        // Sync to cloud if logged in, debounced (wait 2 seconds after last typing)
-        const token = localStorage.getItem('hdl_access_code');
-        if (token && token.startsWith('google_jwt_token:')) {
-           updateCloudSyncStatus('syncing');
-           clearTimeout(cloudSyncTimeout);
-           cloudSyncTimeout = setTimeout(() => {
-              // Re-read latest profile fields for cloud sync to avoid closure capturing old/default values
-              let latestProfileData = { fields: {}, checkboxes: {} };
-              PERSIST_PROFILE_FIELDS.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) latestProfileData.fields[id] = el.value;
-              });
-              PERSIST_PROFILE_CHECKBOXES.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) latestProfileData.checkboxes[id] = el.checked ? 'true' : 'false';
-              });
-
-              fetch('https://bold-block-f2cd.harisratnopambudi.workers.dev/profile', {
-                 method: 'POST',
-                 headers: { 'Authorization': 'Bearer ' + token },
-                 body: JSON.stringify(latestProfileData)
-              }).then(res => {
-                 if (res.ok) updateCloudSyncStatus('saved');
-                 else {
-                     res.text().then(txt => {
-                         console.error("Cloud sync err:", res.status, txt);
-                         const statusDiv = document.getElementById('cloudSyncStatus');
-                         if(statusDiv) statusDiv.title = `Gagal (Kode: ${res.status}). Tunggu atau relogin.`;
-                     }).catch(e=>{});
-                     updateCloudSyncStatus('error');
-                 }
-              }).catch(e => {
-                 console.error("Cloud sync failed", e);
-                 updateCloudSyncStatus('error');
-              });
-           }, 2000);
-        }
       } catch (e) { }
     }
 
-    async function loadProfileFields() {
+    function loadProfileFields() {
       try {
-        // Try cloud first if logged in
-        const token = localStorage.getItem('hdl_access_code');
-        if (token && token.startsWith('google_jwt_token:')) {
-           try {
-              const res = await fetch('https://bold-block-f2cd.harisratnopambudi.workers.dev/profile', {
-                 headers: { 'Authorization': 'Bearer ' + token }
-              });
-              if (res.ok) {
-                 const cloudData = await res.json();
-                 if (cloudData && cloudData.fields) {
-                    // Save to local storage and update UI
-                    for (const id in cloudData.fields) {
-                       localStorage.setItem(getProfileStorageKey(id), cloudData.fields[id]);
-                    }
-                    for (const id in cloudData.checkboxes) {
-                       localStorage.setItem(getProfileStorageKey(id), cloudData.checkboxes[id]);
-                    }
-                 }
-              }
-           } catch(e) {
-              console.error("Failed to load profile from cloud", e);
-           }
-        }
-
-        // Load from local storage
         PERSIST_PROFILE_FIELDS.forEach(id => {
           const val = localStorage.getItem(getProfileStorageKey(id));
           const el = document.getElementById(id);
-          if (val !== null && el) {
-            el.value = val;
-          }
-          // Attach auto-save listener
+          if (val !== null && el) el.value = val;
           if (el && !el.dataset.autosaveAttached) {
              el.addEventListener('input', saveProfileFields);
              el.dataset.autosaveAttached = 'true';
           }
         });
-        PERSIST_PROFILE_CHECKBOXES.forEach(id => {
-          const val = localStorage.getItem(getProfileStorageKey(id));
-          const el = document.getElementById(id);
-          if (val !== null && el) {
-            el.checked = (val === 'true');
-          }
-          // Attach auto-save listener
-          if (el && !el.dataset.autosaveAttached) {
-             el.addEventListener('change', saveProfileFields);
-             el.dataset.autosaveAttached = 'true';
-          }
-        });
-        
-        if (typeof renderPreview === 'function') {
-           renderPreview();
-        }
       } catch (e) { }
     }
 
@@ -2299,25 +1280,20 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       try {
         const savedCode = localStorage.getItem('hdl_access_code') || '';
         const badge = document.getElementById('accountBadge');
-        if (!savedCode) {
-          if (badge) badge.style.display = 'none';
-        } else {
-          if (badge) {
-            badge.style.display = 'flex';
-            const uName = localStorage.getItem('hdl_user_name') || 'Pengguna';
-            const uEmail = localStorage.getItem('hdl_user_email') || '';
-            const uPhoto = localStorage.getItem('hdl_user_photo') || '';
-            const nameEl = document.getElementById('accountBadgeName');
-            const emailEl = document.getElementById('accountBadgeEmail');
-            const avatarInner = document.getElementById('accountBadgeAvatarInner');
-            if (nameEl) nameEl.textContent = uName;
-            if (emailEl) emailEl.textContent = uEmail;
-            if (uPhoto && avatarInner) {
-              avatarInner.innerHTML = '<img src="' + uPhoto + '" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent=\'' + uName.charAt(0).toUpperCase() + '\'">'; 
-            } else if (avatarInner) {
-              avatarInner.textContent = uName.charAt(0).toUpperCase();
-            }
-            updateCloudSyncStatus('saved');
+        if (savedCode && badge) {
+          badge.style.display = 'flex';
+          const uName = localStorage.getItem('hdl_user_name') || 'Pengguna';
+          const uEmail = localStorage.getItem('hdl_user_email') || '';
+          const uPhoto = localStorage.getItem('hdl_user_photo') || '';
+          const nameEl = document.getElementById('accountBadgeName');
+          const emailEl = document.getElementById('accountBadgeEmail');
+          const avatarInner = document.getElementById('accountBadgeAvatarInner');
+          if (nameEl) nameEl.textContent = uName;
+          if (emailEl) emailEl.textContent = uEmail;
+          if (uPhoto && avatarInner) {
+            avatarInner.innerHTML = '<img src="' + uPhoto + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+          } else if (avatarInner) {
+            avatarInner.textContent = uName.charAt(0).toUpperCase();
           }
         }
       } catch (e) { }
@@ -2325,28 +1301,13 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
 
     function logoutGoogle() {
       localStorage.removeItem('hdl_access_code');
-      localStorage.removeItem('hdl_access_code_time');
-      localStorage.removeItem('hdl_user_email');
-      localStorage.removeItem('hdl_user_name');
-      localStorage.removeItem('hdl_user_photo');
       window.location.href = 'index.html';
     }
 
-    // Window load initialization
     window.addEventListener('load', () => {
-      // Load saved identity fields
       loadProfileFields();
       checkLoginBadge();
 
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('type') === 'jurnal') {
-          const docTypeEl = document.getElementById('docType');
-          if (docTypeEl) docTypeEl.value = 'jurnal';
-        }
-      } catch (e) { }
-
-      // Retrieve themes or styles from localStorage if any, to align with index page
       try {
         const savedPattern = localStorage.getItem('hdl_paper_pattern');
         if (savedPattern) {
@@ -2359,7 +1320,6 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
         applyPresetTheme('original');
       }
 
-      onDocTypeChange();
       updatePageStyle();
       applyZoom();
       window.addEventListener('resize', applyZoom);
