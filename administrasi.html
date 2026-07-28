@@ -747,18 +747,18 @@
               <optgroup label="Kelas IV">
                 <option value="4 Sana'a">4 Sana'a — Senin (08.05 - 09.15)</option>
                 <option value="4 Yaman">4 Yaman — Senin (09.40 - 10.50)</option>
-                <option value="4 Muskat">4 Muskat — Selasa (07.30 - 08.40)</option>
+                <option value="4 Muskat">4 Muskat — Selasa (08.05 - 09.15)</option>
                 <option value="4 Abu Dhabi">4 Abu Dhabi — Rabu (09.40 - 10.50)</option>
                 <option value="4 Najaf">4 Najaf — Jumat (07.30 - 08.40)</option>
               </optgroup>
               <optgroup label="Kelas V">
                 <option value="5 Cordoba">5 Cordoba — Senin (12.20 - 13.30)</option>
-                <option value="5 Damaskus">5 Damaskus — Selasa (12.20 - 13.30)</option>
+                <option value="5 Damaskus">5 Damaskus — Selasa (12.55 - 14.05)</option>
                 <option value="5 Istanbul">5 Istanbul — Rabu (12.20 - 13.30)</option>
                 <option value="5 Amman">5 Amman — Kamis (12.55 - 14.05)</option>
               </optgroup>
               <optgroup label="Kelas VI">
-                <option value="6 Kuffah" selected>6 Kuffah — Selasa (10.15 - 11.25)</option>
+                <option value="6 Kuffah" selected>6 Kuffah — Selasa (09.40 - 10.50)</option>
                 <option value="6 Granada">6 Granada — Rabu (08.05 - 09.15)</option>
                 <option value="6 Madrid">6 Madrid — Kamis (10.15 - 11.25)</option>
                 <option value="6 Almeria">6 Almeria — Jumat (10.15 - 11.25)</option>
@@ -1766,23 +1766,23 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
     const JADWAL_DATA = [
       // Hanya menampilkan jam pelajaran yang diajar oleh guru
       { time: '07.30 - 08.05', period: 5,
-        mon: '', tue: '4 Muskat', wed: '', thu: '', fri: '4 Najaf' },
+        mon: '', tue: '', wed: '', thu: '', fri: '4 Najaf' },
       { time: '08.05 - 08.40', period: 6,
         mon: "4 Sana'a", tue: '4 Muskat', wed: '6 Granada', thu: '', fri: '4 Najaf' },
       { time: '08.40 - 09.15', period: 7,
-        mon: "4 Sana'a", tue: '', wed: '6 Granada', thu: '', fri: '' },
+        mon: "4 Sana'a", tue: '4 Muskat', wed: '6 Granada', thu: '', fri: '' },
       { time: '09.40 - 10.15', period: 9,
-        mon: '4 Yaman', tue: '', wed: '4 Abu Dhabi', thu: '', fri: '' },
+        mon: '4 Yaman', tue: '6 Kuffah', wed: '4 Abu Dhabi', thu: '', fri: '' },
       { time: '10.15 - 10.50', period: 10,
         mon: '4 Yaman', tue: '6 Kuffah', wed: '4 Abu Dhabi', thu: '6 Madrid', fri: '6 Almeria' },
       { time: '10.50 - 11.25', period: 11,
-        mon: '', tue: '6 Kuffah', wed: '', thu: '6 Madrid', fri: '6 Almeria' },
+        mon: '', tue: '', wed: '', thu: '6 Madrid', fri: '6 Almeria' },
       { time: '12.20 - 12.55', period: 16,
-        mon: '5 Cordoba', tue: '5 Damaskus', wed: '5 Istanbul', thu: '', fri: '' },
+        mon: '5 Cordoba', tue: '', wed: '5 Istanbul', thu: '', fri: '' },
       { time: '12.55 - 13.30', period: 17,
         mon: '5 Cordoba', tue: '5 Damaskus', wed: '5 Istanbul', thu: '5 Amman', fri: '' },
       { time: '13.30 - 14.05', period: 18,
-        mon: '', tue: '', wed: '', thu: '5 Amman', fri: '' }
+        mon: '', tue: '5 Damaskus', wed: '', thu: '5 Amman', fri: '' }
     ];
 
     function getKelasLevel(text) {
@@ -2302,25 +2302,8 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       window.location.href = 'index.html';
     }
 
-    function checkAuthAndAdmin() {
-      try {
-        const savedCode = localStorage.getItem('hdl_access_code') || '';
-        const userEmail = (localStorage.getItem('hdl_user_email') || '').trim().toLowerCase();
-        if (!savedCode || userEmail !== 'harisratnopambudi@gmail.com') {
-          window.location.href = 'index.html';
-          return false;
-        }
-        return true;
-      } catch (e) {
-        window.location.href = 'index.html';
-        return false;
-      }
-    }
-
     // Window load initialization
     window.addEventListener('load', () => {
-      if (!checkAuthAndAdmin()) return;
-
       // Load saved identity fields
       loadProfileFields();
       checkLoginBadge();
