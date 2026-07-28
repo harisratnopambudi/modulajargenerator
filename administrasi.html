@@ -834,8 +834,15 @@
               <input type="text" id="kepsekNama" value="Hj. Lia Yulindaria, S.P.,S.Pd.,M.Pd." oninput="saveProfileFields(); renderPreview()">
             </div>
             <div class="field">
-              <label>NIY/NIP Kepala Sekolah</label>
-              <input type="text" id="kepsekNIY" value="07699114" oninput="saveProfileFields(); renderPreview()">
+              <label>Nomor Identitas Kepala Sekolah</label>
+              <div style="display:flex; gap:6px;">
+                <select id="kepsekLabelType" onchange="saveProfileFields(); renderPreview();" style="width:100px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; font-size:13px;">
+                  <option value="NIP">NIP</option>
+                  <option value="NIY">NIY</option>
+                  <option value="NIP/NIY" selected>NIP/NIY</option>
+                </select>
+                <input type="text" id="kepsekNIY" value="07699114" style="flex:1;" oninput="saveProfileFields(); renderPreview()">
+              </div>
             </div>
           </div>
           <div class="row2">
@@ -844,8 +851,15 @@
               <input type="text" id="guruNama" value="Haris Ratno Pambudi, S.T." oninput="saveProfileFields(); renderPreview()">
             </div>
             <div class="field">
-              <label>NIY/NIP Guru</label>
-              <input type="text" id="guruNIY" value="236991324" oninput="saveProfileFields(); renderPreview()">
+              <label>Nomor Identitas Guru</label>
+              <div style="display:flex; gap:6px;">
+                <select id="guruLabelType" onchange="saveProfileFields(); renderPreview();" style="width:100px; padding:6px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; font-size:13px;">
+                  <option value="NIP">NIP</option>
+                  <option value="NIY">NIY</option>
+                  <option value="NIP/NIY" selected>NIP/NIY</option>
+                </select>
+                <input type="text" id="guruNIY" value="236991324" style="flex:1;" oninput="saveProfileFields(); renderPreview()">
+              </div>
             </div>
           </div>
         </div>
@@ -1373,8 +1387,10 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       const fase = v('fase');
       const tempatTgl = v('tempatTgl');
       const kepsekNama = v('kepsekNama');
+      const kepsekLabelType = v('kepsekLabelType') || 'NIP/NIY';
       const kepsekNIY = v('kepsekNIY');
       const guruNama = v('guruNama');
+      const guruLabelType = v('guruLabelType') || 'NIP/NIY';
       const guruNIY = v('guruNIY');
 
       const logoHTML = `<img src="${DEFAULT_LOGO_SRC}" alt="Logo Sekolah" onerror="this.style.display='none';">`;
@@ -1427,13 +1443,13 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
             Mengetahui<br>Kepala Sekolah ${esc(instansi)}
             <div class="gap"></div>
             <div class="name">${esc(kepsekNama)}</div>
-            NIY. ${esc(kepsekNIY)}
+            ${esc(kepsekLabelType)}. ${esc(kepsekNIY)}
           </div>
           <div>
             ${esc(tempatTgl)}<br>Guru Bidang Studi
             <div class="gap"></div>
             <div class="name">${esc(guruNama)}</div>
-            NIY. ${esc(guruNIY)}
+            ${esc(guruLabelType)}. ${esc(guruNIY)}
           </div>
         </div>
       `;
@@ -2101,7 +2117,7 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
 
     const PERSIST_PROFILE_FIELDS = [
       'penyusun', 'instansi', 'tahun', 'jenjang', 'mapel', 'fase',
-      'tempatTgl', 'kepsekNama', 'kepsekNIY', 'guruNama', 'guruNIY'
+      'tempatTgl', 'kepsekNama', 'kepsekLabelType', 'kepsekNIY', 'guruNama', 'guruLabelType', 'guruNIY'
     ];
     const PERSIST_PROFILE_CHECKBOXES = [
       'toggleBanner', 'toggleLogoYayasan'
