@@ -1329,7 +1329,8 @@ Kendala yang dihadapi saat KBM: ${item.kendala}`;
       const targetMeetingVal = document.getElementById('highlightMeetingTarget') ? document.getElementById('highlightMeetingTarget').value : 'auto';
       let activeMeetingNum = 2;
       if (targetMeetingVal === 'auto') {
-        const todayStr = new Date().toISOString().split('T')[0];
+        const d = new Date();
+        const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         activeMeetingNum = (typeof window.getMeetingNumberFromDate === 'function') ? window.getMeetingNumberFromDate(todayStr) : 2;
       } else {
         activeMeetingNum = parseInt(targetMeetingVal) || 2;
